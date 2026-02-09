@@ -3,79 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS V185 | FULL SUPREME COMMAND</title>
+    <title>NEXUS V185 | COMMAND CENTER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
+        body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
+        .glass { background: rgba(13, 17, 23, 0.9); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 20px; backdrop-filter: blur(15px); }
         
-        body { background: #020617; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; margin: 0; display: flex; flex-direction: column; padding: 12px; gap: 10px; }
-        
-        /* CAM EFEKTİ VE ZOOM */
-        .glass { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; backdrop-filter: blur(12px); transition: 0.3s; }
-        .zoom-active { position: fixed !important; inset: 10px !important; z-index: 9999 !important; background: #020617 !important; padding: 24px !important; border: 2px solid #3b82f6 !important; }
-        
-        /* SAYAÇ VE İSİM */
-        #display { font-family: 'JetBrains Mono'; font-size: clamp(3rem, 12vw, 5.5rem); color: #3b82f6; text-shadow: 0 0 30px rgba(59,130,246,0.5); font-weight: 900; }
+        /* POPUP MODAL */
+        #customModal { display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .modal-content { background: #0d1117; border: 2px solid #3b82f6; box-shadow: 0 0 60px rgba(59,130,246,0.3); border-radius: 30px; padding: 35px; max-width: 90%; width: 500px; text-align: center; animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        #display { font-family: 'JetBrains Mono'; font-size: clamp(3rem, 12vw, 5.5rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.4); font-weight: 900; }
         .special-name { background: linear-gradient(to right, #fff, #3b82f6, #fb923c, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; font-weight: 900; }
         @keyframes shine { to { background-position: 200% center; } }
-
-        /* 20 MADALYA SLOTU */
-        .medal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; overflow-y: auto; }
-        .medal-slot { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: 0.2s; position: relative; }
-        .medal-slot:hover { transform: scale(1.1); background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; }
-        .medal-slot::after { content: attr(data-title); position: absolute; bottom: -20px; font-size: 8px; color: #64748b; white-space: nowrap; opacity: 0; }
-        .medal-slot:hover::after { opacity: 1; }
-
+        
+        .medal-slot { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; transition: 0.3s; }
+        .medal-slot:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); transform: translateY(-3px); }
+        
+        .status-active { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.1); animation: pulse-green 2s infinite; }
+        .status-idle { border-left: 4px solid #475569; background: rgba(255, 255, 255, 0.03); opacity: 0.6; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <header class="glass p-4 flex items-center justify-between shrink-0">
+    <div id="customModal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="modalIcon" class="text-7xl mb-4">🎖️</div>
+            <h2 id="modalTitle" class="text-blue-400 font-black text-2xl mb-4 uppercase tracking-tighter italic">KOMUTA MESAJI</h2>
+            <div class="h-[1px] w-full bg-blue-500/30 mb-6"></div>
+            <p id="modalDesc" class="text-slate-300 text-sm leading-relaxed font-medium italic tracking-wide">...</p>
+            <button onclick="closeModal()" class="mt-8 px-12 py-3 bg-blue-600 rounded-full font-black text-xs shadow-lg shadow-blue-900/40">DEVAM ET</button>
+        </div>
+    </div>
+
+    <header class="glass p-5 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-2xl shadow-blue-900/50 shadow-lg">🦁</div>
+            <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-3xl shadow-lg shadow-blue-900/40">🦁</div>
             <div>
-                <h1 id="userName" class="text-xs font-black tracking-widest uppercase opacity-70">BAĞLANTI BEKLENİYOR...</h1>
-                <p class="text-[9px] text-blue-400 font-bold italic">"Her şey geri geldi. Şimdi gerçek güç senin elinde."</p>
+                <h1 id="userName" class="text-xs font-black tracking-widest uppercase opacity-60">Yükleniyor...</h1>
+                <p onclick="showQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer hover:text-blue-200 uppercase tracking-tighter">📜 Günün Stratejik Emri</p>
             </div>
         </div>
-        <button onclick="tokatAt()" class="bg-red-600/20 border border-red-500/50 px-5 py-2 rounded-xl text-[10px] font-black hover:bg-red-600 transition-all">DİSİPLİN TOKADI</button>
+        <div class="flex gap-2">
+            <button onclick="addFriend()" class="bg-blue-600/10 border border-blue-500/30 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-blue-600/30">ARKADAŞ EKLE</button>
+            <button onclick="tokatAt()" class="bg-red-600 border border-red-400 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg shadow-red-900/30">DİSİPLİN TOKADI</button>
+        </div>
     </header>
 
     <div class="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
-        <aside class="glass w-full md:w-80 p-4 flex flex-col gap-3">
-            <h2 class="text-[9px] font-black text-slate-500 tracking-widest uppercase">KOLEKSİYON (20/20 ROZET)</h2>
-            <div class="medal-grid no-scrollbar h-full" id="medalContainer">
-                <div class="medal-slot" data-title="Erken Kalkan">🌅</div><div class="medal-slot" data-title="Kitap Kurdu">📚</div>
-                <div class="medal-slot" data-title="Demir Odak">🦾</div><div class="medal-slot" data-title="Hızlı">⚡</div>
-                <div class="medal-slot" data-title="Elmas">💎</div><div class="medal-slot" data-title="Seri">🔥</div>
-                <div class="medal-slot" data-title="Şampiyon">🏆</div><div class="medal-slot" data-title="Muhafız">🛡️</div>
-                <div class="medal-slot" data-title="Savaşçı">⚔️</div><div class="medal-slot" data-title="Efsane">👑</div>
-                <div class="medal-slot" data-title="Birinci">🥇</div><div class="medal-slot" data-title="İkinci">🥈</div>
-                <div class="medal-slot" data-title="Üçüncü">🥉</div><div class="medal-slot" data-title="Gece">🌌</div>
-                <div class="medal-slot" data-title="Zümrüt">🟢</div><div class="medal-slot" data-title="Alev">🔥</div>
-                <div class="medal-slot" data-title="Kartal">🦅</div><div class="medal-slot" data-title="Deniz">🔱</div>
-                <div class="medal-slot" data-title="Asalet">⚜️</div><div class="medal-slot" data-title="Fatih">🏁</div>
+        <aside class="glass w-full md:w-80 p-5 flex flex-col gap-4">
+            <h2 class="text-[10px] font-black text-slate-500 tracking-[0.3em] uppercase">Rütbe ve Başarılar</h2>
+            <div class="grid grid-cols-5 md:grid-cols-4 gap-2 overflow-y-auto no-scrollbar" id="medalGrid">
+                <div class="medal-slot" onclick="openPopup('🌅','Şafak Operasyonu','Güneş doğmadan önce sahaya inenler için. Uyku bir lüks değil, rakiplerin zayıf noktasıdır. Sen uyumadığında, bir adım öndesin.')">🌅</div>
+                <div class="medal-slot" onclick="openPopup('🦾','Demir Odak','90 dakika boyunca dünyayı sessize alan çelik iradeli komutanlar için. Odaklanmak senin en keskin silahındır.')">🦾</div>
+                <div class="medal-slot" onclick="openPopup('💎','Elmas Zihin','Haftalık 40 saatlik sınırı aşarak zihnini en sert baskı altında bile elmas gibi parlatanlar için. Kırılmaz bir disiplin.')">💎</div>
+                <div class="medal-slot" onclick="openPopup('🔥','İstikrar Ateşi','7 gün boyunca tek bir saniye bile aksatmadan çalışan disiplin makineleri için. Alışkanlıkların senin kaderindir.')">🔥</div>
+                <div class="medal-slot" onclick="openPopup('🛡️','Zaman Muhafızı','Vaktini boş işlerden ve sosyal medya parazitlerinden koruyan irade kalkanı. Hayatını sen yönet, bildirimler değil.')">🛡️</div>
+                <div class="medal-slot" onclick="openPopup('⚔️','Savaşçı Ruhu','3 saatlik kesintisiz blok çalışmayı tamamlayan muharebe uzmanı. Yorgunluk sadece bir düşüncedir.')">⚔️</div>
+                <div class="medal-slot" onclick="openPopup('⚡','Hızlı Operatör','Günde 10 farklı çalışma seansını başarıyla tamamlayan dinamik komutan. Adaptasyon yeteneğin zaferi getirecek.')">⚡</div>
+                <div class="medal-slot" onclick="openPopup('🏆','Şampiyonlar Ligi','Günü genel sıralamada birincilikle kapatan rakipsiz lider. Zirve soğuktur ama manzarası harikadır.')">🏆</div>
+                <div class="medal-slot" onclick="openPopup('📚','Bilgi Koleksiyoneri','Toplamda 100 saatlik net çalışmayı aşan derin bilgi uzmanı. Bilgi, en büyük güçtür.')">📚</div>
+                <div class="medal-slot" onclick="openPopup('👑','Supreme Command','Tüm sistemin en üst rütbesi. Artık sadece çalışmıyorsun, sistemin kendisi sensin.')">👑</div>
+                <div class="medal-slot" onclick="openPopup('🥇','Altın Nişan','Mükemmellik ve mutlak disiplin göstergesi. Hata payı bırakmayan profesyoneller için.')">🥇</div>
+                <div class="medal-slot" onclick="openPopup('🥈','Gümüş Nişan','Süreklilik ve yüksek performans ödülü. Yolun yarısından fazlasını fetheden azimli ruhlar için.')">🥈</div>
+                <div class="medal-slot" onclick="openPopup('🥉','Bronz Nişan','Gelişim yolunda atılmış kararlı adım. Her büyük yolculuk küçük bir adımla başlar.')">🥉</div>
+                <div class="medal-slot" onclick="openPopup('🌌','Gece Bekçisi','Gece yarısını başarıyla deviren sessiz savaşçı. Herkes uyurken sen geleceğini inşa ediyorsun.')">🌌</div>
+                <div class="medal-slot" onclick="openPopup('🟢','Zümrüt Odak','Psikolojik dayanıklılık ve sakinlik nişanı. Kaosun içinde huzuru ve odağı bulanlar için.')">🟢</div>
+                <div class="medal-slot" onclick="openPopup('🦅','Keskin Bakış','Hataları avlayan ve hedefe kilitlenen vizyoner. Detaylar farkı yaratır.')">🦅</div>
+                <div class="medal-slot" onclick="openPopup('🔱','Okyanus Derinliği','Zihinsel akış (flow) haline geçenler için. Zamanın ve mekanın ötesinde bir odaklanma.')">🔱</div>
+                <div class="medal-slot" onclick="openPopup('⚜️','Asalet','Disiplini bir yaşam tarzı haline getiren asil ruh. Başarı senin doğal sonucundur.')">⚜️</div>
+                <div class="medal-slot" onclick="openPopup('🏁','Fatih','Zorlu haftalık hedefleri fetheden komutan. Sınırlar sadece senin zihninde var.')">🏁</div>
+                <div class="medal-slot" onclick="openPopup('☄️','Kuyruklu Yıldız','Hızla yükselen ve fark yaratan yetenek. Potansiyelini gerçeğe dönüştüren parlayan ışık.')">☄️</div>
             </div>
         </aside>
 
-        <section id="timerPanel" onclick="toggleZoom(this)" class="glass flex-1 flex flex-col items-center justify-center p-8 relative cursor-pointer">
-            <span class="absolute top-6 left-8 text-[9px] font-black text-slate-600 uppercase tracking-widest">GÖREV SÜRESİ</span>
+        <section class="glass flex-1 flex flex-col items-center justify-center p-8 relative">
             <div id="display">00:00:00</div>
-            <div class="flex gap-4 w-full max-w-sm mt-10">
-                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-xl shadow-lg shadow-blue-900/20">BAŞLAT</button>
-                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-xl animate-pulse shadow-lg shadow-red-900/20">DURDUR</button>
+            <div class="flex gap-4 w-full max-w-sm mt-12">
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl shadow-xl hover:scale-105 transition-all">GÖREVİ BAŞLAT</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse shadow-xl shadow-red-900/40">GÖREVİ TAMAMLA</button>
             </div>
         </section>
 
-        <aside class="glass w-full md:w-72 p-4 flex flex-col overflow-hidden">
-            <h2 class="text-[9px] font-black text-blue-400 tracking-widest uppercase mb-4">OPERASYON RADARI</h2>
-            <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar"></div>
+        <aside class="glass w-full md:w-80 p-5 flex flex-col gap-4 overflow-hidden">
+            <h2 class="text-[10px] font-black text-blue-400 tracking-[0.3em] uppercase">Savaş Alanı (Canlı Radar)</h2>
+            <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1">
+                </div>
+            <div class="border-t border-white/5 pt-4">
+                <h2 class="text-[10px] font-black text-slate-500 uppercase mb-3 italic">Dost Kuvvetler İstihbaratı</h2>
+                <div id="friendStats" class="space-y-2 no-scrollbar overflow-y-auto max-h-40"></div>
+            </div>
         </aside>
     </div>
 
-    <footer id="chartPanel" onclick="toggleZoom(this)" class="glass h-40 md:h-48 p-5 flex flex-col cursor-pointer shrink-0">
+    <footer class="glass h-40 p-5 shrink-0">
         <canvas id="mainChart"></canvas>
     </footer>
 
@@ -93,18 +120,46 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const MY_ID = "vS5tG7R6u6NnE9X5";
+        let FRIENDS = JSON.parse(localStorage.getItem('nexus_friends') || '[]');
 
         let timerInt, myChart;
 
-        window.toggleZoom = (el) => el.classList.toggle('zoom-active');
-        window.tokatAt = () => alert("MOLA BİTTİ! DERHAL MASAYA DÖN VE ÇALIŞMAYA BAŞLA!");
+        window.openPopup = (icon, title, desc) => {
+            document.getElementById('modalIcon').innerText = icon;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('customModal').style.display = 'flex';
+        };
+        window.closeModal = () => document.getElementById('customModal').style.display = 'none';
 
-        // ANA VERİ AKIŞI
+        window.showQuote = () => {
+            const quotes = [
+                {t: "STRATEJİK DOKTRİN", d: "Sıradanlık en büyük düşmanındır. Bugün attığın her adım, yarın rakiplerinin seni arkadan izleyeceği mesafeyi belirler. Acıyı hissettiğinde durma; o, sınırlarının genişlediğinin kanıtıdır. Zafer, vazgeçenlerin bıraktığı yerde başlar. Kendine acımayı bırak, geleceğini inşa et."},
+                {t: "PSİKOLOJİK ÜSTÜNLÜK", d: "Zihin, bedenin gardiyanıdır. Eğer zihnini disipline edersen, bedenine her şeyi yaptırabilirsin. Şu an çalışmak istemeyen tarafın, senin zayıf versiyonundur. Onu yok et ve asıl potansiyelini serbest bırak. Şampiyonlar mazeret üretmez, çözüm üretir."},
+                {t: "SAVAŞ ANALİZİ", d: "Başarı tesadüf değildir; uykusuz gecelerin, feda edilen eğlencelerin ve binlerce tekrarlanan sıkıcı görevlerin sonucudur. Kimse senin ne kadar yorgun olduğunla ilgilenmeyecek, sadece sonucu görecekler. Onlara imkansızı nasıl başardığını göster. Bugünün faturası, yarının madalyasıdır."}
+            ];
+            const q = quotes[Math.floor(Math.random()*quotes.length)];
+            openPopup('📜', q.t, q.d);
+        };
+
+        window.tokatAt = () => {
+            openPopup('⚠️', 'DİSİPLİN TOKADI', 'Şu an odaklanmakta zorlanıyorsan veya bahaneler üretiyorsan bu tokat senin içindir. Rakiplerin şu an birer soru daha çözüyor, bir sayfa daha okuyor. Sen geride kalmayı mı seçiyorsun? Derhal masaya dön ve o kağıdı kalemi eline al. Bahane yok, sadece sonuç var! Kendine gel komutan!');
+        };
+
+        window.addFriend = () => {
+            const id = prompt("Takip etmek istediğin arkadaşının ID'sini gir:");
+            if(id && !FRIENDS.includes(id)) {
+                FRIENDS.push(id);
+                localStorage.setItem('nexus_friends', JSON.stringify(FRIENDS));
+                location.reload();
+            }
+        };
+
         onValue(ref(db, `users/${MY_ID}`), s => {
             const d = s.val() || {};
             const nameEl = document.getElementById('userName');
-            nameEl.innerText = d.status?.name || "BİLİNMEYEN";
-            if(d.status?.name === "FERHAT ÇAVUŞOĞLU") nameEl.className = "special-name text-lg";
+            nameEl.innerText = d.status?.name || "BAĞLANILIYOR...";
+            if(d.status?.name === "FERHAT ÇAVUŞOĞLU") nameEl.className = "special-name text-sm";
 
             if(timerInt) clearInterval(timerInt);
             if(d.timerActive) {
@@ -122,16 +177,53 @@
             drawChart(d.history || {});
         });
 
-        // RADAR AKIŞI
+        // GELİŞMİŞ RADAR SİSTEMİ
         onValue(ref(db, 'users'), s => {
-            const r = document.getElementById('radar'); r.innerHTML = "";
-            Object.values(s.val() || {}).forEach(u => {
+            const r = document.getElementById('radar');
+            const f = document.getElementById('friendStats');
+            r.innerHTML = ""; f.innerHTML = "";
+            const users = s.val() || {};
+
+            // Kullanıcıları Aktif/Pasif durumuna göre sırala
+            const sortedUsers = Object.entries(users).sort((a,b) => {
+                if (a[1].timerActive && !b[1].timerActive) return -1;
+                if (!a[1].timerActive && b[1].timerActive) return 1;
+                return (b[1].pendingTime || 0) - (a[1].pendingTime || 0);
+            });
+
+            sortedUsers.forEach(([id, u]) => {
                 if(!u.status) return;
+
+                // RADAR: Herkes görünür, durumları farklı
+                const statusClass = u.timerActive ? 'status-active' : 'status-idle';
+                const statusText = u.timerActive ? 'OPERASYONDA ⚡' : 'KIŞLADA 💤';
+                
                 r.innerHTML += `
-                    <div class="p-3 glass bg-white/5 border-l-2 ${u.timerActive?'border-emerald-500':'border-transparent'} flex justify-between items-center">
-                        <span class="text-[10px] font-black uppercase">${u.status.name}</span>
-                        <span class="text-[10px] font-black text-blue-400">${Math.floor((u.pendingTime||0)/60000)} dk</span>
+                    <div class="p-3 glass ${statusClass} flex justify-between items-center transition-all duration-500">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black uppercase tracking-tight text-white">${u.status.name}</span>
+                            <span class="text-[8px] font-bold ${u.timerActive?'text-emerald-400':'text-slate-500'} tracking-widest">${statusText}</span>
+                        </div>
+                        <span class="text-[10px] font-black text-blue-400">${Math.floor((u.pendingTime||0)/60000)} DK</span>
                     </div>`;
+
+                // DOST KUVVETLER (ARKADAŞLAR)
+                if(FRIENDS.includes(id)) {
+                    const daily = Math.floor((u.pendingTime || 0) / 60000);
+                    const weekly = Object.values(u.history || {}).reduce((a,b) => a+b, 0);
+                    const weeklyMin = Math.floor(weekly / 60000);
+                    f.innerHTML += `
+                        <div class="p-3 bg-blue-900/10 rounded-xl border border-blue-500/20">
+                            <div class="flex justify-between mb-1">
+                                <span class="font-black text-[10px] text-blue-300 uppercase">${u.status.name}</span>
+                                <span class="text-[8px] font-bold ${u.timerActive?'text-emerald-400':'text-slate-500'}">${u.timerActive?'AKTİF':'ÇEVRİMDIŞI'}</span>
+                            </div>
+                            <div class="flex justify-between text-[8px] font-bold text-slate-400">
+                                <span>BUGÜN: ${daily} DK</span>
+                                <span>HAFTA: ${weeklyMin} DK</span>
+                            </div>
+                        </div>`;
+                }
             });
         });
 
@@ -161,16 +253,13 @@
             }
         }
 
-        document.getElementById('startBtn').onclick = (e) => { e.stopPropagation(); update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() }); };
-        document.getElementById('stopBtn').onclick = (e) => {
-            e.stopPropagation();
-            get(ref(db, `users/${MY_ID}`)).then(s => {
-                const v = s.val(); const session = Date.now() - v.startTime;
-                const today = new Date().toISOString().split('T')[0];
-                const newHistory = v.history || {}; newHistory[today] = (newHistory[today] || 0) + session;
-                update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (v.pendingTime || 0) + session, history: newHistory });
-            });
-        };
+        document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() });
+        document.getElementById('stopBtn').onclick = () => get(ref(db, `users/${MY_ID}`)).then(s => {
+            const v = s.val(); const session = Date.now() - v.startTime;
+            const today = new Date().toISOString().split('T')[0];
+            const newHistory = v.history || {}; newHistory[today] = (newHistory[today] || 0) + session;
+            update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (v.pendingTime || 0) + session, history: newHistory });
+        });
     </script>
 </body>
 </html>
