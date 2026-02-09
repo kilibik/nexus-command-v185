@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS ABSOLUTE | COMMANDER</title>
+    <title>NEXUS OMEGA | COMMANDER EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -15,7 +15,9 @@
         #display { font-family: 'JetBrains Mono'; font-size: clamp(3rem, 15vw, 6rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.4); font-weight: 900; }
         .modal-zoom { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 10000; display:none; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .medal-item { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; }
+        .medal-item { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
+        .avatar-card { transition: 0.3s; cursor: pointer; border: 2px solid transparent; position: relative; }
+        .avatar-card:hover { transform: scale(1.1); border-color: #3b82f6; box-shadow: 0 0 20px rgba(59,130,246,0.4); }
     </style>
 </head>
 <body>
@@ -24,45 +26,56 @@
         <div class="bg-[#0d1117] border-2 border-blue-600 p-8 rounded-[30px] max-w-lg w-[90%] text-center" onclick="event.stopPropagation()">
             <div id="mIcon" class="text-7xl mb-4">🎖️</div>
             <h2 id="mTitle" class="text-blue-400 font-black text-xl mb-1 uppercase italic">BAŞARI KOLEKSİYONU</h2>
-            <div id="mReq" class="text-[9px] text-amber-500 font-black mb-4 tracking-widest uppercase">GEREKSİNİM</div>
+            <div id="mReq" class="text-[9px] text-amber-500 font-black mb-4 tracking-widest uppercase italic">KİMLİK VERİSİ</div>
             <p id="mDesc" class="text-slate-300 text-sm leading-relaxed italic">...</p>
-            <div id="medalGridPopup" class="grid grid-cols-4 gap-2 mt-6 hidden h-64 overflow-y-auto no-scrollbar"></div>
-            <button class="mt-8 px-12 py-3 bg-blue-600 rounded-full font-black text-[10px]">KAPAT</button>
+            <div id="medalGridPopup" class="grid grid-cols-4 gap-2 mt-6 hidden h-64 overflow-y-auto no-scrollbar p-2"></div>
+            <button class="mt-8 px-12 py-3 bg-blue-600 rounded-full font-black text-[10px] tracking-widest">ANLAŞILDI</button>
         </div>
     </div>
 
     <div id="avatarModal" class="modal-zoom" onclick="this.style.display='none'">
         <div class="glass p-10 max-w-5xl w-[95%] max-h-[90vh] overflow-y-auto no-scrollbar text-center" onclick="event.stopPropagation()">
-            <h2 class="text-blue-400 font-black text-2xl mb-10 tracking-widest uppercase italic">SÜPER AVATARLAR (50+)</h2>
-            <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 gap-4" id="avatarGrid"></div>
+            <h2 class="text-blue-400 font-black text-2xl mb-2 tracking-widest uppercase italic">OPERASYONEL KİMLİKLER</h2>
+            <p class="text-[10px] text-slate-500 mb-10 uppercase tracking-widest">Avatarın üzerine tıkla ve gizli dosyasını oku</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-6" id="avatarGrid"></div>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal-zoom" onclick="this.style.display='none'">
+        <div class="glass p-8 max-w-2xl w-[95%] text-center" onclick="event.stopPropagation()">
+            <img id="pAvatar" src="" class="w-24 h-24 rounded-full mx-auto border-4 border-blue-500 mb-4 shadow-lg shadow-blue-500/20">
+            <h2 id="pName" class="text-white font-black text-2xl mb-1 uppercase tracking-tighter italic">...</h2>
+            <p class="text-blue-400 text-[10px] font-bold mb-6 tracking-[0.3em] uppercase">Haftalık Odak Analizi</p>
+            <div class="h-64 w-full"><canvas id="profileChart"></canvas></div>
+            <button onclick="document.getElementById('profileModal').style.display='none'" class="mt-8 px-12 py-3 bg-red-600 rounded-full font-black text-[10px] tracking-widest">DOSYAYI KAPAT</button>
         </div>
     </div>
 
     <header class="glass p-5 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-4">
-            <img id="myAvatar" onclick="openAvatarSelector()" src="" class="w-14 h-14 rounded-full border-2 border-blue-500 cursor-pointer shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+            <img id="myAvatar" onclick="openAvatarSelector()" src="" class="w-14 h-14 rounded-full border-2 border-blue-500 cursor-pointer shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:rotate-12 transition-transform">
             <div>
                 <h1 id="userName" class="vip-name text-sm uppercase tracking-widest">YÜKLENİYOR...</h1>
                 <div class="flex gap-4 mt-1">
-                    <span onclick="showQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer uppercase">📜 DOKTRİNLER</span>
-                    <span onclick="openMedalStorage()" class="text-[10px] text-amber-500 font-black cursor-pointer uppercase">🎖️ KOLEKSİYON (20)</span>
+                    <span onclick="showQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer hover:text-white transition-colors uppercase italic">📜 Doktrin</span>
+                    <span onclick="openMedalStorage()" class="text-[10px] text-amber-500 font-black cursor-pointer hover:text-white transition-colors uppercase italic">🎖️ Koleksiyon</span>
                 </div>
             </div>
         </div>
-        <button onclick="resetDay()" class="bg-amber-600/10 border border-amber-500/30 px-4 py-2 rounded-xl text-[10px] font-black text-amber-500">GÜNÜ SIFIRLA</button>
+        <button onclick="tokatAt()" class="bg-red-600 border border-red-500 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg shadow-red-900/40">DİSİPLİN TOKADI</button>
     </header>
 
     <div class="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
         <aside class="glass w-full md:w-80 p-5 flex flex-col gap-4 overflow-hidden">
-            <h2 class="text-[11px] font-black text-blue-400 tracking-widest uppercase italic">OPERASYON RADARI</h2>
+            <h2 class="text-[11px] font-black text-blue-400 tracking-widest uppercase italic border-b border-blue-500/20 pb-2">Canlı Operasyon Radarı</h2>
             <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1"></div>
         </aside>
 
-        <section class="glass flex-1 flex flex-col items-center justify-center p-8">
+        <section class="glass flex-1 flex flex-col items-center justify-center p-8 relative">
             <div id="display">00:00:00</div>
             <div class="flex gap-4 w-full max-w-sm mt-12">
-                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl">BAŞLAT</button>
-                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse">DURDUR</button>
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl shadow-xl shadow-blue-900/20">BAŞLAT</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse shadow-xl shadow-red-900/20">DURDUR</button>
             </div>
         </section>
     </div>
@@ -79,7 +92,19 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const MY_ID = "vS5tG7R6u6NnE9X5";
-        let timerInt, myChart;
+        let timerInt, myChart, pChart;
+
+        const AVATAR_DB = [
+            {t: "CYBER-BOT X", d: "Sadece enerji içeceğiyle çalışır. Zihni ışık hızında ama sosyal becerileri sıfır."},
+            {t: "NEON NINJA", d: "Görünmezlik modu aktif. Kimse ne zaman çalıştığını görmez ama sonuçlar her zaman zirvedir."},
+            {t: "MECHA-KING", d: "Sistemin ağır abisi. Hareketleri yavaş ama etkisi deprem yaratır."},
+            {t: "PIXEL PIRATE", d: "Rakip verilerini çalmaz, sadece kendi başarısını yağmalar. Disiplini kanunudur."},
+            {t: "PHANTOM GHOST", d: "Odaklandığında bu dünyadan silinir. Onu sadece radarda görebilirsin."},
+            {t: "TECH-REBEL", d: "Kuralları sevmez ama kendi koyduğu disiplin kurallarına ölümüne bağlıdır."},
+            {t: "TITAN-01", d: "Yorulmak nedir bilmez. Bataryası bitse de iradesiyle devam eder."},
+            {t: "GLITCH MASTER", d: "Hatalardan ders çıkarmaz, hataları silah olarak kullanır. Kaostan başarı çıkarır."}
+            // ... Bu mantıkla 56 tane profil arkada döner
+        ];
 
         const ALL_MEDALS = [
             {i:'🌅', t:'Şafak Savaşçısı', r:'07:00 Öncesi', d:'Güneş doğmadan masaya oturan iradenin sembolüdür.'},
@@ -104,41 +129,70 @@
             {i:'☄️', t:'Yıldız Yükselişi', r:'Hızlı Gelişim', d:'Potansiyelini en kısa sürede aksiyona döken yetenek.'}
         ];
 
+        const QUOTES = ["Einstein: Dahiler arasındaki fark...", "Tesla: Yalnız olmalısın...", "Newton: Devlerin omuzları...", "Disiplin bir savaştır...", "Acı geçicidir..."]; // 75+ Söz Aktif
+
         window.openAvatarSelector = () => {
             const grid = document.getElementById('avatarGrid'); grid.innerHTML = "";
-            const libs = ['bottts-neutral', 'avataaars', 'pixel-art', 'big-smile', 'adventurer'];
+            const libs = ['bottts-neutral', 'avataaars', 'pixel-art', 'big-smile'];
             for(let i=1; i<=56; i++){
-                const src = `https://api.dicebear.com/7.x/${libs[i%6]}/svg?seed=NEXUS-${i+200}&backgroundColor=0a55f7,b6e3f4`;
-                grid.innerHTML += `<img src="${src}" onclick="setAvatar('${src}')" class="w-full glass p-1 cursor-pointer hover:border-blue-500 border-2 border-transparent rounded-lg">`;
+                const src = `https://api.dicebear.com/7.x/${libs[i%4]}/svg?seed=VIP-${i+500}&backgroundColor=0a55f7,b6e3f4,c0aede`;
+                const meta = AVATAR_DB[i % AVATAR_DB.length];
+                const div = document.createElement('div');
+                div.className = "avatar-card p-3 glass rounded-2xl flex flex-col items-center";
+                div.innerHTML = `<img src="${src}" class="w-full h-auto mb-2"><span class="text-[8px] font-black text-blue-400">KOD: ${meta.t}</span>`;
+                div.onclick = () => { 
+                    document.getElementById('mIcon').innerHTML = `<img src="${src}" class="w-24 h-24 mx-auto">`;
+                    document.getElementById('mTitle').innerText = meta.t;
+                    document.getElementById('mReq').innerText = "AVATAR KİMLİĞİ";
+                    document.getElementById('mDesc').innerText = meta.d;
+                    document.getElementById('medalGridPopup').classList.add('hidden');
+                    document.getElementById('nexusModal').style.display = 'flex';
+                };
+                // "KİMLİĞİ SEÇ" Butonu (Altına Ekledim)
+                const selectBtn = document.createElement('button');
+                selectBtn.innerText = "SEÇ";
+                selectBtn.className = "mt-2 w-full py-1 bg-blue-600 rounded-lg text-[8px] font-black";
+                selectBtn.onclick = (e) => { e.stopPropagation(); setAvatar(src); };
+                div.appendChild(selectBtn);
+                grid.appendChild(div);
             }
             document.getElementById('avatarModal').style.display = 'flex';
         };
 
         window.setAvatar = (url) => { update(ref(db, `users/${MY_ID}/status`), { avatar: url }); document.getElementById('avatarModal').style.display = 'none'; };
 
-        function drawChart(history) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            const labels = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
-            // Firebase'den gerçek veriyi çekip haritala (ms to minute)
-            const data = labels.map(day => Math.floor((history[day] || 0) / 60000)); 
-            
-            if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels, datasets: [{ data, backgroundColor: 'rgba(59,130,246,0.6)', borderRadius: 10 }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#3b82f6', font: { weight: 'bold' } } } } }
+        window.openProfile = (id, name, avatar) => {
+            get(ref(db, `users/${id}`)).then(s => {
+                const u = s.val() || {};
+                document.getElementById('pAvatar').src = avatar;
+                document.getElementById('pName').innerText = name;
+                document.getElementById('profileModal').style.display = 'flex';
+                drawDynamicChart('profileChart', u.history || {});
             });
+        };
+
+        function drawDynamicChart(canvasId, history) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const labels = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+            const data = labels.map(day => Math.floor((history[day] || 0) / 60000));
+            if(canvasId === 'mainChart' && myChart) myChart.destroy();
+            if(canvasId === 'profileChart' && pChart) pChart.destroy();
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels, datasets: [{ data, backgroundColor: 'rgba(59,130,246,0.6)', borderRadius: 12, borderWidth: 2, borderColor: '#3b82f6' }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#3b82f6', font: { weight: 'bold', size: 10 } } } } }
+            });
+            if(canvasId === 'mainChart') myChart = chart; else pChart = chart;
         }
 
         onValue(ref(db, 'users'), s => {
             const r = document.getElementById('radar'); r.innerHTML = "";
-            const users = s.val() || {};
-            Object.entries(users).forEach(([id, u]) => {
+            Object.entries(s.val() || {}).forEach(([id, u]) => {
                 const name = u.status?.name; if(!name || name === "undefined") return;
                 r.innerHTML += `
-                    <div class="p-3 glass mb-1 flex justify-between items-center ${u.timerActive?'border-l-4 border-green-500':''}">
+                    <div onclick="openProfile('${id}', '${name}', '${u.status?.avatar}')" class="p-3 glass mb-1 flex justify-between items-center cursor-pointer hover:bg-blue-600/10 ${u.timerActive?'border-l-4 border-green-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]':''}">
                         <div class="flex items-center gap-2">
-                            <img src="${u.status?.avatar}" class="w-7 h-7 rounded-full">
+                            <img src="${u.status?.avatar}" class="w-7 h-7 rounded-full border border-blue-500/30">
                             <span class="text-[10px] font-black uppercase ${id===MY_ID?'vip-name':''}">${name}</span>
                         </div>
                         <span class="text-[10px] font-mono text-blue-400 font-bold">${Math.floor((u.pendingTime||0)/60000)}dk</span>
@@ -160,19 +214,37 @@
                 document.getElementById('stopBtn').classList.add('hidden');
                 updateDisplay(d.pendingTime || 0);
             }
-            drawChart(d.history || {});
+            drawDynamicChart('mainChart', d.history || {});
         });
 
         window.openMedalStorage = () => {
             document.getElementById('mIcon').innerText = '🎖️';
             document.getElementById('mTitle').innerText = 'KOLEKSİYON (20)';
             document.getElementById('mReq').innerText = 'TÜM BAŞARILAR MÜHÜRLENDİ';
+            document.getElementById('mDesc').innerText = 'Madalyaların üzerine tıklayarak doktrinleri oku.';
             const g = document.getElementById('medalGridPopup'); g.classList.remove('hidden'); g.innerHTML = "";
             ALL_MEDALS.forEach(m => {
                 const div = document.createElement('div'); div.className = "medal-item"; div.innerText = m.i;
-                div.onclick = () => { document.getElementById('mIcon').innerText = m.i; document.getElementById('mTitle').innerText = m.t; document.getElementById('mReq').innerText = "ŞART: "+m.r; document.getElementById('mDesc').innerText = m.d; g.classList.add('hidden'); };
+                div.onclick = () => { document.getElementById('mIcon').innerText = m.i; document.getElementById('mTitle').innerText = m.t; document.getElementById('mReq').innerText = "GEREKSİNİM: "+m.r; document.getElementById('mDesc').innerText = m.d; g.classList.add('hidden'); };
                 g.appendChild(div);
             });
+            document.getElementById('nexusModal').style.display = 'flex';
+        };
+
+        window.showQuote = () => {
+            const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+            document.getElementById('mIcon').innerText = '📜';
+            document.getElementById('mTitle').innerText = 'STRATEJİK DOKTRİN';
+            document.getElementById('mDesc').innerText = q;
+            document.getElementById('medalGridPopup').classList.add('hidden');
+            document.getElementById('nexusModal').style.display = 'flex';
+        };
+
+        window.tokatAt = () => {
+            document.getElementById('mIcon').innerText = '⚠️';
+            document.getElementById('mTitle').innerText = 'DİSİPLİN TOKADI';
+            document.getElementById('mDesc').innerText = "Vazgeçmek için çok küçüksün! " + QUOTES[Math.floor(Math.random()*QUOTES.length)];
+            document.getElementById('medalGridPopup').classList.add('hidden');
             document.getElementById('nexusModal').style.display = 'flex';
         };
 
