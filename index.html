@@ -5,25 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>NEXUS TITAN OMEGA | Profesyonel Odak Sistemi</title>
-    <meta name="description" content="NEXUS TITAN: Canlı radar takibi ve askeri disiplin doktrinleri ile en üst düzey çalışma protokolü.">
-    <meta name="robots" content="index, follow">
-
+    <meta name="description" content="NEXUS TITAN: Canlı radar takibi ve askeri disiplin doktrinleri.">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
-        body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
-        .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 24px; backdrop-filter: blur(25px); transition: 0.4s; }
-        .peak-glow { border: 2px solid #fbbf24 !important; box-shadow: 0 0 25px rgba(251, 191, 36, 0.5) !important; animation: leaderPulse 2s infinite; }
-        @keyframes leaderPulse { 0% { transform: scale(1); } 50% { transform: scale(1.015); } 100% { transform: scale(1); } }
-        .vip-name { background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite; font-weight: 900; }
-        @keyframes shine { to { background-position: 200% center; } }
-        #display { font-family: 'JetBrains Mono'; font-size: clamp(2.5rem, 12vw, 5.5rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.3); font-weight: 900; }
-        .modal-zoom { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display:none; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
-        .medal-box { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: 0.3s; }
-        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 95% !important; height: 85% !important; z-index: 9999 !important; padding: 40px !important; box-shadow: 0 0 100px #000; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9998; display: none; backdrop-filter: blur(10px); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        body { 
+            background: #010409; 
+            color: white; 
+            font-family: 'Inter', sans-serif; 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            padding: 10px; 
+            gap: 10px; 
+        }
+
+        .glass { 
+            background: rgba(13, 17, 23, 0.96); 
+            border: 1px solid rgba(59, 130, 246, 0.2); 
+            border-radius: 24px; 
+            backdrop-filter: blur(25px); 
+            transition: 0.4s; 
+        }
+
+        .peak-glow { 
+            border: 2px solid #fbbf24 !important; 
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.5) !important; 
+            animation: leaderPulse 2s infinite; 
+        }
+
+        @keyframes leaderPulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.015); } 
+            100% { transform: scale(1); } 
+        }
+
+        .vip-name { 
+            background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); 
+            background-size: 200% auto; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: shine 2s linear infinite; 
+            font-weight: 900; 
+        }
+
+        @keyframes shine { 
+            to { background-position: 200% center; } 
+        }
+
+        #display { 
+            font-family: 'JetBrains Mono'; 
+            font-size: clamp(2.5rem, 12vw, 5.5rem); 
+            color: #3b82f6; 
+            text-shadow: 0 0 40px rgba(59,130,246,0.3); 
+            font-weight: 900; 
+        }
+
+        .modal-zoom { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.98); 
+            z-index: 10000; 
+            display:none; 
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(20px); 
+        }
+
+        .medal-box { 
+            background: rgba(30, 41, 59, 0.4); 
+            border: 1px solid rgba(59, 130, 246, 0.2); 
+            border-radius: 16px; 
+            aspect-ratio: 1; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 1.8rem; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+
+        .focus-mode { 
+            position: fixed !important; 
+            top: 50% !important; 
+            left: 50% !important; 
+            transform: translate(-50%, -50%) !important; 
+            width: 95% !important; 
+            height: 85% !important; 
+            z-index: 9999 !important; 
+            padding: 40px !important; 
+            box-shadow: 0 0 100px #000; 
+        }
+
+        .overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.9); 
+            z-index: 9998; 
+            display: none; 
+            backdrop-filter: blur(10px); 
+        }
+
+        .no-scrollbar::-webkit-scrollbar { 
+            display: none; 
+        }
     </style>
 </head>
 <body>
@@ -46,21 +136,26 @@
             <div id="profileContent" class="hidden">
                 <img id="pAvatar" src="" class="w-24 h-24 rounded-full border-4 border-blue-600 mx-auto mb-4 shadow-xl">
                 <h2 id="pName" class="text-white font-black text-2xl mb-6 uppercase">...</h2>
-                <div class="h-48 w-full mb-6"><canvas id="profileChart"></canvas></div>
+                <div class="h-48 w-full mb-6">
+                    <canvas id="profileChart"></canvas>
+                </div>
             </div>
+            
             <div id="standardContent">
                 <div id="mIcon" class="text-8xl mb-6 filter drop-shadow-lg">📜</div>
                 <h2 id="mTitle" class="text-blue-400 font-black text-2xl mb-2 uppercase italic">DOKTRİN</h2>
                 <p id="mDesc" class="text-slate-300 text-base italic mb-10 leading-relaxed max-w-md mx-auto">...</p>
             </div>
+            
             <div id="medalGridPopup" class="grid grid-cols-5 gap-3 hidden h-80 overflow-y-auto no-scrollbar p-2 mb-4"></div>
+            
             <button onclick="closeModal()" class="px-16 py-4 bg-blue-600 rounded-full font-black text-[11px] uppercase tracking-widest hover:scale-105 transition-transform">SİSTEME DÖN</button>
         </div>
     </div>
 
     <header class="glass p-6 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-5">
-            <img id="myAvatar" onclick="openAvatarSelector()" src="" class="w-16 h-16 rounded-full border-2 border-blue-500 cursor-pointer shadow-lg">
+            <img id="myAvatar" src="" class="w-16 h-16 rounded-full border-2 border-blue-500 cursor-pointer shadow-lg">
             <div>
                 <h1 id="userName" class="vip-name text-base uppercase tracking-widest">...</h1>
                 <div class="flex gap-5 mt-2">
@@ -99,7 +194,14 @@
         import { getDatabase, ref, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCLTb6KDcNyufde_pxeCY1Q1oWoDotdXxU", authDomain: "yks-odak.firebaseapp.com", projectId: "yks-odak", databaseURL: "https://yks-odak-default-rtdb.europe-west1.firebasedatabase.app" };
+        // KOMUTAN, SENİN BİLGİLERİN BURADA GÜNCELLENDİ
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCLTb6KDcNyufde_pxeCY1Q1oWoDotdXxU", 
+            authDomain: "ykscanlikronometre.firebaseapp.com", 
+            projectId: "ykscanlikronometre", 
+            databaseURL: "https://ykscanlikronometre-default-rtdb.firebaseio.com" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
@@ -107,14 +209,13 @@
 
         let MY_ID, timerInt, myChart, pChart;
 
-        // GENİŞLETİLMİŞ VE GÜÇLENDİRİLMİŞ DOKTRİNLER (SİLİNMEDEN EKLENDİ)
         const DOKTRINLER = [
             "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların sadık dostudur. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder.",
             "Albert Einstein der ki: 'Zeka, hayal gücüyle mühürlenmiş bir disiplindir.' Unutma operatör; disiplinsiz hayal, sadece uyanıkken gördüğün bir rüyadan ibarettir.",
             "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir.",
             "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü bilmelisin ki; acı gittiğinde, onun boşalttığı tahta sonsuz bir başarı ve onur yerleşir.",
             "Senin için imkansız diyenlerin tek umudu, senin pes etmendir. Onlara bu zevki tattırmak, kendine yapacağın en büyük ihanet olacaktır. Devam et.",
-            "Vazgeçmeyi düşündüğün o karanlık anlarda neden başladığını hatırla. Başladığın yer, şu an olduğun yerden çok daha karanlık ve çaresizdi. Yolun yarısında durmak, geriye dönmekten daha zordur.",
+            "Vazgeçmeyi düşündüğün o karanlık anlarda neden başladığını hatırla. Başladığın yer, şu an olduğun yerden çok daha karanlık ve çaresizdi.",
             "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşı olacak.",
             "Zaman, sadece onu korkusuzca yönetenlerin kölesidir. Sen bu masanın efendisi misin, yoksa akıp giden saniyelerin sessiz bir kurbanı mı? Kararını ver.",
             "Rakiplerinin uyuduğu, eğlendiği ve zamanı bozuk para gibi harcadığı her saniye, senin zirveye giden basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun.",
@@ -128,8 +229,8 @@
             {i:'🛡️', t:'MUHAFIZ', d:'Gece saat 03:00\'e kadar nöbet tutan (çalışan) irade.'}
         ];
 
-        // GOOGLE LOGİN
-        document.getElementById('googleLoginBtn').onclick = () => {
+        // GOOGLE LOGİN FONKSİYONU
+        document.getElementById('googleLoginBtn').onclick = function() {
             signInWithPopup(auth, provider).then((result) => {
                 MY_ID = result.user.uid;
                 get(ref(db, `users/${MY_ID}`)).then(s => {
@@ -141,24 +242,35 @@
                     }
                 });
                 document.getElementById('loginModal').style.display = 'none';
+            }).catch((error) => {
+                alert("Giriş Hatası: Firebase ayarlarından Google'ı aktif etmeli ve Vercel linkini eklemelisiniz.");
             });
         };
 
         onAuthStateChanged(auth, (user) => {
-            if (user) { MY_ID = user.uid; document.getElementById('loginModal').style.display = 'none'; initNexus(); }
-            else { document.getElementById('loginModal').style.display = 'flex'; }
+            if (user) { 
+                MY_ID = user.uid; 
+                document.getElementById('loginModal').style.display = 'none'; 
+                initNexus(); 
+            } else { 
+                document.getElementById('loginModal').style.display = 'flex'; 
+            }
         });
 
         function initNexus() {
-            onValue(ref(db, `users/${MY_ID}`), s => {
+            onValue(ref(db, `users/${MY_ID}`), (s) => {
                 const d = s.val() || {};
                 document.getElementById('userName').innerText = d.status?.name || "...";
                 document.getElementById('myAvatar').src = d.status?.avatar || "";
+                
                 if(timerInt) clearInterval(timerInt);
+                
                 if(d.timerActive) {
                     document.getElementById('startBtn').classList.add('hidden');
                     document.getElementById('stopBtn').classList.remove('hidden');
-                    timerInt = setInterval(() => updateDisplay((d.pendingTime||0)+(Date.now()-d.startTime)), 1000);
+                    timerInt = setInterval(() => {
+                        updateDisplay((d.pendingTime||0)+(Date.now()-d.startTime));
+                    }, 1000);
                 } else {
                     document.getElementById('startBtn').classList.remove('hidden');
                     document.getElementById('stopBtn').classList.add('hidden');
@@ -167,29 +279,37 @@
                 drawChart(d.history || {}, 'mainChart');
             });
 
-            onValue(ref(db, 'users'), s => {
-                const r = document.getElementById('radar'); r.innerHTML = "";
+            onValue(ref(db, 'users'), (s) => {
+                const r = document.getElementById('radar'); 
+                r.innerHTML = "";
                 const users = Object.entries(s.val() || {});
                 if(users.length === 0) return;
+                
                 const leaderId = users.reduce((a, b) => ((a[1].pendingTime||0) > (b[1].pendingTime||0) ? a : b))[0];
+                
                 users.forEach(([id, u]) => {
                     if(!u.status?.name) return;
-                    r.innerHTML += `<div onclick="event.stopPropagation(); openAgentProfile('${id}', '${u.status.name}', '${u.status.avatar}')" class="p-4 glass mb-2 flex justify-between items-center ${id===leaderId?'peak-glow':''} ${u.timerActive?'border-l-4 border-green-500':''}">
-                        <div class="flex items-center gap-3"><img src="${u.status.avatar}" class="w-8 h-8 rounded-full border border-blue-500/30"><span class="text-[10px] font-black uppercase ${id===MY_ID?'vip-name':''}">${u.status.name}</span></div>
-                        <span class="text-[10px] font-mono text-blue-400 font-bold">${Math.floor((u.pendingTime||0)/60000)} dk</span>
-                    </div>`;
+                    r.innerHTML += `
+                        <div onclick="event.stopPropagation(); openAgentProfile('${id}', '${u.status.name}', '${u.status.avatar}')" 
+                             class="p-4 glass mb-2 flex justify-between items-center ${id===leaderId?'peak-glow':''} ${u.timerActive?'border-l-4 border-green-500':''}">
+                            <div class="flex items-center gap-3">
+                                <img src="${u.status.avatar}" class="w-8 h-8 rounded-full border border-blue-500/30">
+                                <span class="text-[10px] font-black uppercase ${id===MY_ID?'vip-name':''}">${u.status.name}</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-blue-400 font-bold">${Math.floor((u.pendingTime||0)/60000)} dk</span>
+                        </div>`;
                 });
             });
         }
 
-        window.closeModal = () => {
+        window.closeModal = function() {
             document.getElementById('nexusModal').style.display = 'none';
             document.getElementById('profileContent').classList.add('hidden');
             document.getElementById('standardContent').classList.remove('hidden');
             document.getElementById('medalGridPopup').classList.add('hidden');
         };
 
-        window.openAgentProfile = (id, name, avatar) => {
+        window.openAgentProfile = function(id, name, avatar) {
             get(ref(db, `users/${id}`)).then(s => {
                 const u = s.val() || {};
                 document.getElementById('profileContent').classList.remove('hidden');
@@ -202,51 +322,103 @@
             });
         };
 
-        window.openMedals = () => {
-            const g = document.getElementById('medalGridPopup'); g.innerHTML = "";
-            g.classList.remove('hidden'); document.getElementById('standardContent').classList.remove('hidden');
+        window.openMedals = function() {
+            const g = document.getElementById('medalGridPopup'); 
+            g.innerHTML = "";
+            g.classList.remove('hidden'); 
+            document.getElementById('standardContent').classList.remove('hidden');
             document.getElementById('mTitle').innerText = "KOLEKSİYON";
+            
             MEDALS.forEach(m => {
-                const d = document.createElement('div'); d.className = "medal-box"; d.innerText = m.i;
-                d.onclick = () => { document.getElementById('mIcon').innerText = m.i; document.getElementById('mTitle').innerText = m.t; document.getElementById('mDesc').innerText = m.d; };
+                const d = document.createElement('div'); 
+                d.className = "medal-box"; 
+                d.innerText = m.i;
+                d.onclick = function() { 
+                    document.getElementById('mIcon').innerText = m.i; 
+                    document.getElementById('mTitle').innerText = m.t; 
+                    document.getElementById('mDesc').innerText = m.d; 
+                };
                 g.appendChild(d);
             });
             document.getElementById('nexusModal').style.display = 'flex';
         };
 
-        window.showQuote = () => {
+        window.showQuote = function() {
             document.getElementById('mIcon').innerText = "📜";
             document.getElementById('mTitle').innerText = "DOKTRİN";
             document.getElementById('mDesc').innerText = DOKTRINLER[Math.floor(Math.random()*DOKTRINLER.length)];
             document.getElementById('nexusModal').style.display = 'flex';
         };
 
-        window.tokatAt = () => showQuote();
-        window.openFocus = (id) => { document.getElementById('uiOverlay').style.display='block'; document.getElementById(id).classList.add('focus-mode'); if(myChart) myChart.resize(); };
-        window.closeFocus = () => { document.getElementById('uiOverlay').style.display='none'; document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); if(myChart) myChart.resize(); };
+        window.tokatAt = function() { 
+            showQuote(); 
+        };
+
+        window.openFocus = function(id) { 
+            document.getElementById('uiOverlay').style.display='block'; 
+            document.getElementById(id).classList.add('focus-mode'); 
+            if(myChart) myChart.resize(); 
+        };
+
+        window.closeFocus = function() { 
+            document.getElementById('uiOverlay').style.display='none'; 
+            document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); 
+            if(myChart) myChart.resize(); 
+        };
 
         function drawChart(history, canvasId) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d] || 0) / 60000));
             if(canvasId === 'mainChart' && myChart) myChart.destroy();
             if(canvasId === 'profileChart' && pChart) pChart.destroy();
-            const chart = new Chart(ctx, { type: 'bar', data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 10 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+            
+            const chart = new Chart(ctx, { 
+                type: 'bar', 
+                data: { 
+                    labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], 
+                    datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 10 }] 
+                }, 
+                options: { 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } } 
+                } 
+            });
+            
             if(canvasId === 'mainChart') myChart = chart; else pChart = chart;
         }
 
         function updateDisplay(ms) {
-            const h = Math.floor(ms/3600000).toString().padStart(2,'0'), m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0'), s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
+            const h = Math.floor(ms/3600000).toString().padStart(2,'0');
+            const m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0');
+            const s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
             document.getElementById('display').innerText = `${h}:${m}:${s}`;
         }
 
-        document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() });
-        document.getElementById('stopBtn').onclick = () => get(ref(db, `users/${MY_ID}`)).then(s => { const v = s.val(); update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) }); });
+        document.getElementById('startBtn').onclick = function() {
+            update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() });
+        };
+
+        document.getElementById('stopBtn').onclick = function() {
+            get(ref(db, `users/${MY_ID}`)).then(s => { 
+                const v = s.val(); 
+                update(ref(db, `users/${MY_ID}`), { 
+                    timerActive: false, 
+                    pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) 
+                }); 
+            });
+        };
         
-        window.resetDay = () => {
+        window.resetDay = function() {
             get(ref(db, `users/${MY_ID}`)).then(s => {
-                const v = s.val(), day = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][new Date().getDay()];
-                const newH = v.history || {}; newH[day] = (newH[day] || 0) + (v.pendingTime || 0);
-                update(ref(db, `users/${MY_ID}`), { pendingTime: 0, timerActive: false, history: newH });
+                const v = s.val();
+                const day = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][new Date().getDay()];
+                const newH = v.history || {}; 
+                newH[day] = (newH[day] || 0) + (v.pendingTime || 0);
+                update(ref(db, `users/${MY_ID}`), { 
+                    pendingTime: 0, 
+                    timerActive: false, 
+                    history: newH 
+                });
             });
         };
     </script>
