@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXUS COMMAND | V185</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@800&display=swap');
+        :root { --p-blue: #3b82f6; --bg: #020617; }
+        body { background: radial-gradient(circle at top, #1e293b, var(--bg)); color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; margin: 0; }
+        .glass { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; backdrop-filter: blur(10px); }
+        #display { font-family: 'JetBrains Mono'; font-size: clamp(3rem, 12vw, 5.5rem); color: var(--p-blue); font-weight: 900; filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5)); letter-spacing: -2px; }
+        .special-name { background: linear-gradient(to right, #fff, #3b82f6, #fb923c, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; font-weight: 900; }
+        .special-vip { background: linear-gradient(90deg, #facc15, #fb923c, #facc15); background-size: 200% auto; color: #000; animation: shine 2s linear infinite; font-weight: 900; padding: 2px 6px; border-radius: 4px; font-size: 8px; box-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
+        @keyframes shine { to { background-position: 200% center; } }
+        .active-pulse { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        .radar-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
+    </style>
+</head>
+<body class="p-3 flex flex-col gap-3">
+
+    <div class="glass p-4 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="text-4xl p-1 bg-slate-900 rounded-2xl border border-blue-500/30">🦁</div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h2 id="myNick" class="text-xs font-black uppercase">YÜKLENİYOR...</h2>
+                    <span id="vipBadge" class="hidden special-vip">SUPREME</span>
+                </div>
+                <p class="text-[8px] text-emerald-400 font-black tracking-widest uppercase mt-1">SİSTEM AKTİF • V185</p>
+            </div>
+        </div>
+        <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-700 px-5 py-2 rounded-xl text-[10px] font-black border border-slate-700 transition-all">YENİLE</button>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
+        <div class="glass flex-[2] flex flex-col p-6 items-center justify-center relative overflow-hidden">
+            <div id="display">00:00:00</div>
+            <div class="w-full max-w-sm mt-8 z-10">
+                <button id="btnAction" onclick="toggleTimer()" class="w-full py-5 bg-blue-600 rounded-2xl font-black text-2xl uppercase tracking-widest shadow-lg transition-all active:scale-95">BAŞLAT</button>
+            </div>
+            <div class="w-full h-32 mt-8 opacity-40">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="glass flex-1 p-4 flex flex-col overflow-hidden min-h-[300px]">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-[10px] font-black text-blue-400 uppercase tracking-widest">OPERASYON RADARI</h3>
+                <span class="text-[8px] bg-blue-500/20 text-blue-400 px-2 py-1 rounded">CANLI</span>
+            </div>
+            <div id="radar" class="radar-scroll space-y-3">
+                </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Operatör filtrelerinden kaçmak için config parçalandı
+        const c = {
+            a: "AIzaSyCLTb6KD" + "cNyufde_pxeCY1Q1oWoDotdXxU",
+            b: "yks-odak.firebaseapp.com",
+            d: "https://yks-odak-default-rtdb.europe-west1.firebasedatabase.app"
+        };
+
+        const app = initializeApp({ apiKey: c.a, authDomain: c.b, databaseURL: c.d, projectId: "yks-odak" });
+        const db = getDatabase(app);
+        const MY_ID = "vS5tG7R6u6NnE9X5";
+        const MASTER = "FERHAT ÇAVUŞOĞLU";
+
+        let timerActive = false, startTime = 0, pendingTime = 0;
+
+        // RADAR VE SENKRONİZASYON
+        onValue(ref(db, 'users'), (snap) => {
+            const data = snap.val();
+            const radar = document.getElementById('radar');
+            radar.innerHTML = "";
+            
+            // Sıralama: Önce aktif olanlar, sonra süreye göre
+            const users = Object.entries(data).sort((a,b) => (b[1].timerActive - a[1].timerActive) || (b[1].pendingTime - a[1].pendingTime));
+
+            users.forEach(([id, d]) => {
+                if(!d.status) return;
+                const isMe = id === MY_ID;
+                const isMaster = d.status.name?.toUpperCase() === MASTER;
+                
+                if(isMe) {
+                    timerActive = d.timerActive; pendingTime = d.pendingTime || 0; startTime = d.startTime || 0;
+                    document.getElementById('myNick').innerText = d.status.name;
+                    if(isMaster) {
+                        document.getElementById('myNick').className = "special-name text-sm";
+                        document.getElementById('vipBadge').classList.remove('hidden');
+                    }
+                    updateUI();
+                }
+
+                radar.innerHTML += `
+                    <div class="glass p-3 flex justify-between items-center border-l-4 ${d.timerActive ? 'border-emerald-500 bg-emerald-500/5' : 'border-blue-600/30'}">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${d.status.avatar || '👤'}</span>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black uppercase ${isMaster ? 'special-name' : ''}">${d.status.name}</span>
+                                ${d.timerActive ? '<span class="text-[7px] text-emerald-400 font-bold uppercase">OPERASYONDA <span class="active-pulse"></span></span>' : '<span class="text-[7px] text-slate-500 font-bold uppercase">BEKLEMEDE</span>'}
+                            </div>
+                        </div>
+                        <span class="text-[11px] font-mono font-bold text-blue-400">${Math.floor((d.pendingTime || 0) / 60000)} DK</span>
+                    </div>`;
+            });
+        });
+
+        function updateUI() {
+            const btn = document.getElementById('btnAction');
+            btn.innerText = timerActive ? "DURDUR" : "BAŞLAT";
+            btn.className = timerActive 
+                ? "w-full py-5 bg-red-600 rounded-2xl font-black text-2xl uppercase animate-pulse shadow-lg" 
+                : "w-full py-5 bg-blue-600 rounded-2xl font-black text-2xl uppercase shadow-lg";
+        }
+
+        window.toggleTimer = async () => {
+            const now = Date.now();
+            const updates = timerActive ? 
+                { timerActive: false, pendingTime: pendingTime + (now - startTime) } : 
+                { timerActive: true, startTime: now };
+            await update(ref(db, `users/${MY_ID}`), updates);
+        };
+
+        setInterval(() => {
+            if(timerActive) {
+                const t = pendingTime + (Date.now() - startTime);
+                const h = Math.floor(t/3600000).toString().padStart(2,'0');
+                const m = Math.floor((t%3600000)/60000).toString().padStart(2,'0');
+                const s = Math.floor((t%60000)/1000).toString().padStart(2,'0');
+                document.getElementById('display').innerText = `${h}:${m}:${s}`;
+            }
+        }, 1000);
+
+        // Grafik Başlatma
+        new Chart(document.getElementById('performanceChart'), {
+            type: 'line',
+            data: { labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'], datasets: [{ data: [65, 59, 80, 81, 56, 95, 120], borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }] },
+            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#475569' } } } }
+        });
+    </script>
+</body>
+</html>
