@@ -3,33 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS V185 | SUPREME ELITE COMMAND</title>
+    <title>NEXUS V185 | RANK SYSTEM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
         body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
-        .glass { background: rgba(13, 17, 23, 0.9); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 20px; backdrop-filter: blur(15px); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass { background: rgba(13, 17, 23, 0.9); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 20px; backdrop-filter: blur(15px); transition: 0.3s; }
         
-        /* ÖZEL POPUP VE ZOOM */
         #customModal { display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.92); align-items: center; justify-content: center; backdrop-filter: blur(12px); }
-        .modal-content { background: #0d1117; border: 2px solid #3b82f6; box-shadow: 0 0 70px rgba(59,130,246,0.4); border-radius: 30px; padding: 40px; max-width: 90%; width: 550px; text-align: center; animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-content { background: #0d1117; border: 2px solid #3b82f6; box-shadow: 0 0 70px rgba(59,130,246,0.4); border-radius: 30px; padding: 35px; max-width: 90%; width: 500px; text-align: center; animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
-        .zoom-panel { cursor: pointer; }
-        .zoom-active { position: fixed !important; inset: 15px !important; z-index: 9999 !important; background: #0d1117 !important; padding: 30px !important; border: 2px solid #3b82f6 !important; }
+        .zoom-active { position: fixed !important; inset: 10px !important; z-index: 9999 !important; background: #0d1117 !important; border: 2px solid #3b82f6 !important; padding: 25px !important; border-radius: 25px !important; }
 
-        @keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        #display { font-family: 'JetBrains Mono'; font-size: clamp(3rem, 12vw, 5.5rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.5); font-weight: 900; }
+        #display { font-family: 'JetBrains Mono'; font-size: clamp(3.5rem, 15vw, 6rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.5); font-weight: 900; }
         .special-name { background: linear-gradient(to right, #fff, #3b82f6, #fb923c, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; font-weight: 900; }
         @keyframes shine { to { background-position: 200% center; } }
         
-        .medal-slot { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; transition: 0.3s; }
-        .medal-slot:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.15); transform: translateY(-3px); }
+        .medal-slot { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; transition: 0.2s; }
+        .medal-slot:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); transform: scale(1.05); }
         
-        .status-active { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.1); animation: pulse-green 2s infinite; }
-        .status-idle { border-left: 4px solid #475569; background: rgba(255, 255, 255, 0.03); opacity: 0.6; }
-        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        .status-active { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.08); }
+        .status-idle { border-left: 4px solid #475569; opacity: 0.6; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -37,74 +32,77 @@
 
     <div id="customModal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div id="modalIcon" class="text-8xl mb-5">🎖️</div>
-            <h2 id="modalTitle" class="text-blue-400 font-black text-2xl mb-4 uppercase tracking-tighter italic">SİSTEM MESAJI</h2>
-            <div class="h-[1px] w-full bg-blue-500/30 mb-6"></div>
-            <p id="modalDesc" class="text-slate-300 text-sm leading-relaxed font-medium italic tracking-wide">...</p>
-            <button onclick="closeModal()" class="mt-8 px-14 py-3 bg-blue-600 rounded-full font-black text-xs shadow-lg shadow-blue-900/40 hover:bg-blue-500 transition-all">GÖREVE DÖN</button>
+            <div id="modalIcon" class="text-7xl mb-4">🎖️</div>
+            <h2 id="modalTitle" class="text-blue-400 font-black text-xl mb-2 uppercase tracking-widest italic">RÜTBE ANALİZİ</h2>
+            <div id="modalReq" class="text-[10px] text-amber-500 font-black mb-4 tracking-[0.2em]">GEREKSİNİM: YÜKLENİYOR...</div>
+            <div class="h-[1px] w-full bg-blue-500/20 mb-6"></div>
+            <p id="modalDesc" class="text-slate-300 text-sm leading-relaxed font-medium italic">...</p>
+            <button onclick="closeModal()" class="mt-8 px-12 py-3 bg-blue-600 rounded-full font-black text-xs">ANLAŞILDI</button>
         </div>
     </div>
 
     <header class="glass p-5 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-4">
-            <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-900 rounded-full flex items-center justify-center text-3xl shadow-lg">🦁</div>
+            <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-3xl shadow-lg">🦁</div>
             <div>
-                <h1 id="userName" class="text-xs font-black tracking-widest uppercase opacity-60">Komuta Merkezi...</h1>
-                <p onclick="showQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer hover:text-blue-200 tracking-tighter">📜 STRATEJİK ANALİZ VE EMİRLER</p>
+                <h1 id="userName" class="text-xs font-black tracking-widest uppercase opacity-60 italic">NEXUS COMMAND</h1>
+                <p onclick="showQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer hover:underline uppercase">📜 STRATEJİK EMİRLER</p>
             </div>
         </div>
         <div class="flex gap-2">
+            <button onclick="resetDay()" class="bg-amber-600/20 border border-amber-500/50 px-4 py-2 rounded-xl text-[10px] font-black text-amber-500 hover:bg-amber-600 hover:text-white transition-all">GÜNÜ BİTİR</button>
             <button onclick="addFriend()" class="bg-blue-600/10 border border-blue-500/30 px-4 py-2 rounded-xl text-[10px] font-black">ARKADAŞ EKLE</button>
-            <button onclick="tokatAt()" class="bg-red-600 border border-red-400 px-4 py-2 rounded-xl text-[10px] font-black">DİSİPLİN TOKADI</button>
+            <button onclick="tokatAt()" class="bg-red-600 border border-red-500 px-4 py-2 rounded-xl text-[10px] font-black">DİSİPLİN TOKADI</button>
         </div>
     </header>
 
     <div class="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
         <aside class="glass w-full md:w-80 p-5 flex flex-col gap-4">
-            <h2 class="text-[10px] font-black text-slate-500 tracking-[0.3em] uppercase">Rütbe Odası (20/20)</h2>
+            <h2 class="text-[10px] font-black text-slate-500 tracking-widest uppercase">Elite Koleksiyon (20)</h2>
             <div class="grid grid-cols-5 md:grid-cols-4 gap-2 overflow-y-auto no-scrollbar" id="medalGrid">
-                <div class="medal-slot" onclick="openPopup('🌅','Şafak','Güneş doğmadan sahada olanlar için.')">🌅</div>
-                <div class="medal-slot" onclick="openPopup('🦾','Demir','90 dk kesintisiz blok odaklanma.')">🦾</div>
-                <div class="medal-slot" onclick="openPopup('💎','Elmas','Haftalık 40 saatlik disiplin mührü.')">💎</div>
-                <div class="medal-slot" onclick="openPopup('🔥','Ateş','7 günlük kesintisiz çalışma serisi.')">🔥</div>
-                <div class="medal-slot" onclick="openPopup('🛡️','Kalkan','Zamanını parazitlerden koruyan irade.')">🛡️</div>
-                <div class="medal-slot" onclick="openPopup('⚔️','Kılıç','3 saatlik dev blok muharebesi.')">⚔️</div>
-                <div class="medal-slot" onclick="openPopup('⚡','Hız','Günde 10 seans operasyon tamamlama.')">⚡</div>
-                <div class="medal-slot" onclick="openPopup('🏆','Zirve','Günü genel listede birinci bitiren.')">🏆</div>
-                <div class="medal-slot" onclick="openPopup('📚','Bilge','100 saatlik toplam çalışma barajı.')">📚</div>
-                <div class="medal-slot" onclick="openPopup('👑','Kral','Sistemin mutlak hakimi ve lideri.')">👑</div>
-                <div class="medal-slot" onclick="openPopup('🥇','Altın','Kusursuz icraat ve net odaklanma.')">🥇</div>
-                <div class="medal-slot" onclick="openPopup('🥈','Gümüş','İstikrarlı ve yüksek tempo çalışanı.')">🥈</div>
-                <div class="medal-slot" onclick="openPopup('🥉','Bronz','Disiplin yolunda kararlı ilerleyiş.')">🥉</div>
-                <div class="medal-slot" onclick="openPopup('🌌','Gece','Gece yarısı nöbetini devralanlar.')">🌌</div>
-                <div class="medal-slot" onclick="openPopup('🟢','Zümrüt','Psikolojik dayanıklılık ödülü.')">🟢</div>
-                <div class="medal-slot" onclick="openPopup('🦅','Kartal','Hataları avlayan keskin dikkat.')">🦅</div>
-                <div class="medal-slot" onclick="openPopup('🔱','Trident','Zihinsel akış halinin zirvesi.')">🔱</div>
-                <div class="medal-slot" onclick="openPopup('⚜️','Asalet','Disiplini karakteri yapan komutan.')">⚜️</div>
-                <div class="medal-slot" onclick="openPopup('🏁','Fatih','Zorlu hedefleri tek tek fetheden.')">🏁</div>
-                <div class="medal-slot" onclick="openPopup('☄️','Yıldız','Hızla parlayan ve fark yaratan.')">☄️</div>
+                <div class="medal-slot" onclick="openMedal('🌅','Şafak','SAAT 07:00\'DEN ÖNCE ÇALIŞMAYA BAŞLA','Güneş doğmadan sahada olanlar için. Rakiplerin uykudayken kazandığın o ilk saatler, zaferin anahtarıdır.')">🌅</div>
+                <div class="medal-slot" onclick="openMedal('🦾','Demir','TEK SEANSTA 90 DAKİKA ODAKLAN','Mermer gibi sert bir odaklanma. Dünyayı 1.5 saat boyunca tamamen sessize alabilen çelik irade.')">🦾</div>
+                <div class="medal-slot" onclick="openMedal('💎','Elmas','HAFTALIK 40 SAAT BARAJINI AŞ','Yüksek basınç altında oluşan elmas gibi. 7 gün boyunca toplamda 40 saati deviren elite seviye.')">💎</div>
+                <div class="medal-slot" onclick="openMedal('🔥','Ateş','7 GÜN BOYUNCA HER GÜN ÇALIŞ','Sönmeyen disiplin ateşi. Tek bir gün bile aksatmadan 1 haftayı tamamlayan istikrar makinesi.')">🔥</div>
+                <div class="medal-slot" onclick="openMedal('🛡️','Muhafız','GÜNÜ 0 TELEFON KULLANIMIYLA BİTİR','Zaman kalkanı. Odak saatlerinde dikkatini dağıtacak her türlü dijital paraziti engelleyen koruyucu.')">🛡️</div>
+                <div class="medal-slot" onclick="openMedal('⚔️','Kılıç','TEK SEANSTA 180 DAKİKA BLOK YAP','3 saatlik aralıksız muharebe. Zihinsel sınırlarını en uç noktaya kadar zorlayan savaşçı uzmanı.')">⚔️</div>
+                <div class="medal-slot" onclick="openMedal('⚡','Hız','BİR GÜNDE 10 FARKLI SEANS TAMAMLA','Dinamizm ödülü. Gün boyu defalarca kez masaya oturup kalkan, adaptasyonu en yüksek operatör.')">⚡</div>
+                <div class="medal-slot" onclick="openMedal('🏆','Zirve','GÜNLÜK SIRALAMADA 1. SIRAYA YERLEŞ','Sahanın mutlak galibi. O gün Nexus ağındaki tüm rakiplerini geride bırakan lider.')">🏆</div>
+                <div class="medal-slot" onclick="openMedal('📚','Bilge','TOPLAM SÜREDE 100 SAATİ TAMAMLA','Kütüphane uzmanı. Bilgiyi biriktiren, saatlerini tecrübeye dönüştüren derin odaklanma ustası.')">📚</div>
+                <div class="medal-slot" onclick="openMedal('👑','Kral','TÜM ROZETLERİ VE MADALYALARI TOPLA','Sistemin mutlak hakimi. Nexus disiplin doktrinini hayat felsefesi haline getirmiş en üst rütbe.')">👑</div>
+                
+                <div class="medal-slot" onclick="openMedal('🥇','Altın','GÜNLÜK 8 SAAT ÇALIŞMA BARAJINI AŞ','Kusursuz icraat ödülü. Profesyonel bir çalışma temposunu standart haline getirenler için.')">🥇</div>
+                <div class="medal-slot" onclick="openMedal('🥈','Gümüş','GÜNLÜK 6 SAAT ÇALIŞMA BARAJINI AŞ','Yüksek tempo göstergesi. Başarı yolunda vites küçültmeden ilerleyen azimli ruhlar için.')">🥈</div>
+                <div class="medal-slot" onclick="openMedal('🥉','Bronz','GÜNLÜK 4 SAAT ÇALIŞMA BARAJINI AŞ','Disiplin yolunda ilk ciddi adım. Kararlılığını kanıtlayan başlangıç seviyesi savaşçı.')">🥉</div>
+                <div class="medal-slot" onclick="openMedal('🌌','Gece','GECE 00:00\'DAN SONRA 2 SAAT ÇALIŞ','Sessiz nöbet. Herkes uyurken hayallerine tuğla koyan, karanlığın içindeki gizli güç.')">🌌</div>
+                <div class="medal-slot" onclick="openMedal('🟢','Zümrüt','3 GÜN ÜST ÜSTE 5 SAAT ÇALIŞ','Mental dayanıklılık nişanı. Kaosun içinde dahi performansını koruyabilen dirençli komutan.')">🟢</div>
+                <div class="medal-slot" onclick="openMedal('🦅','Kartal','TEK BİR HATA YAPMADAN HEDEFİ BİTİR','Keskin gözler. Belirlediği tüm günlük hedefleri saniyesi saniyesine gerçekleştiren vizyoner.')">🦅</div>
+                <div class="medal-slot" onclick="openMedal('🔱','Okyanus','BİR SEANSTA 120 DK "FLOW"DA KAL','Derin zihinsel akış hali. Zamanın ve mekanın ötesine geçip sadece işine odaklananlar için.')">🔱</div>
+                <div class="medal-slot" onclick="openMedal('⚜️','Asalet','SİSTEMİ 30 GÜN BOYUNCA KULLAN','Sadakat ve disiplin asalesi. Nexus sistemini bir ay boyunca kesintisiz kullanan kadim üye.')">⚜️</div>
+                <div class="medal-slot" onclick="openMedal('🏁','Fatih','HAFTALIK PLANI %100 TAMAMLA','Fetih ödülü. Kendi kendine verdiği sözleri ne pahasına olursa olsun tutan büyük fatih.')">🏁</div>
+                <div class="medal-slot" onclick="openMedal('☄️','Yıldız','SIRALAMADA EN HIZLI YÜKSELEN OL','Hızla parlayan yetenek. Kısa sürede performansını ikiye katlayıp fark yaratanlar için.')">☄️</div>
             </div>
         </aside>
 
         <section class="glass flex-1 flex flex-col items-center justify-center p-8 relative">
             <div id="display">00:00:00</div>
             <div class="flex gap-4 w-full max-w-sm mt-12">
-                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl shadow-xl hover:scale-105 transition-all">BAŞLAT</button>
-                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse shadow-xl">TAMAMLA</button>
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl shadow-xl hover:scale-105 transition-all">GÖREVE BAŞLA</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse shadow-xl shadow-red-900/40">GÖREVİ BİTİR</button>
             </div>
         </section>
 
-        <aside id="radarPanel" onclick="toggleZoom(this)" class="glass zoom-panel w-full md:w-80 p-5 flex flex-col gap-4 overflow-hidden">
-            <h2 class="text-[10px] font-black text-blue-400 tracking-[0.3em] uppercase">Operasyon Radarı</h2>
+        <aside id="radarPanel" onclick="toggleZoom(this)" class="glass w-full md:w-80 p-5 flex flex-col gap-4 overflow-hidden cursor-pointer">
+            <h2 class="text-[10px] font-black text-blue-400 tracking-widest uppercase">Canlı Radar</h2>
             <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1"></div>
             <div class="border-t border-white/5 pt-4">
-                <h2 class="text-[10px] font-black text-slate-500 uppercase mb-3">Arkadaş Takip</h2>
+                <h2 class="text-[10px] font-black text-slate-500 uppercase mb-3 italic">Arkadaş Takip</h2>
                 <div id="friendStats" class="space-y-2 no-scrollbar overflow-y-auto max-h-40"></div>
             </div>
         </aside>
     </div>
 
-    <footer id="chartPanel" onclick="toggleZoom(this)" class="glass zoom-panel h-40 p-5 shrink-0">
+    <footer id="chartPanel" onclick="toggleZoom(this)" class="glass h-44 p-5 shrink-0 cursor-pointer">
         <canvas id="mainChart"></canvas>
     </footer>
 
@@ -123,76 +121,60 @@
         const db = getDatabase(app);
         const MY_ID = "vS5tG7R6u6NnE9X5";
         let FRIENDS = JSON.parse(localStorage.getItem('nexus_friends') || '[]');
-
         let timerInt, myChart;
 
         window.toggleZoom = (el) => el.classList.toggle('zoom-active');
-        window.openPopup = (icon, title, desc) => {
+        window.closeModal = () => document.getElementById('customModal').style.display = 'none';
+
+        // Gelişmiş Madalya Popup
+        window.openMedal = (icon, title, req, desc) => {
             document.getElementById('modalIcon').innerText = icon;
             document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalReq').innerText = "GEREKSİNİM: " + req;
             document.getElementById('modalDesc').innerText = desc;
             document.getElementById('customModal').style.display = 'flex';
         };
-        window.closeModal = () => document.getElementById('customModal').style.display = 'none';
 
         const QUOTES = [
             "Acı geçicidir, ama vazgeçmek sonsuza dek sürer. Bugün o masada verdiğin mücadele, yarınki zaferinin en büyük kanıtıdır.",
             "Rakiplerin şu an dinleniyor, uykunun en tatlı yerindeler. Sen ise geleceğini inşa ediyorsun. Kimin kazanacağı şimdiden belli.",
             "Sıradan bir hayat mı istiyorsun yoksa efsaneleşmek mi? Efsaneler, herkesin 'bırak' dediği noktada 'devam' diyenlerdir.",
             "Zihnini disipline et, dünyayı yönet. Bugün çalışmak istemeyen o ses senin en büyük düşmanın. Onu sustur ve işine odaklan.",
-            "Başarı, binlerce küçük tekrarın ve sabrın sonucudur. Sıkıldığın anlarda hatırla: Elmaslar yüksek basınç altında oluşur.",
-            "Kimseden izin bekleme. Kendi krallığını kendi alın terinle kuracaksın. Masaya dön ve o soruları yok et.",
-            "Vaktini boşa harcadığın her dakika, rakiplerinden biri senin hayalindeki koltuğa bir adım daha yaklaşıyor. Buna izin verme.",
-            "Yorgunluk bir illüzyondur. Vücudun %40'a geldiğinde zihnin yorulduğunu sanır. Gerçek kapasitenin daha yarısına bile gelmedin!",
-            "Disiplin, ne istediğinle, şu an ne istediğin arasındaki seçimdir. Uzun vadeli zaferi seç!",
-            "Eğer bugün o çalışmayı yapmazsan, yarın başkalarının başarılarını alkışlamak zorunda kalırsın. Alkışlayan değil, alkışlanan ol.",
             "Zirveye giden yol asansörle değil, merdivenle çıkılır. Her soru bir basamak, her sayfa bir mesafe.",
             "Dünyanın en zor savaşı, her gün kendi tembelliğine karşı verdiğin savaştır. Bugün o savaşı kazanmadan uyuma.",
-            "Korku seni durdurmasın, hırsın seni şahlandırsın. Başarısızlık bir seçenek değil, sadece bir tecrübedir.",
-            "Büyük işler başarmak için sadece hareket etmek yetmez, aynı zamanda hayal etmeli; sadece hayal etmek yetmez, aynı zamanda inanmalısın.",
-            "Bugün ektiğin tohumlar, yarın gölgesinde serinleyeceğin ağaçlar olacak. Sulamayı bırakma.",
-            "Kendine güven, çünkü senden başka kimse senin için o terlemiş gömleği giymeyecek.",
             "Mazeretler, sadece başarısızlığı meşrulaştırmak için kullanılan zayıf araçlardır. Sen zayıf değilsin.",
-            "Her gün bir önceki günden daha iyi olmaya çalış. Rakibin sadece dünkü sensin.",
-            "En karanlık an, şafak sökmeden hemen öncedir. Bırakma, ışık yakında.",
-            "Zekâ bir yere kadar götürür, karakter ve azim ise seni bitiş çizgisine taşır.",
-            "Gelecekteki versiyonun şu anki sana teşekkür edecek mi? Yoksa hayal kırıklığıyla mı bakacak? Seçim senin.",
-            "O kitapların arasındaki tozlar, gelecekteki servetinin temelleridir. Tozlanmaktan korkma.",
-            "Şampiyonlar antrenman sahasında doğar, podyumda sadece ilan edilirler. Sen şu an o sahadısın.",
-            "Hızın önemli değil, yeter ki durma. Kaplumbağa bile tavşanı durmadığı için geçti.",
-            "Odaklanmak, evet dediğin şeye değil, hayır dediğin binlerce şeye odaklanmaktır. Sosyal medyaya hayır de!",
-            "Başarı seni bulmaz, sen gidip onu almalısın. Gerekirse zorla, gerekirse tırnaklarınla.",
-            "Ruhun yorulduğunda, neden başladığını hatırla. O ilk günkü hırsı tekrar ateşle.",
-            "Kimse sana bedavadan bir şey vermeyecek. Bu dünya sadece hak edenlerin dünyasıdır.",
-            "Baskı altında dağılma, baskı altında elmasa dönüş. Zorluklar seni güçlendirmek için var.",
-            "Gözlerini hedeften ayırırsan, engelleri görmeye başlarsın. Sadece hedefe bak.",
-            "Zaman akıp gidiyor. Ya onu yönetirsin ya da o seni tüketir. Saniyelerin hesabını sor.",
-            "Kaybetmekten korkma, ama denememekten ödün kopar. Denemeyen zaten kaybetmiştir.",
-            "Bir gün geriye baktığında 'Keşke' demek yerine 'Zordu ama başardım' demenin gururunu hayal et.",
-            "Zorluklar, vasat insanları elerken seçkinleri parlatır. Sen hangisisin?",
-            "Şu an hissettiğin o zihinsel yanma, beyin hücrelerinin yeni bağlantılar kurduğunun işaretidir. Yanmaya devam et!",
             "Hayatın dizginlerini eline al. Başkalarının senin adına karar vermesine izin verme. Bugün o masanın efendisi ol."
         ];
 
         window.showQuote = () => {
             const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-            openPopup('📜', 'STRATEJİK DOKTRİN', q);
+            window.openMedal('📜', 'GÜNÜN EMRİ', 'PSİKOLOJİK HARP', q);
         };
 
         window.tokatAt = () => {
             const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-            openPopup('⚠️', 'DİSİPLİN TOKADI', 'Sana acımayacağım! Rakiplerin şu an birer canavar gibi çalışıyor. Sen ise burada mazeret mi arıyorsun? ' + q);
+            window.openMedal('⚠️', 'DİSİPLİN TOKADI', 'ACİL MÜDAHALE', 'Sana acımayacağım komutan! ' + q);
         };
 
         window.addFriend = () => {
-            const id = prompt("Arkadaş ID gir:");
+            const id = prompt("Arkadaş ID:");
             if(id && !FRIENDS.includes(id)) { FRIENDS.push(id); localStorage.setItem('nexus_friends', JSON.stringify(FRIENDS)); location.reload(); }
+        };
+
+        window.resetDay = () => {
+            if(!confirm("Bugünü arşive kaydetmek istiyor musun?")) return;
+            get(ref(db, `users/${MY_ID}`)).then(s => {
+                const v = s.val(); const today = new Date().toISOString().split('T')[0];
+                const newH = v.history || {}; newH[today] = (newH[today] || 0) + (v.pendingTime || 0);
+                update(ref(db, `users/${MY_ID}`), { pendingTime: 0, timerActive: false, history: newH });
+                window.openMedal('🏁', 'OPERASYON TAMAM', 'ARŞİV KAYDI BAŞARILI', 'Bugünkü emeğin tarihe mühürlendi. Yarın daha güçlü döneceğiz.');
+            });
         };
 
         onValue(ref(db, `users/${MY_ID}`), s => {
             const d = s.val() || {};
             const nameEl = document.getElementById('userName');
-            nameEl.innerText = d.status?.name || "BİLİNMEYEN";
+            nameEl.innerText = d.status?.name || "BAĞLANIYOR...";
             if(d.status?.name === "FERHAT ÇAVUŞOĞLU") nameEl.className = "special-name text-sm";
             if(timerInt) clearInterval(timerInt);
             if(d.timerActive) {
@@ -217,20 +199,16 @@
             sorted.forEach(([id, u]) => {
                 if(!u.status) return;
                 r.innerHTML += `
-                    <div class="p-3 glass ${u.timerActive?'status-active':'status-idle'} flex justify-between items-center">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-black uppercase">${u.status.name}</span>
-                            <span class="text-[8px] font-bold ${u.timerActive?'text-emerald-400':'text-slate-500'}">${u.timerActive?'OPERASYONDA ⚡':'KIŞLADA 💤'}</span>
-                        </div>
+                    <div class="p-3 glass ${u.timerActive?'status-active':'status-idle'} flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-black uppercase text-white">${u.status.name}</span>
                         <span class="text-[10px] font-black text-blue-400">${Math.floor((u.pendingTime||0)/60000)} DK</span>
                     </div>`;
                 if(FRIENDS.includes(id)) {
                     const daily = Math.floor((u.pendingTime || 0) / 60000);
                     const weekly = Object.values(u.history || {}).reduce((a,b) => a+b, 0);
                     f.innerHTML += `
-                        <div class="p-2 bg-blue-900/10 rounded-lg border border-blue-500/20 text-[9px] font-bold">
-                            <div class="flex justify-between"><span>${u.status.name}</span><span class="${u.timerActive?'text-green-400':'text-red-400'}">●</span></div>
-                            <div class="text-slate-500">BUGÜN: ${daily}dk | HAFTA: ${Math.floor(weekly/60000)}dk</div>
+                        <div class="p-2 bg-blue-900/10 rounded-lg border border-blue-500/20 text-[9px] font-bold mb-1">
+                            <span>${u.status.name}</span> | GÜN: ${daily}dk | HAFTA: ${Math.floor(weekly/60000)}dk
                         </div>`;
                 }
             });
@@ -251,14 +229,13 @@
                 return Math.floor((history[d.toISOString().split('T')[0]] || 0) / 60000);
             });
             if(myChart) { myChart.data.datasets[0].data = data; myChart.update(); }
-            else { myChart = new Chart(ctx, { type: 'line', data: { labels: days, datasets: [{ data, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59,130,246,0.1)' }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#475569', font: { size: 9, weight: 'bold' } } } } } }); }
+            else { myChart = new Chart(ctx, { type: 'line', data: { labels: days, datasets: [{ data, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59,130,246,0.1)', pointBackgroundColor: '#3b82f6' }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#475569', font: { size: 9, weight: 'bold' } } } } } }); }
         }
 
         document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() });
         document.getElementById('stopBtn').onclick = () => get(ref(db, `users/${MY_ID}`)).then(s => {
-            const v = s.val(); const sess = Date.now() - v.startTime; const today = new Date().toISOString().split('T')[0];
-            const newHist = v.history || {}; newHist[today] = (newHist[today] || 0) + sess;
-            update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (v.pendingTime || 0) + sess, history: newHist });
+            const v = s.val(); const sess = Date.now() - v.startTime;
+            update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (v.pendingTime || 0) + sess });
         });
     </script>
 </body>
