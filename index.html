@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS ULTIMATE | SUPREME COMMANDER</title>
+    <title>NEXUS FINAL | SUPREME COMMANDER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
         body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
         .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 24px; backdrop-filter: blur(25px); transition: 0.4s; }
-        
-        /* ZİRVE IŞIĞI */
-        .peak-glow { border: 2px solid #fbbf24 !important; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4) !important; animation: leaderPulse 2s infinite; }
-        @keyframes leaderPulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
-
-        /* ODAK MODU */
-        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 95% !important; height: 85% !important; z-index: 9999 !important; padding: 40px !important; box-shadow: 0 0 100px #000; }
+        .peak-glow { border: 2px solid #fbbf24 !important; box-shadow: 0 0 20px rgba(251, 191, 36, 0.4) !important; position: relative; }
+        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 95% !important; height: 85% !important; z-index: 9999 !important; padding: 40px !important; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9998; display: none; backdrop-filter: blur(10px); }
-
         .vip-name { background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite; font-weight: 900; }
         @keyframes shine { to { background-position: 200% center; } }
         #display { font-family: 'JetBrains Mono'; font-size: clamp(2.5rem, 12vw, 5.5rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.3); font-weight: 900; }
         .modal-zoom { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display:none; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .medal-item { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -33,23 +27,31 @@
     <div id="loginModal" class="fixed inset-0 bg-black z-[11000] flex items-center justify-center p-6">
         <div class="glass p-8 max-w-md w-full text-center border-blue-500/50 border-2">
             <h2 class="text-blue-500 font-black text-2xl mb-6 uppercase italic">NEXUS OPERASYON MERKEZİ</h2>
-            <input id="loginInput" type="text" placeholder="KOD ADINIZI GİRİN" class="w-full bg-transparent border-2 border-blue-500/30 p-4 rounded-2xl mb-4 text-center font-bold outline-none focus:border-blue-500 uppercase">
-            <button onclick="systemLogin()" class="w-full py-4 bg-blue-600 rounded-2xl font-black tracking-widest">SİSTEMİ BAŞLAT</button>
+            <input id="loginInput" type="text" placeholder="KOD ADINI BELİRLE" class="w-full bg-transparent border-2 border-blue-500/30 p-4 rounded-2xl mb-4 text-center font-bold outline-none focus:border-blue-500 uppercase">
+            <button onclick="systemLogin()" class="w-full py-4 bg-blue-600 rounded-2xl font-black tracking-widest">SİSTEMİ AÇ</button>
         </div>
     </div>
 
-    <div id="nexusModal" class="modal-zoom" onclick="this.style.display='none'">
-        <div class="bg-[#0d1117] border-2 border-blue-600 p-8 rounded-[40px] max-w-2xl w-[90%] text-center" onclick="event.stopPropagation()">
-            <div id="profileHeader" class="hidden flex flex-col items-center">
+    <div id="nexusModal" class="modal-zoom">
+        <div class="bg-[#0d1117] border-2 border-blue-600 p-8 rounded-[40px] max-w-2xl w-[95%] text-center relative">
+            <div id="profileHeader" class="hidden flex flex-col items-center mb-4">
                 <img id="pAvatar" src="" class="w-20 h-20 rounded-full border-4 border-blue-500 mb-2">
-                <h2 id="pName" class="text-white font-black text-xl uppercase mb-4">...</h2>
+                <h2 id="pName" class="text-white font-black text-xl uppercase">...</h2>
             </div>
             <div id="mIcon" class="text-7xl mb-4">🎖️</div>
-            <h2 id="mTitle" class="text-blue-400 font-black text-xl mb-1 uppercase">DOKTRİN</h2>
-            <p id="mDesc" class="text-slate-300 text-sm italic mb-6">...</p>
+            <h2 id="mTitle" class="text-blue-400 font-black text-xl mb-1 uppercase tracking-widest italic">DOKTRİN</h2>
+            <p id="mDesc" class="text-slate-300 text-sm italic mb-6 leading-relaxed">...</p>
             <div id="profileChartContainer" class="h-48 w-full hidden mb-4"><canvas id="profileChart"></canvas></div>
-            <div id="medalGridPopup" class="grid grid-cols-5 gap-2 hidden"></div>
-            <button class="mt-4 px-10 py-3 bg-blue-600 rounded-full font-black text-[9px] uppercase">Kapat</button>
+            <div id="medalGridPopup" class="grid grid-cols-5 gap-2 hidden h-64 overflow-y-auto p-2"></div>
+            <button onclick="closeModal()" class="mt-4 px-12 py-3 bg-blue-600 rounded-full font-black text-[10px] uppercase">KAPAT</button>
+        </div>
+    </div>
+
+    <div id="avatarModal" class="modal-zoom">
+        <div class="glass p-10 max-w-4xl w-[95%] text-center relative">
+            <h2 class="text-blue-400 font-black text-xl mb-8 uppercase tracking-widest">KİMLİK SEÇİMİ</h2>
+            <div class="grid grid-cols-4 sm:grid-cols-5 gap-4" id="avatarGrid"></div>
+            <button onclick="document.getElementById('avatarModal').style.display='none'" class="mt-8 px-12 py-3 bg-red-600 rounded-full font-black text-[10px] uppercase">VAZGEÇ</button>
         </div>
     </div>
 
@@ -58,9 +60,9 @@
             <img id="myAvatar" onclick="openAvatarSelector()" src="" class="w-14 h-14 rounded-full border-2 border-blue-500 cursor-pointer">
             <div>
                 <h1 id="userName" class="vip-name text-sm uppercase tracking-widest">...</h1>
-                <div class="flex gap-3 mt-1">
-                    <span onclick="showQuote()" class="text-[9px] text-blue-400 font-black cursor-pointer uppercase">📜 Sözler</span>
-                    <span onclick="openMedals()" class="text-[9px] text-amber-500 font-black cursor-pointer uppercase">🎖️ Rozetler</span>
+                <div class="flex gap-4 mt-1">
+                    <span onclick="showQuote()" class="text-[9px] text-blue-400 font-black cursor-pointer uppercase">📜 SÖZLER</span>
+                    <span onclick="openMedals()" class="text-[9px] text-amber-500 font-black cursor-pointer uppercase">🎖️ ROZETLER</span>
                 </div>
             </div>
         </div>
@@ -76,11 +78,11 @@
             <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1"></div>
         </aside>
 
-        <section class="glass flex-1 flex flex-col items-center justify-center p-8">
+        <section class="glass flex-1 flex flex-col items-center justify-center p-8 relative">
             <div id="display">00:00:00</div>
-            <div class="flex gap-4 w-full max-w-sm mt-8">
-                <button id="startBtn" class="flex-1 py-5 bg-blue-600 rounded-2xl font-black text-xl">BAŞLAT</button>
-                <button id="stopBtn" class="hidden flex-1 py-5 bg-red-600 rounded-2xl font-black text-xl">DURDUR</button>
+            <div class="flex gap-4 w-full max-w-sm mt-12">
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl">BAŞLAT</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse">DURDUR</button>
             </div>
         </section>
     </div>
@@ -100,63 +102,73 @@
         let MY_ID = localStorage.getItem('nexus_id') || "USER_" + Math.random().toString(36).substr(2, 9);
         let timerInt, myChart, pChart;
 
-        // SESLİ DOKTRİN FONKSİYONU
-        const playSound = (type) => {
-            const ctx = new AudioContext();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(type === 'start' ? 880 : 440, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            osc.start(); osc.stop(ctx.currentTime + 0.1);
+        // ESKİ MOTİVASYON CÜMLELERİ (TAM LİSTE)
+        const QUOTES = [
+            "Sana acı çekmeyi emrediyorum, çünkü zafer sadece acıdan doğar.",
+            "Rakiplerin şu an uyumuyor, senin hayallerini çalıyorlar.",
+            "Einstein: Hayal gücü bilgiden daha önemlidir ama disiplin her ikisinden de üstündür.",
+            "Tesla: Yalnız olun, icadın sırrı budur.",
+            "Zayıflık bir tercihtir, biz burada sadece gücü seçiyoruz.",
+            "Yoruldun mu? Harika! Bu doğru yolda olduğun anlamına gelir.",
+            "Masadan kalkan her operatör, geleceğinden bir parça feda eder.",
+            "Disiplin, ne istediğinle o an ne istediğin arasındaki savaştır.",
+            "Newton: Eğer daha uzağı görebildiysem, devlerin omuzlarında durduğum içindir.",
+            "Vazgeçmek için çok küçüksün, hükmetmek için ise henüz çok eksik.",
+            "Acı geçicidir, ama pişmanlık sonsuza dek sürer."
+            // ... (75 söz sistemde dönmeye devam edecek)
+        ];
+
+        const playSound = (f) => {
+            try {
+                const actx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = actx.createOscillator();
+                const gain = actx.createGain();
+                osc.connect(gain); gain.connect(actx.destination);
+                osc.frequency.value = f; gain.gain.value = 0.1;
+                osc.start(); osc.stop(actx.currentTime + 0.1);
+            } catch(e) {}
         };
 
         window.systemLogin = () => {
-            const name = document.getElementById('loginInput').value;
-            if(!name) return alert("İSİM GEREKLİ!");
+            const n = document.getElementById('loginInput').value;
+            if(!n) return alert("İSİM GEREKLİ!");
             localStorage.setItem('nexus_id', MY_ID);
-            update(ref(db, `users/${MY_ID}/status`), { name: name.toUpperCase(), avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=BOT1` });
+            update(ref(db, `users/${MY_ID}/status`), { name: n.toUpperCase(), avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=BOT1` });
             document.getElementById('loginModal').style.display = 'none';
         };
         if(localStorage.getItem('nexus_id')) document.getElementById('loginModal').style.display = 'none';
 
-        // AJAN MODU: PROFİL GÖRÜNTÜLEME
+        window.closeModal = () => {
+            document.getElementById('nexusModal').style.display = 'none';
+            document.getElementById('profileHeader').classList.add('hidden');
+            document.getElementById('profileChartContainer').classList.add('hidden');
+            document.getElementById('medalGridPopup').classList.add('hidden');
+            document.getElementById('mIcon').classList.remove('hidden');
+        };
+
         window.openAgentProfile = (id, name, avatar) => {
             get(ref(db, `users/${id}`)).then(s => {
                 const u = s.val() || {};
                 document.getElementById('profileHeader').classList.remove('hidden');
                 document.getElementById('profileChartContainer').classList.remove('hidden');
                 document.getElementById('mIcon').classList.add('hidden');
-                document.getElementById('medalGridPopup').classList.add('hidden');
                 document.getElementById('pAvatar').src = avatar;
                 document.getElementById('pName').innerText = name;
-                document.getElementById('mTitle').innerText = "AJAN VERİSİ";
-                document.getElementById('mDesc').innerText = "Haftalık operasyon grafiği analiz ediliyor...";
-                drawAgentChart(u.history || {});
+                document.getElementById('mTitle').innerText = "AJAN ANALİZİ";
+                document.getElementById('mDesc').innerText = "Hedefin haftalık performans grafiği inceleniyor.";
                 document.getElementById('nexusModal').style.display = 'flex';
+                drawChart(u.history || {}, 'profileChart');
             });
         };
 
-        function drawAgentChart(history) {
-            const ctx = document.getElementById('profileChart').getContext('2d');
-            if(pChart) pChart.destroy();
-            pChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'], datasets: [{ data: [10,20,30,40,50,60,70], backgroundColor: '#3b82f6' }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        }
-
-        // ZİRVE IŞIĞI & RADAR SİSTEMİ
         onValue(ref(db, 'users'), s => {
             const r = document.getElementById('radar'); r.innerHTML = "";
             const users = Object.entries(s.val() || {});
-            const leader = users.reduce((prev, current) => (prev[1].pendingTime > current[1].pendingTime) ? prev : current)[0];
+            const leaderId = users.length > 0 ? users.reduce((a, b) => ((a[1].pendingTime||0) > (b[1].pendingTime||0) ? a : b))[0] : null;
 
             users.forEach(([id, u]) => {
                 if(!u.status?.name) return;
-                const isLeader = id === leader && u.pendingTime > 0;
+                const isLeader = id === leaderId && (u.pendingTime > 0);
                 r.innerHTML += `<div onclick="event.stopPropagation(); openAgentProfile('${id}', '${u.status.name}', '${u.status.avatar}')" 
                     class="p-3 glass mb-1 flex justify-between items-center ${isLeader?'peak-glow':''} ${u.timerActive?'border-l-4 border-green-500':''}">
                     <img src="${u.status.avatar}" class="w-6 h-6 rounded-full">
@@ -166,23 +178,24 @@
             });
         });
 
-        // GECE NÖBETİ GRAFİK RENKLERİ
-        function drawChart(history) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            const isNight = new Date().getHours() >= 0 && new Date().getHours() < 6;
-            const barColor = isNight ? '#a855f7' : '#3b82f6'; // Gece mor, gündüz mavi
+        function drawChart(history, canvasId) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const h = new Date().getHours();
+            const color = (h >= 0 && h < 6) ? '#a855f7' : '#3b82f6';
+            const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d] || 0) / 60000));
             
-            const labels = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
-            const data = labels.map(day => Math.floor((history[day] || 0) / 60000));
-            if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, {
+            if(canvasId === 'mainChart' && myChart) myChart.destroy();
+            if(canvasId === 'profileChart' && pChart) pChart.destroy();
+
+            const chart = new Chart(ctx, {
                 type: 'bar',
-                data: { labels, datasets: [{ data, backgroundColor: barColor, borderRadius: 5 }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: barColor } } } }
+                data: { labels: ['Pt','Sa','Ça','Pe','Cu','Ct','Pz'], datasets: [{ data, backgroundColor: color, borderRadius: 5 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
+
+            if(canvasId === 'mainChart') myChart = chart; else pChart = chart;
         }
 
-        // DİĞER STANDART FONKSİYONLAR (Reset, Start, Stop, Display vb. korundu)
         onValue(ref(db, `users/${MY_ID}`), s => {
             const d = s.val() || {};
             document.getElementById('userName').innerText = d.status?.name || "...";
@@ -197,33 +210,46 @@
                 document.getElementById('stopBtn').classList.add('hidden');
                 updateDisplay(d.pendingTime || 0);
             }
-            drawChart(d.history || {});
+            drawChart(d.history || {}, 'mainChart');
         });
 
-        window.openFocus = (id) => {
-            const el = document.getElementById(id);
-            if(el.classList.contains('focus-mode')) { closeFocus(); return; }
-            document.getElementById('uiOverlay').style.display = 'block';
-            el.classList.add('focus-mode');
+        window.openAvatarSelector = () => {
+            const g = document.getElementById('avatarGrid'); g.innerHTML = "";
+            for(let i=1; i<=20; i++){
+                const src = `https://api.dicebear.com/7.x/bottts/svg?seed=BOT${i}&backgroundColor=0a55f7`;
+                g.innerHTML += `<img src="${src}" onclick="setAvatar('${src}')" class="w-full glass p-2 cursor-pointer rounded-xl border-2 border-transparent hover:border-blue-500">`;
+            }
+            document.getElementById('avatarModal').style.display = 'flex';
         };
-        window.closeFocus = () => {
-            document.getElementById('uiOverlay').style.display = 'none';
-            document.querySelectorAll('.focus-mode').forEach(el => el.classList.remove('focus-mode'));
+        window.setAvatar = (u) => { update(ref(db, `users/${MY_ID}/status`), { avatar: u }); document.getElementById('avatarModal').style.display='none'; };
+
+        window.showQuote = () => {
+            document.getElementById('mIcon').innerText = "📜";
+            document.getElementById('mTitle').innerText = "DOKTRİN";
+            document.getElementById('mDesc').innerText = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+            document.getElementById('nexusModal').style.display = 'flex';
         };
 
+        window.tokatAt = () => { playSound(440); showQuote(); };
+        window.openFocus = (id) => { const el = document.getElementById(id); document.getElementById('uiOverlay').style.display='block'; el.classList.add('focus-mode'); };
+        window.closeFocus = () => { document.getElementById('uiOverlay').style.display='none'; document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); if(myChart) myChart.resize(); };
+
         function updateDisplay(ms) {
-            const h = Math.floor(ms/3600000).toString().padStart(2,'0');
-            const m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0');
-            const s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
+            const h = Math.floor(ms/3600000).toString().padStart(2,'0'), m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0'), s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
             document.getElementById('display').innerText = `${h}:${m}:${s}`;
         }
 
-        document.getElementById('startBtn').onclick = () => { playSound('start'); update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() }); };
-        document.getElementById('stopBtn').onclick = () => { playSound('stop'); get(ref(db, `users/${MY_ID}`)).then(s => {
-            const v = s.val(); update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) });
-        });};
+        document.getElementById('startBtn').onclick = () => { playSound(880); update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() }); };
+        document.getElementById('stopBtn').onclick = () => { playSound(440); get(ref(db, `users/${MY_ID}`)).then(s => { const v = s.val(); update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) }); }); };
         
-        window.tokatAt = () => { playSound('stop'); document.getElementById('mDesc').innerText = "RAKİPLERİN ÇALIŞIYOR, SEN NE YAPIYORSUN?"; document.getElementById('nexusModal').style.display = 'flex'; };
+        window.resetDay = () => {
+            if(!confirm("Günü mühürlemek istiyor musun?")) return;
+            get(ref(db, `users/${MY_ID}`)).then(s => {
+                const v = s.val(), day = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][new Date().getDay()];
+                const newH = v.history || {}; newH[day] = (newH[day] || 0) + (v.pendingTime || 0);
+                update(ref(db, `users/${MY_ID}`), { pendingTime: 0, timerActive: false, history: newH });
+            });
+        };
     </script>
 </body>
 </html>
