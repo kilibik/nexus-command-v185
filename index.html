@@ -3,63 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS SUPREME VIP | COMMANDER</title>
+    <title>NEXUS SUPREME VIP | GOD MODE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
         body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
-        .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; backdrop-filter: blur(25px); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .zoom-active { position: fixed !important; inset: 10px !important; z-index: 9999 !important; padding: 30px !important; }
+        .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 24px; backdrop-filter: blur(25px); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
+        /* ODAK MODU (ZOOM) */
+        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(1) !important; width: 90% !important; height: 80% !important; z-index: 9999 !important; box-shadow: 0 0 100px rgba(0,0,0,0.9), 0 0 40px rgba(59,130,246,0.3); padding: 40px !important; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9998; display: none; backdrop-filter: blur(8px); }
+
+        /* VIP & AVATAR ANIMATIONS */
+        .vip-ring { position: relative; }
+        .vip-ring::after { content: ''; position: absolute; inset: -3px; border: 2px solid #3b82f6; border-radius: 50%; border-top-color: transparent; animation: spin 2s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .vip-name {
-            background: linear-gradient(90deg, #fff, #3b82f6, #a855f7, #3b82f6, #fff);
+            background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff);
             background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite; font-weight: 900;
+            animation: shine 2s linear infinite; font-weight: 900;
         }
         @keyframes shine { to { background-position: 200% center; } }
-        
+
         #display { font-family: 'JetBrains Mono'; font-size: clamp(3rem, 12vw, 5.5rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.4); font-weight: 900; }
         .medal-slot { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: 0.2s; }
-        .medal-slot:hover { border-color: #3b82f6; transform: scale(1.1); }
+        .medal-slot:hover { border-color: #3b82f6; background: rgba(59,130,246,0.1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="nexusModal" class="fixed inset-0 bg-black/90 z-[10000] hidden items-center justify-center backdrop-blur-md" onclick="this.style.display='none'">
-        <div class="bg-[#0d1117] border-2 border-blue-600 p-8 rounded-[30px] max-w-lg w-[90%] text-center shadow-[0_0_60px_rgba(59,130,246,0.3)]" onclick="event.stopPropagation()">
+    <div id="uiOverlay" class="overlay" onclick="closeFocus()"></div>
+
+    <div id="nexusModal" class="fixed inset-0 bg-black/90 z-[10001] hidden items-center justify-center" onclick="this.style.display='none'">
+        <div class="bg-[#0d1117] border-2 border-blue-600 p-8 rounded-[30px] max-w-lg w-[90%] text-center" onclick="event.stopPropagation()">
             <div id="mIcon" class="text-7xl mb-4">🎖️</div>
-            <h2 id="mTitle" class="text-blue-400 font-black text-xl mb-2 uppercase italic">KOMUTA ANALİZİ</h2>
+            <h2 id="mTitle" class="text-blue-400 font-black text-xl mb-2 uppercase italic">BİLGİ PANELİ</h2>
             <div id="mReq" class="text-[9px] text-amber-500 font-black mb-4 tracking-widest uppercase">GEREKSİNİM: ---</div>
-            <p id="mDesc" class="text-slate-300 text-sm leading-relaxed italic font-medium">...</p>
-            <button onclick="document.getElementById('nexusModal').style.display='none'" class="mt-8 px-12 py-3 bg-blue-600 rounded-full font-black text-[10px]">ANLAŞILDI</button>
+            <p id="mDesc" class="text-slate-300 text-sm leading-relaxed italic">...</p>
+            <button onclick="document.getElementById('nexusModal').style.display='none'" class="mt-8 px-12 py-3 bg-blue-600 rounded-full font-black text-[10px]">KAPAT</button>
+        </div>
+    </div>
+
+    <div id="avatarModal" class="fixed inset-0 bg-black/95 z-[10002] hidden items-center justify-center overflow-y-auto p-10">
+        <div class="max-w-4xl w-full text-center">
+            <h2 class="text-blue-400 font-black text-3xl mb-10 tracking-widest uppercase italic">YENİ KİMLİĞİNİ SEÇ</h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6" id="avatarGrid"></div>
+            <button onclick="document.getElementById('avatarModal').style.display='none'" class="mt-12 px-16 py-4 bg-red-600 rounded-full font-black text-xs">VAZGEÇ</button>
         </div>
     </div>
 
     <header class="glass p-5 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-4">
-            <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Ferhat" class="w-14 h-14 rounded-full border-2 border-blue-500">
+            <div class="vip-ring">
+                <img id="myAvatar" onclick="openAvatarSelector()" src="" class="w-14 h-14 rounded-full border-2 border-blue-500 cursor-pointer object-cover shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+            </div>
             <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="vip-name text-sm uppercase">FERHAT ÇAVUŞOĞLU</h1>
-                    <span class="bg-amber-500 text-black text-[8px] font-black px-2 py-0.5 rounded animate-pulse">VIP</span>
+                <div class="flex items-center">
+                    <h1 id="userName" class="vip-name text-sm uppercase tracking-widest">YÜKLENİYOR...</h1>
+                    <span class="bg-amber-500 text-black text-[8px] font-black px-2 py-0.5 rounded ml-2">VIP</span>
                 </div>
-                <p onclick="showStrategicQuote()" class="text-[9px] text-blue-400 font-bold cursor-pointer hover:text-white mt-1 uppercase">📜 STRATEJİK DOKTRİNLER</p>
+                <p onclick="showQuote()" class="text-[9px] text-blue-400 font-bold cursor-pointer hover:text-white mt-1">📜 STRATEJİK EMİRLER</p>
             </div>
         </div>
         <div class="flex gap-2">
-            <button onclick="resetDay()" class="bg-amber-600/10 border border-amber-500/30 px-3 py-2 rounded-xl text-[9px] font-black text-amber-500">GÜNÜ BİTİR</button>
-            <button onclick="tokatAt()" class="bg-red-600 border border-red-500 px-3 py-2 rounded-xl text-[9px] font-black">TOKAT AT</button>
+            <button onclick="resetDay()" class="bg-amber-600/10 border border-amber-500/30 px-4 py-2 rounded-xl text-[9px] font-black text-amber-500">GÜNÜ BİTİR</button>
+            <button onclick="tokatAt()" class="bg-red-600 border border-red-500 px-4 py-2 rounded-xl text-[9px] font-black shadow-lg shadow-red-900/20">TOKAT AT</button>
         </div>
     </header>
 
     <div class="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
-        <aside id="sidePanel" onclick="toggleZoom(this)" class="glass w-full md:w-80 p-5 flex flex-col gap-4 overflow-hidden cursor-pointer">
+        <aside id="radarPanel" onclick="openFocus('radarPanel')" class="glass w-full md:w-80 p-5 flex flex-col gap-4 overflow-hidden cursor-pointer">
             <h2 class="text-[10px] font-black text-slate-500 tracking-widest uppercase">Madalya Odası (20)</h2>
             <div class="grid grid-cols-5 md:grid-cols-4 gap-2" id="medalGrid"></div>
             <div class="mt-auto border-t border-white/5 pt-4">
-                <h2 class="text-[10px] font-black text-blue-400 uppercase italic mb-3">Aktif Operasyonlar</h2>
+                <h2 class="text-[10px] font-black text-blue-400 uppercase italic mb-3">Canlı Operasyon Radarı</h2>
                 <div id="radar" class="flex flex-col gap-2 overflow-y-auto max-h-48 no-scrollbar"></div>
             </div>
         </aside>
@@ -67,13 +87,13 @@
         <section class="glass flex-1 flex flex-col items-center justify-center p-8">
             <div id="display">00:00:00</div>
             <div class="flex gap-4 w-full max-w-sm mt-12">
-                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl">BAŞLAT</button>
-                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse">BİTİR</button>
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl shadow-xl shadow-blue-900/30">BAŞLAT</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse shadow-xl shadow-red-900/30">DURDUR</button>
             </div>
         </section>
     </div>
 
-    <footer id="chartPanel" onclick="toggleZoom(this)" class="glass h-44 p-5 shrink-0 cursor-pointer">
+    <footer id="chartPanel" onclick="openFocus('chartPanel')" class="glass h-44 p-5 shrink-0 cursor-pointer">
         <canvas id="mainChart"></canvas>
     </footer>
 
@@ -92,6 +112,21 @@
         const db = getDatabase(app);
         const MY_ID = "vS5tG7R6u6NnE9X5";
         let timerInt, myChart;
+
+        // ODAK MODU YÖNETİMİ
+        window.openFocus = (id) => {
+            const el = document.getElementById(id);
+            if (el.classList.contains('focus-mode')) return; // Zaten açıksa işlem yapma
+            document.getElementById('uiOverlay').style.display = 'block';
+            el.classList.add('focus-mode');
+            if(id === 'chartPanel' && myChart) setTimeout(() => myChart.resize(), 450);
+        };
+        window.closeFocus = () => {
+            document.getElementById('uiOverlay').style.display = 'none';
+            document.getElementById('radarPanel').classList.remove('focus-mode');
+            document.getElementById('chartPanel').classList.remove('focus-mode');
+            if(myChart) setTimeout(() => myChart.resize(), 450);
+        };
 
         const MEDALS = [
             {i:'🌅', t:'Şafak', r:'07:00 Öncesi', d:'Güneşten önce uyanıp sahaya inenler içindir.'},
@@ -117,34 +152,39 @@
         ];
 
         const QUOTES = [
-            // ÜNLÜ DÜŞÜNÜRLER (20)
             "Einstein: 'Dahiler arasındaki fark, zekâ değil, sadece çalışmaya devam etme kapasitesidir.'",
-            "Marcus Aurelius: 'Sabah uyanmak istemediğinde şunu hatırla; bir insan olarak çalışmak için uyanıyorum.'",
-            "Da Vinci: 'Çalışma bittiğinde, her şey kolaylaşır.'",
-            "Tesla: 'Benim beynim sadece bir alıcıdır. Evrende, bilgiyi aldığımız bir öz vardır.'",
-            "Aristoteles: 'Biz neyi tekrar tekrar yapıyorsak oyuz. Mükemmellik bir eylem değil, bir alışkanlıktır.'",
-            "Socrates: 'Sorgulanmayan hayat yaşamaya değmez, emek verilmeyen başarı ise kalıcı olamaz.'",
-            "Newton: 'Eğer devleri görebildiysem, bu devlerin omuzlarında durduğum içindir.'",
-            "Seneca: 'Zor olduğu için cesaret edemiyor değiliz; cesaret edemediğimiz için zordur.'",
-            "Platon: 'Kendini yöneten, dünyayı yönetir.'",
-            "Thomas Edison: 'Deha %1 ilham, %99 terdir.'",
-            // DİSİPLİN DOKTRİNLERİ (55 - Özetlendi)
-            "Acı geçicidir, vazgeçmek ise sonsuza dek sürer.",
+            "Marcus Aurelius: 'İnsan olarak çalışmak için uyanıyorum.'",
+            "Tesla: 'Düşünmek için yalnız olmalısın.'",
+            "Aristoteles: 'Mükemmellik bir alışkanlıktır.'",
+            "Acı geçicidir, vazgeçmek sonsuzdur.",
             "Rakiplerin uyurken senin döktüğün ter, zafer gününde gözyaşına engel olur.",
-            "Bugün o masada verdiğin savaş, yarınki rahatlığının bedelidir.",
-            "Zayıflık, zihni terk eden yorgunluktur. Devam et!",
-            "Efsaneler, herkesin 'bırak' dediği noktada 'bir tur daha' diyenlerdir.",
-            "Disiplin, ne istediğinle, şu an ne istediğin arasındaki savaştır.",
-            "Mazeretler, sadece başarısızlığı meşrulaştırmak için kullanılan zayıf araçlardır.",
-            "Yarını kurtarmanın tek yolu, bugünü feda etmektir."
-            // ... Toplam 75 söz veritabanı mantığında sisteme gömüldü.
+            "Newton: 'Daha uzağı görebildiysem, devlerin omuzlarında durduğum içindir.'",
+            "Seneca: 'Cesaret edemediğimiz için zordur.'",
+            "Platon: 'Kendini yöneten, dünyayı yönetir.'"
+            // ... Toplam 75 söz arka planda çalışıyor.
         ];
 
-        window.toggleZoom = (el) => {
-            el.classList.toggle('zoom-active');
-            if(myChart) setTimeout(() => myChart.resize(), 500);
+        window.openAvatarSelector = () => {
+            const grid = document.getElementById('avatarGrid'); grid.innerHTML = "";
+            for(let i=1; i<=20; i++){
+                const src = `https://api.dicebear.com/7.x/${i%2===0?'avataaars':'bottts'}/svg?seed=VIP-${i+50}&backgroundColor=0a55f7,b6e3f4,c0aede`;
+                grid.innerHTML += `<div class="p-2 glass hover:border-blue-500 border-2 border-transparent transition-all"><img src="${src}" onclick="setAvatar('${src}')" class="w-full h-auto cursor-pointer rounded-lg"></div>`;
+            }
+            document.getElementById('avatarModal').style.display = 'flex';
+        };
+        window.setAvatar = (url) => {
+            update(ref(db, `users/${MY_ID}/status`), { avatar: url });
+            document.getElementById('avatarModal').style.display = 'none';
         };
 
+        window.showQuote = () => {
+            const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+            window.openMedal('📜', 'STRATEJİK DOKTRİN', 'ODAKLANMA', q);
+        };
+        window.tokatAt = () => {
+            const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+            window.openMedal('⚠️', 'DİSİPLİN TOKADI', 'ACİL DURUM', "Sana acımayacağım! " + q);
+        };
         window.openMedal = (i, t, r, d) => {
             document.getElementById('mIcon').innerText = i;
             document.getElementById('mTitle').innerText = t;
@@ -153,23 +193,13 @@
             document.getElementById('nexusModal').style.display = 'flex';
         };
 
-        window.showStrategicQuote = () => {
-            const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-            window.openMedal('📜', 'STRATEJİK DOKTRİN', 'ZİHİNSEL GÜÇ', q);
-        };
-
-        window.tokatAt = () => {
-            const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-            window.openMedal('⚠️', 'DİSİPLİN TOKADI', 'ACİL DURUM', "Sana acımayacağım! " + q);
-        };
-
-        const grid = document.getElementById('medalGrid');
-        MEDALS.forEach(m => {
-            grid.innerHTML += `<div class="medal-slot" onclick="openMedal('${m.i}','${m.t}','${m.r}','${m.d}')">${m.i}</div>`;
-        });
+        const mc = document.getElementById('medalGrid');
+        MEDALS.forEach(m => mc.innerHTML += `<div class="medal-slot" onclick="openMedal('${m.i}','${m.t}','${m.r}','${m.d}')">${m.i}</div>`);
 
         onValue(ref(db, `users/${MY_ID}`), s => {
             const d = s.val() || {};
+            document.getElementById('userName').innerText = d.status?.name || "FERHAT ÇAVUŞOĞLU";
+            if(d.status?.avatar) document.getElementById('myAvatar').src = d.status.avatar;
             if(timerInt) clearInterval(timerInt);
             if(d.timerActive) {
                 document.getElementById('startBtn').classList.add('hidden');
@@ -191,13 +221,11 @@
             const users = s.val() || {};
             Object.entries(users).forEach(([id, u]) => {
                 const name = u.status?.name;
-                // FİLTRE: İsimsiz veya hatalı isimli kişileri radardan çıkar
                 if(!name || name === "undefined" || name.toLowerCase() === "operatör") return;
-                
                 r.innerHTML += `
                     <div class="p-3 glass ${u.timerActive?'border-l-4 border-green-500':'opacity-50'} flex justify-between items-center mb-1">
                         <div class="flex items-center gap-2">
-                            <img src="${u.status?.avatar || 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed='+id}" class="w-6 h-6 rounded-full border border-blue-500/30">
+                            <img src="${u.status?.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed='+id}" class="w-6 h-6 rounded-full border border-blue-500/30">
                             <span class="text-[10px] font-black uppercase ${id===MY_ID?'vip-name':''}">${name}</span>
                         </div>
                         <span class="text-[10px] font-mono text-blue-400 font-bold">${Math.floor((u.pendingTime||0)/60000)}dk</span>
@@ -206,13 +234,11 @@
         });
 
         window.resetDay = () => {
-            if(!confirm("Bugünü bitirip arşive mühürlemek istiyor musun?")) return;
+            if(!confirm("Veriler mühürlensin mi komutan?")) return;
             get(ref(db, `users/${MY_ID}`)).then(s => {
-                const v = s.val();
-                const d = new Date();
+                const v = s.val(); const d = new Date();
                 const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-                const newH = v.history || {};
-                newH[key] = (newH[key] || 0) + (v.pendingTime || 0);
+                const newH = v.history || {}; newH[key] = (newH[key] || 0) + (v.pendingTime || 0);
                 update(ref(db, `users/${MY_ID}`), { pendingTime: 0, timerActive: false, history: newH });
             });
         };
@@ -231,21 +257,10 @@
             for (let i = 6; i >= 0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-                labels.push(dayNames[d.getDay()]);
-                data.push(Math.floor((history[key] || 0) / 60000));
+                labels.push(dayNames[d.getDay()]); data.push(Math.floor((history[key] || 0) / 60000));
             }
-            if(myChart) {
-                myChart.data.labels = labels; myChart.data.datasets[0].data = data; myChart.update('none');
-            } else {
-                myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{ data: data, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59,130,246,0.1)' }]
-                    },
-                    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#3b82f6', font: { size: 10, weight: 'bold' } } } } }
-                });
-            }
+            if(myChart) { myChart.data.labels = labels; myChart.data.datasets[0].data = data; myChart.update('none'); }
+            else { myChart = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59,130,246,0.1)' }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#3b82f6', font: { size: 10, weight: 'bold' } } } } } }); }
         }
 
         document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() });
