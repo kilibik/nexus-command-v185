@@ -194,12 +194,12 @@
         import { getDatabase, ref, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // KOMUTAN, SENİN BİLGİLERİN BURADA GÜNCELLENDİ
+        // KOMUTAN, YENİ PROJE İSMİNİ BURAYA TANIMLADIM
         const firebaseConfig = { 
             apiKey: "AIzaSyCLTb6KDcNyufde_pxeCY1Q1oWoDotdXxU", 
-            authDomain: "ykscanlikronometre.firebaseapp.com", 
-            projectId: "ykscanlikronometre", 
-            databaseURL: "https://ykscanlikronometre-default-rtdb.firebaseio.com" 
+            authDomain: "yks-kronometre.firebaseapp.com", 
+            projectId: "yks-kronometre", 
+            databaseURL: "https://yks-kronometre-default-rtdb.firebaseio.com" 
         };
 
         const app = initializeApp(firebaseConfig);
@@ -229,7 +229,6 @@
             {i:'🛡️', t:'MUHAFIZ', d:'Gece saat 03:00\'e kadar nöbet tutan (çalışan) irade.'}
         ];
 
-        // GOOGLE LOGİN FONKSİYONU
         document.getElementById('googleLoginBtn').onclick = function() {
             signInWithPopup(auth, provider).then((result) => {
                 MY_ID = result.user.uid;
@@ -243,7 +242,7 @@
                 });
                 document.getElementById('loginModal').style.display = 'none';
             }).catch((error) => {
-                alert("Giriş Hatası: Firebase ayarlarından Google'ı aktif etmeli ve Vercel linkini eklemelisiniz.");
+                alert("Giriş Hatası: Alan adınızın Firebase üzerinde yetkili olduğunu kontrol edin.");
             });
         };
 
