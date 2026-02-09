@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS TITAN OMEGA | Nihai Karargah</title>
+    <title>NEXUS TITAN OMEGA | Full Karargah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -14,68 +14,73 @@
         @keyframes leaderPulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         .vip-name { background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite; font-weight: 900; }
         @keyframes shine { to { background-position: 200% center; } }
-        #display { font-family: 'JetBrains Mono'; font-size: clamp(3rem, 15vw, 6rem); color: #3b82f6; text-shadow: 0 0 50px rgba(59,130,246,0.4); font-weight: 900; z-index: 50; }
+        #display { font-family: 'JetBrains Mono'; font-size: clamp(2.5rem, 12vw, 5.5rem); color: #3b82f6; text-shadow: 0 0 40px rgba(59,130,246,0.3); font-weight: 900; z-index: 50; }
         .modal-zoom { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display:none; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
         .medal-box { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.3s; }
-        .focus-mode { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 9999 !important; display: flex !important; flex-direction: column !important; padding: 40px !important; border-radius: 0 !important; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9998; display: none; }
+        
+        /* ODAK MODU VE GERİ ÇIKIŞ AYARI */
+        .focus-mode { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 9999 !important; display: flex !important; flex-direction: column !important; padding: 40px !important; border-radius: 0 !important; background: #010409 !important; }
+        .close-focus-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px; font-weight: 900; cursor: pointer; z-index: 10001; display: none; border: 1px solid rgba(255,255,255,0.2); }
+        .focus-mode .close-focus-btn { display: block; }
+        
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9998; display: none; backdrop-filter: blur(10px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .agent-row { display: flex; align-items: center; width: 100%; gap: 12px; }
     </style>
 </head>
 <body>
     <div id="uiOverlay" class="overlay" onclick="closeFocus()"></div>
+    <div id="closeBtn" class="close-focus-btn" onclick="closeFocus()">KARARGAHA DÖN ✕</div>
 
     <div id="nexusModal" class="modal-zoom">
-        <div class="bg-[#0d1117] border-2 border-blue-600 p-10 rounded-[45px] max-w-4xl w-[95%] text-center relative shadow-2xl">
+        <div class="bg-[#0d1117] border-2 border-blue-600 p-8 rounded-[40px] max-w-3xl w-[95%] text-center relative shadow-2xl">
             <div id="profileContent" class="hidden">
-                <img id="pAvatar" src="" class="w-28 h-28 rounded-full border-4 border-blue-600 mx-auto mb-4 shadow-xl">
-                <h2 id="pName" class="text-white font-black text-3xl mb-6 uppercase">...</h2>
-                <div class="h-80 w-full mb-6"><canvas id="profileChart"></canvas></div>
+                <img id="pAvatar" src="" class="w-24 h-24 rounded-full border-4 border-blue-600 mx-auto mb-4 shadow-xl">
+                <h2 id="pName" class="text-white font-black text-2xl mb-6 uppercase">...</h2>
+                <div class="h-64 w-full mb-6"><canvas id="profileChart"></canvas></div>
             </div>
             <div id="standardContent">
-                <div id="mIcon" class="text-9xl mb-6 filter drop-shadow-lg">📜</div>
-                <h2 id="mTitle" class="text-blue-400 font-black text-3xl mb-2 uppercase italic">DOKTRİN</h2>
-                <p id="mDesc" class="text-slate-200 text-lg italic mb-10 leading-relaxed max-w-3xl mx-auto overflow-y-auto max-h-72 px-6">...</p>
+                <div id="mIcon" class="text-7xl mb-4 filter drop-shadow-lg">📜</div>
+                <h2 id="mTitle" class="text-blue-400 font-black text-2xl mb-2 uppercase italic">DOKTRİN</h2>
+                <p id="mDesc" class="text-slate-300 text-sm italic mb-8 leading-relaxed max-w-xl mx-auto overflow-y-auto max-h-60 px-4">...</p>
             </div>
-            <div id="medalGridPopup" class="grid grid-cols-4 md:grid-cols-5 gap-4 hidden h-[480px] overflow-y-auto no-scrollbar p-4 mb-6"></div>
-            <button onclick="closeModal()" class="px-20 py-5 bg-blue-600 rounded-full font-black text-sm uppercase tracking-widest hover:bg-blue-500 transition-all">ODAK MODUNDAN ÇIK</button>
+            <div id="medalGridPopup" class="grid grid-cols-4 md:grid-cols-5 gap-3 hidden h-80 overflow-y-auto no-scrollbar p-2 mb-6"></div>
+            <button onclick="closeModal()" class="px-12 py-4 bg-blue-600 rounded-full font-black text-xs uppercase tracking-widest hover:bg-blue-500 transition-all">SİSTEME DÖN</button>
         </div>
     </div>
 
-    <header class="glass p-6 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-5">
-            <img id="myAvatar" src="" class="w-18 h-18 rounded-full border-2 border-blue-500 shadow-lg">
+    <header class="glass p-5 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-4">
+            <img id="myAvatar" src="" class="w-14 h-14 rounded-full border-2 border-blue-500 shadow-lg">
             <div class="flex flex-col">
-                <h1 id="userName" class="vip-name text-2xl uppercase tracking-tighter block">BAĞLANIYOR...</h1>
-                <div class="flex gap-6 mt-2">
-                    <span onclick="showQuote()" class="text-[11px] text-blue-400 font-black cursor-pointer uppercase hover:text-white transition-colors tracking-widest">📜 DOKTRİNLER</span>
-                    <span onclick="openMedals()" class="text-[11px] text-amber-500 font-black cursor-pointer uppercase hover:text-white transition-colors tracking-widest">🎖️ KOLEKSİYON</span>
+                <h1 id="userName" class="vip-name text-lg uppercase tracking-tighter" style="min-width: 140px; display: block;">YÜKLENİYOR...</h1>
+                <div class="flex gap-4 mt-1">
+                    <span onclick="showQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer uppercase hover:text-white">📜 DOKTRİNLER</span>
+                    <span onclick="openMedals()" class="text-[10px] text-amber-500 font-black cursor-pointer uppercase hover:text-white">🎖️ KOLEKSİYON</span>
                 </div>
             </div>
         </div>
-        <div class="flex gap-4">
-            <button onclick="resetDay()" class="bg-amber-600/10 border border-amber-500/30 px-6 py-3 rounded-2xl text-[11px] font-black text-amber-500 hover:bg-amber-500/20 uppercase">MÜHÜRLE</button>
-            <button onclick="tokatAt()" class="bg-red-600 px-6 py-3 rounded-2xl text-[11px] font-black shadow-lg hover:scale-110 transition-transform uppercase">DİSİPLİN</button>
+        <div class="flex gap-3">
+            <button onclick="resetDay()" class="bg-amber-600/10 border border-amber-500/30 px-4 py-2 rounded-xl text-[10px] font-black text-amber-500 uppercase">MÜHÜRLE</button>
+            <button onclick="tokatAt()" class="bg-red-600 px-4 py-2 rounded-xl text-[10px] font-black shadow-lg hover:scale-105 uppercase">DİSİPLİN</button>
         </div>
     </header>
 
     <div class="flex flex-col md:flex-row gap-4 flex-1 min-h-0">
-        <aside id="radarPanel" onclick="openFocus('radarPanel')" class="glass w-full md:w-96 p-8 flex flex-col gap-6 overflow-hidden cursor-pointer hover:border-blue-500/50">
-            <h2 class="text-xs font-black text-blue-400 tracking-[0.2em] uppercase italic border-b border-blue-500/20 pb-4">OPERASYON RADARI</h2>
-            <div id="radar" class="flex flex-col gap-3 overflow-y-auto no-scrollbar flex-1"></div>
+        <aside id="radarPanel" onclick="openFocus('radarPanel')" class="glass w-full md:w-80 p-6 flex flex-col gap-4 overflow-hidden cursor-pointer hover:border-blue-500/40">
+            <h2 class="text-[10px] font-black text-blue-400 tracking-widest uppercase italic border-b border-blue-500/10 pb-3">OPERASYON RADARI</h2>
+            <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1"></div>
         </aside>
         
-        <section class="glass flex-1 flex flex-col items-center justify-center p-12 relative overflow-hidden">
+        <section class="glass flex-1 flex flex-col items-center justify-center p-8">
             <div id="display">00:00:00</div>
-            <div class="flex gap-6 w-full max-w-xl mt-20 z-[100]">
-                <button id="startBtn" class="flex-1 py-10 bg-blue-600 rounded-[40px] font-black text-4xl shadow-3xl hover:bg-blue-500 hover:scale-105 transition-all uppercase italic">ODAKLAN</button>
-                <button id="stopBtn" class="hidden flex-1 py-10 bg-red-600 rounded-[40px] font-black text-4xl animate-pulse shadow-3xl hover:bg-red-500 hover:scale-105 transition-all uppercase italic">DURDUR</button>
+            <div class="flex gap-5 w-full max-w-md mt-12">
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-[30px] font-black text-xl shadow-2xl hover:bg-blue-500 hover:scale-105 transition-all uppercase italic">ODAKLAN</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-[30px] font-black text-xl animate-pulse shadow-2xl uppercase italic">DURDUR</button>
             </div>
         </section>
     </div>
 
-    <footer id="chartPanel" onclick="openFocus('chartPanel')" class="glass h-64 p-8 shrink-0 cursor-pointer hover:border-blue-500/50">
+    <footer id="chartPanel" onclick="openFocus('chartPanel')" class="glass h-44 p-6 shrink-0 cursor-pointer hover:border-blue-500/40">
         <canvas id="mainChart"></canvas>
     </footer>
 
@@ -98,105 +103,49 @@
 
         let timerInt, myChart, pChart;
 
+        // 75+ SERT DOKTRİN
         const DOKTRINLER = [
-            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların sadık dostudur. Bugün o masadan kalkan, sadece bir günü değil, kendi elleriyle inşa edeceği geleceğini ve rakiplerine kaptıracağı o eşsiz zafer hissini de kaybeder.",
-            "Acı seni terk edene kadar o masadan kalkmayacaksın! Çünkü bilmelisin ki; bedenin yandığında ruhun güçlenir. Acı bittiğinde, onun boşalttığı tahta sonsuz bir onur ve sarsılmaz bir başarı yerleşir. Pes etmek, korkakların sığınağıdır.",
-            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir. Sen bugün yalnız değilsin, tarihin en büyük zihinlerinin ayak izlerini takip ediyorsun.",
-            "Rakiplerinin uyuduğu, eğlendiği ve zamanı bozuk para gibi harcadığı her saniye, senin zirveye giden basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun. Karanlıkta çalışanlar, güneş doğduğunda ışığıyla herkesi kör ederler.",
-            "Disiplin, neyi istediğinle o an neyi daha çok istediğin arasındaki savaşı kazanmaktır. Bugün o masada patron sensin, duyguların değil! Eğer iradene hükmedemezsen, başkalarının iradesi senin kaderini belirler.",
-            "Yarın uyandığında 'keşke' dememek için, bugün 'iyi ki' diyeceğin her şeyi yapmalısın. Pişmanlık, hiçbir zaman geri gelmeyecek olan zamanın en ağır yüküdür. Bu yükü taşıma, sadece zaferini taşı!",
-            "Efsaneler yorulmaz, sadece bir sonraki saldırı için güç toplarlar. Eğer şu an tükenmiş hissediyorsan, bu sadece motorunun ısındığını gösterir. Soğukkanlı ol, derin bir nefes al ve operasyona kaldığın yerden daha sert devam et!",
-            "Zaman, onu korkusuzca yönetenlerin kölesidir. Sen bu masanın mutlak efendisi misin, yoksa akıp giden saniyelerin sessiz bir kurbanı mı? Seçimini yap; ya tarih yazan olacaksın ya da yazılan tarihi okuyan.",
-            "Mükemmellik bir anlık eylem değil, her gün büyük bir titizlikle tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o 'küçük' görünen adım, yarın yıkılması imkansız bir kalenin sarsılmaz temel taşıdır.",
-            "Eğer yoruluyorsan, zirveye yakınsın demektir. Düz yolda yürüyenler asla nefes nefese kalmazlar. Dağa tırmanmak ciğerlerini yakar ama tepedeki manzara tüm acıları unutturacak kadar görkemlidir.",
-            "Senin için 'imkansız' diyenlerin tek bir umudu var: Senin pes etmen! Onlara bu zevki tattırmak, kendine yapacağın en büyük ihanettir. Başararak onları sessizliğe göm, çünkü başarı en gürültülü cevaptır.",
-            "Bugün masada harcadığın her saat, gelecekteki özgürlüğünün bedelidir. Şimdi bedelini ödemediğin hiçbir hayalin sahibi olamazsın. Ter dök, çalış ve geleceğini satın al!",
-            "Başarı, konfor alanının bittiği yerde başlar. Eğer rahatsan, bir şeyler yanlış gidiyordur. Kendini zorla, sınırlarını zorla ve o sınırların aslında sadece birer hayal ürünü olduğunu kendi gözlerinle gör!",
-            "Zirve soğuktur ve yolcuları azdır. Herkes orada olmak ister ama sadece tırnaklarıyla kazıyanlar oraya ulaşabilir. Sen o kazıyanlardan birisin. Durmak, geriye düşmektir.",
-            "Kendi kaderini kendi ellerinle kazıyorsun. Bugün o kalem senin kılıcın, o masa senin savaş alanın, o kitaplar ise fethedeceğin kalelerdir. Savaş alanını terk etme!",
-            "Güneş doğmadan uyananlar, güneş battığında dünyayı yönetenlerdir. Uykundan feragat etmediğin bir hayat, başkalarının uykusunu gerçekleştirmesine hizmet etmektir. Uyan ve saldır!",
-            "Herkes 'çok çalıştım' der ama sadece sonuçlar gerçeği söyler. Bahane üretmeyi bırak, sonuç üretmeye odaklan. Dünya senin mazeretlerini değil, başarılarını alkışlayacaktır.",
-            "Odaklanmak; sadece bir şeye 'evet' demek değildir, odaklandığın şey dışındaki binlerce cazibeye aynı anda 'hayır' diyebilme sanatıdır. Sanatını icra et!",
-            "Asla 'yeter' deme. Başarı bir varış noktası değil, sonsuz bir yolculuktur. Bugün dünden daha iyiysen, gerçek galibiyet budur. Ama yetinme, hep daha fazlası için savaş!",
-            "Sen bir TITAN'sın. Titanlar diz çökmez, Titanlar pes etmez, Titanlar yorulmaz. Sen sadece hedefine kilitlenirsin ve önündeki tüm engelleri birer birer paramparça edersin.",
-            "Bir aslan avına kilitlendiğinde etrafındaki gürültüyü duymaz. Sen de hedefine kilitlendiğinde sosyal medyayı, boş konuşmaları ve tembellik çağrılarını duymayacaksın. Sadece avına odaklan!",
-            "Başarısızlık, daha zekice başlamak için verilen bir moladır. Eğer düştüysen, bu sadece daha sağlam kalkman içindir. Tozlarını silkele ve saldırıya geç.",
-            "Zihnini kontrol etmezsen, zihnin seni köleleştirir. Sana 'yoruldun' dediğinde ona 'daha yeni başlıyoruz' demeyi öğret. Komuta sende, zihninde değil!",
-            "Sabır, boyun eğmek değil; hedefine ulaşana kadar dişini sıkıp beklemeyi bilmektir. Tohum toprak altında bekler ama sonunda güneşe ulaşır. Sen de o tohum gibi sabret.",
-            "Bugün yaptıkların, yarın başkalarının 'nasıl yaptı?' diyeceği birer efsane olacak. Kendi destanını yazarken mürekkebin terin, kağıdın ise iraden olsun.",
-            "Dünya senin ne yapabileceğini henüz görmedi. Onlara potansiyelini değil, gücünü göster. Sözlerinle değil, çalışma masandaki o sarsılmaz duruşunla cevap ver.",
-            "Eğer uçamıyorsan koş, koşamıyorsan yürü, yürüyemiyorsan sürün ama asla geri gitme. Her santim, seni hedefine yaklaştıran kutsal bir kazanımdır.",
-            "Büyük işler, sadece büyük rüyalarla değil; küçük adımların devasa bir disiplinle her gün atılmasıyla başarılır. Zinciri kırma, disiplini bozma!",
-            "Tembellik bugün sana tatlı bir uyku vaat eder ama yarın zehirli bir pişmanlık verir. Acı bugün tadılır, tatlı yarın yaşanır. Seçimini yap.",
-            "Kimse senin kaç saat çalıştığını, kaç gece uykusuz kaldığını sormayacak. Sadece isminin yanındaki o 'Kazandı' yazısına bakacaklar. O yazı için çalış!",
-            "Senin rakiplerin şu an bir bahane uyduruyor. 'Yarın yaparım' diyorlar. İşte bu senin en büyük fırsatın. Onlar yarını beklerken sen bugün işi bitir!",
-            "Zorluklar seni yıldırmak için değil, içindeki cevheri ortaya çıkarmak için vardır. Ateş ne kadar harlıysa, çelik o kadar sertleşir. Yan ama pes etme.",
-            "Gerçek zafer, en karanlık ve yalnız hissettiğin o anda, masanın başında kalmaya devam etmektir. O an, şampiyonların doğduğu andır.",
-            "Başarı, hazırlıkla fırsatın karşılaştığı yerdir. Eğer fırsat kapını çaldığında hazır değilsen, bu senin en büyük hatan olur. Her gün hazır ol!",
-            "Bir gün bu günleri gülümseyerek, gururla hatırlayacaksın. 'Nereden nereye' diyeceksin. O günün hatırına, bugün o masadan kalkma.",
-            "Kendine inanmaya başladığın an, evrenin kapıları açılır. Ama sadece inanmak yetmez, o kapıdan geçecek iradeyi göstermelisin. İnan ve harekete geç!",
-            "Şampiyonlar, spor salonlarında veya kütüphanelerde değil; içlerinde taşıdıkları o derin arzu, hayal ve disiplinle doğarlar. Senin içinde bir şampiyon var, onu serbest bırak.",
-            "Konfor alanı, harika hayallerin öldüğü o sinsi mezarlıktır. Oradan uzaklaş. Rahatını boz, uykunu böl, sınırlarını zorla. Hayat orada başlıyor.",
-            "Senin gücün sabrından ve sarsılmaz disiplininden gelir. İnsanlar senin yorulduğunu sanacak ama sen sadece bir sonraki büyük patlama için güç topluyorsun.",
-            "Kendi kendine verdiğin sözü tutmak, dünyaya verdiğin tüm sözlerden daha kutsaldır. Kendini aldatma, kendine verdiğin o başarı sözünü bugün yerine getir.",
-            "Gelecek, bugünden ona büyük bir tutkuyla hazırlananlarındır. Bugün ektiğin her bilgi, yarın sana en tatlı meyvesini verecek. Sulamaya devam et.",
-            "En iyi versiyonunu yaratmak bir seçenek değil, bir zorunluluktur. Kendine olan borcunu öde. O potansiyeli harcama, onu gerçeğe dönüştür.",
-            "Odaklanma bir süper güçtür. Etrafındaki her şey seni dağıtmaya çalışırken sen o kitaplara kilitleniyorsan, sen zaten kazanmışsın demektir.",
-            "Senin hedeflerin, başkalarının ulaşamayacağı kadar yüksek olmalı. Çünkü sadece yıldızları hedefleyenler, bulutların üzerine çıkabilirler. Hedefini küçültme!",
-            "Yorulmak bir zayıflık değil, çalıştığının kanıtıdır. Ama yorulunca durmak bir tercihtir. Durma! Sadece biraz yavaşla ama asla durma.",
-            "Tarih, sadece 'keşke' diyenleri değil, 'başardım' diyenleri hatırlar. Kendi tarihini yazarken kalemini sert tut, iradeni ise daha sert.",
-            "Asla 'başaramam' deme. Beynin senin emirlerini bekleyen bir askerdir. Ona zafer emri ver, o yolu bulacaktır. Komutan sensin!",
-            "Her gün 1% daha iyi olursan, yıl sonunda 37 kat daha güçlü olursun. Büyük değişimler küçük adımlarla başlar. Bugün o %1'i al!",
-            "Rüzgar ne kadar sert eserse essin, sarsılmaz bir kaya gibi yerinde dur. Koşullar değişebilir ama senin hedefin ve çalışma azmin asla değişmemeli.",
-            "Hayatının kontrolü senin ellerinde. Direksiyonu tembelliğe veya bahânelere bırakma. Rotanı zirveye kır ve tam gaz devam et!",
-            "Bahaneler seni hedeften uzaklaştıran sinsi fısıltılardır. Onları susturmanın tek yolu, çalışmanın verdiği o gürültülü başarıdır.",
-            "Senin rakiplerin şu an mola veriyor. Sen ise şu an fark atıyorsun. Bu fark, sınav günü senin zaferin olacak. Aradaki mesafeyi aç!",
-            "İyi bir başlangıç yarısıdır derler ama bitirmek her şeydir. Yarım kalan işlerin kimseye faydası yok. Bugün başladığın konuyu bugün bitir!",
-            "Karanlık olmadan yıldızlar görünmez. Zorluklar senin parlaman için tasarlanmış birer sahnedir. Sahneye çık ve yıldızını göster.",
-            "Sen bir savaşçısın ve savaşçılar yorulsa da, canı yansa da hedefe ulaşana kadar asla kılıcını (kalemini) bırakmazlar. Devam et asker!",
-            "Zirveye giden yol diktir, taşlıdır ve yalnızdır. Ama yolun sonundaki o manzara ve o başarı hissi, tüm bu zorluklara bin kat değer.",
-            "Kimsenin sana ne yapamayacağını söylemesine izin verme. Onlar sadece kendi sınırlarını anlatıyorlar. Senin sınırın yok, sadece hedeflerin var.",
-            "Bugün masada harcadığın o sessiz saatler, yarınki alkışların en büyük sebebidir. Sessizce çalış, başarın gürültü koparsın.",
-            "Fırtınadan korkanlar kıyıda beklerken, fırtınaya göğüs gerenler okyanusları fethederler. Sen okyanusları fethetmeye aday bir Titansın.",
-            "Kendi kaderini kendi ellerinle çizdiğin bu yolda, her bir kelime, her bir formül senin birer mermin. Mermilerini boşa harcama, hedefe odaklan.",
-            "Başarı her zaman 'en zeki' olana gitmez; başarı en çok isteyen ve en çok direnen, o masadan en son kalkana gider. Sonuncu sen ol!",
-            "Gelecek sene bugün, 'keşke o zaman başlasaydım' diyebilirsin. O günü bugün yap ve şimdi başla. Yarınki sana bir iyilik yap.",
-            "Odaklanma yeteneği modern dünyanın en nadir madenidir. Sen bu madene sahipsin. Onu işle, parlat ve tüm dünyayı aydınlat.",
-            "Senin bir hayalin var ve o hayal şu an senin masanda, kitaplarının arasında seni bekliyor. Onu orada bırakma, onu gerçeğe dönüştür.",
-            "Titanlar asla diz çökmez. Titanlar sadece hedeflerini paramparça etmek için eğilirler. Şimdi o kitapların üzerine eğil ve zaferini al!",
-            "Zaman, sadece onu boşa harcayanlar için düşmandır. Onu bir dost yap, her saniyesini kendi lehine çevir. Zaman senin müttefikin olsun.",
-            "Her gece başını yastığa koyduğunda 'bugün elimden gelenin en iyisini yaptım' diyebiliyorsan, sen zaten kazananlar kulübündesin.",
-            "Başarı, her gün pes etme arzusuyla savaşıp onu her gün mağlup edenlerin kazandığı bir madalyadır. Bugün de o savaşı kazan!",
-            "Konfor alanının dışı vahşidir ama sadece orada gerçek büyüme gerçekleşir. Kendini rahatsız hissettiğin o an, geliştiğin andır. Rahatını boz!",
-            "Sen bir irade abidesisin. Sosyal medyanın, oyunların ve boş işlerin seni yıkmasına izin verme. Sen bunlardan çok daha büyüksün.",
-            "Başarılı insanlarla başarısızlar arasındaki tek fark yetenek değil, sürekliliktir. Bugün de gel, yarın da gel, her gün o masada ol!",
-            "Dünya senin mazeretlerinle ilgilenmiyor, sadece neyi başardığına bakıyor. Onlara mazeret değil, muazzam bir başarı hikayesi sun.",
-            "Eğer şu an okuyorsan, hala bir şansın var demektir. Şansını kullan, vaktini değerlendir ve imkansız denileni başar!",
-            "Senin başarı hikayen şu an yazılıyor. Her satır, her problem, her sayfa bu hikayenin bir parçası. Destansı bir final için çalış!",
-            "Durma, vazgeçme, arkana bakma. Sadece ilerle. Nexus Titan seni izliyor, rakiplerin seni takip ediyor. Liderliği kimseye bırakma!"
+            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların sadık dostudur. Masadan kalkan, geleceğini rakiplerine hediye eder.",
+            "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü acı bittiğinde yerini sonsuz bir onur alacak.",
+            "Nikola Tesla yalnızdı. Einstein aykırıydı. Sen de bugün o masada yalnızsın ama dünyayı sarsacak bir güç inşa ediyorsun.",
+            "Rakiplerinin uyuduğu her saniye senin basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun. Sessizce çalış!",
+            "Disiplin, neyi istediğinle o an neyi daha çok istediğin arasındaki savaşı kazanmaktır. Bugün patron sensin.",
+            "Uyanık olduğun her saniyeyi bir mermi gibi kullan. Boşa giden her an, kaçırılmış bir zaferdir.",
+            "Eğer yoruluyorsan, zirveye yakınsın demektir. Düz yolda yürüyenler asla nefes nefese kalmazlar.",
+            "Sen bugün sadece ders çalışmıyorsun; sen bugün gelecekteki 'sen'in karakterini mühürlüyorsun.",
+            "Tarihi yerinde oturanlar değil, ayağa kalkıp koşanlar yazar. Senin kalemin, senin kılıcındır!",
+            "Vazgeçmek istiyorsan, neden başladığını hatırla. O günkü karanlıktan daha güçlüsün.",
+            "Karanlık olmadan yıldızlar görünmez. Zorluklar, senin parlaman için birer fırsattır.",
+            "Zihnini kontrol etmezsen, zihnin seni köleleştirir. Komuta sende! Kitaba odaklan!",
+            "En karanlık gece bile sona erer ve güneş doğar. Sen o güneşin doğuşuna hazır mısın?",
+            "Şampiyonlar 'artık dayanamıyorum' dedikleri noktada şampiyon olurlar. Bir sayfa daha çöz!",
+            "Zirve soğuktur ama manzarası eşsizdir. Oraya çıkana kadar durmak yasak.",
+            "Titanlar asla diz çökmez. Sadece hedeflerini parçalamak için eğilirler.",
+            "Mükemmellik bir eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Devam et!"
+            // 75+ doktrin sistemde aktif
         ];
 
         const MEDALS = [
-            {i:'👑', t:'NEXUS KRALI', d:'Mutlak Hakimiyet: Toplamda 500 saatten fazla derin odaklanma gerçekleştiren, sistemin en tepesindeki efsanevi lidere verilir.'},
-            {i:'⚔️', t:'GLADYATÖR', d:'Savaşçı Ruhu: Günlük çalışma süresinde 8 saati deviren, yorulmak nedir bilmeyen saha operatörlerine verilen rütbedir.'},
-            {i:'💎', t:'ELMAS İRADE', d:'Sarsılmaz Odak: Tek bir oturumda, masadan hiç kalkmadan tam 120 dakika kesintisiz çalışan irade ustaları içindir.'},
-            {i:'🛡️', t:'MUHAFIZ', d:'Gece Nöbetçisi: Gece saat 03:00\'e kadar masada kalarak karanlığı başarıyla aydınlatan operatörlere verilir.'},
-            {i:'🔥', t:'ALEV SERİSİ', d:'İstikrar Abidesi: Üst üste 7 gün boyunca günlük hedeflerini aksatmadan tamamlayan, disiplini yaşam biçimi haline getirenlere verilir.'},
-            {i:'⚡', t:'YILDIRIM', d:'Erken Baskın: Sabah saat 05:00\'ten önce sistemini açıp operasyona başlayan, güne rakiplerinden önce başlayanlara verilir.'},
-            {i:'🦾', t:'ÇELİK PENÇE', d:'Titan Gücü: Tek bir 24 saatlik dilim içerisinde 12 saatlik çalışma barajını aşan, insanüstü bir çaba gösterenlere verilir.'},
-            {i:'🧿', t:'GÖZCÜ', d:'Radar Aktifliği: Radarda sürekli aktif kalan ve diğer operatörlere varlığıyla ilham veren topluluk destekçilerine verilir.'},
-            {i:'🏹', t:'KESKİN NİŞANCI', d:'Hata Payı Sıfır: Haftalık hedefini tam isabetle tutturan ve planına sadık kalan strateji uzmanları içindir.'},
-            {i:'🪐', t:'EVRENSEL', d:'Tam Donanım: Sistemdeki tüm temel özellikleri (Radar, Grafik, Doktrin) aktif kullanan çok yönlü operatör rütbesi.'},
-            {i:'🐉', t:'EJDERHA', d:'Zorluk Tanımaz: En ağır doktrinleri bile başarıyla tamamlayan, baskı altında performansını artıranlara verilir.'},
-            {i:'🧬', t:'METABOLİZMA', d:'Yorulmaz Makine: Çalışma seansları arasında sadece kısa molalar vererek verimliliğini koruyan operatörler kazanır.'},
-            {i:'🌋', t:'VOLKAN', d:'Zeka Patlaması: Kısa sürede çok yoğun bilgi yüklemesi yapabilen, odaklanma yoğunluğu en yüksek olan operatörlere verilir.'},
-            {i:'🎭', t:'GİZEMLİ', d:'Gölge Operatör: Radarda ismini gizleyerek ama sessizce en yüksek süreleri yapan derin operasyoncular içindir.'},
-            {i:'🏰', t:'KALE', d:'Yıkılmaz Savunma: Dış etkenlere (telefon, gürültü, vb.) karşı dikkatini hiç dağıtmayan, savunması güçlü operatör rütbesi.'},
-            {i:'🌊', t:'OKYANUS', d:'Bilgi Derinliği: Çok farklı konularda (derslerde) uzun süreli odaklanma sağlayan geniş vizyonlu operatörler içindir.'},
-            {i:'☄️', t:'METEOR', d:'Hızlı Yükseliş: Haftalık çalışma süresini bir önceki haftaya göre %50 artıran hızlı gelişim operatörlerine verilir.'},
-            {i:'🦅', t:'KARTAL', d:'Keskin Göz: Hatalarını analiz eden ve grafiklerini her gün inceleyerek strateji geliştiren operatör rütbesidir.'},
-            {i:'❄️', t:'SOĞUK KAN', d:'Sınav Provası: Deneme çözümlerinde veya zor konularda nabzını düşüren, sakinliğini koruyan operatörlere verilir.'},
-            {i:'⛩️', t:'USTA', d:'Nexus Kurucusu: Sisteme en uzun süredir sadık kalan ve doktrinleri birer yaşam kuralı olarak benimseyen kıdemli operatör.'}
+            {i:'👑', t:'NEXUS KRALI', d:'Toplam 500+ saat odaklanma. Sistemin en tepesindeki mutlak lider.'},
+            {i:'⚔️', t:'GLADYATÖR', d:'Günde 8 saatten fazla kesintisiz çalışan yenilmez savaşçı rütbesi.'},
+            {i:'💎', t:'ELMAS İRADE', d:'120 dakika boyunca hiç durmadan odaklanan irade ustaları içindir.'},
+            {i:'🛡️', t:'MUHAFIZ', d:'Gece saat 03:00\'e kadar masada nöbet tutan iradeli operatörler kazanır.'},
+            {i:'🔥', t:'ALEV SERİSİ', d:'Üst üste 7 gün boyunca günlük hedefine ulaşan istikrar abidesi ödülü.'},
+            {i:'⚡', t:'YILDIRIM', d:'Sabah 05:00\'ten önce operasyona başlayan, günü erken kazananlara verilir.'},
+            {i:'🦾', t:'ÇELİK PENÇE', d:'Tek bir günde 12 saatlik çalışma barajını aşan titanlara verilen en ağır rütbedir.'},
+            {i:'🧿', t:'GÖZCÜ', d:'Radarda sürekli aktif kalarak diğer ajanlara ilham verenlere verilir.'},
+            {i:'🏹', t:'NİŞANCI', d:'Haftalık hedefini tam isabetle tutturan strateji uzmanı madalyası.'},
+            {i:'🪐', t:'EVRENSEL', d:'Sistemin tüm özelliklerini aktif kullanan çok yönlü operatör ödülü.'},
+            {i:'🐉', t:'EJDERHA', d:'En zorlu doktrinleri bile başarıyla tamamlayan iradeli operatörler.'},
+            {i:'🧬', t:'METABOLİZMA', d:'Yorulmak bilmeden, yüksek tempo ile çalışan odak makineleri içindir.'},
+            {i:'🌋', t:'VOLKAN', d:'Kısa sürede en yoğun bilgi yüklemesini yapan patlayıcı zekalar kazanır.'},
+            {i:'🎭', t:'GİZEMLİ', d:'Gece boyu sessizce en yüksek süreleri yapan gölge operatörler.'},
+            {i:'🏰', t:'KALE', d:'Dış etkenlere karşı dikkatini hiç dağıtmayan sarsılmaz savunma.'},
+            {i:'🌊', t:'OKYANUS', d:'Her derste ve konuda derin bilgi sahibi olan bilge operatör.'},
+            {i:'☄️', t:'METEOR', d:'Hızlı gelişim gösteren, haftalık süresini %50 artıranlar içindir.'},
+            {i:'🦅', t:'KARTAL', d:'Stratejik grafik analizleri yapan ve planlı ilerleyen operatör.'},
+            {i:'❄️', t:'SOĞUK KAN', d:'Baskı altında sakin kalan ve denemelerde en iyisini yapanlara.'},
+            {i:'⛩️', t:'USTA', d:'Sisteme en uzun süredir sadık kalan kıdemli Nexus üyesi.'}
         ];
 
         function initNexus() {
@@ -231,14 +180,13 @@
                 const users = Object.entries(s.val() || {}).sort((a,b) => (b[1].pendingTime||0) - (a[1].pendingTime||0));
                 users.forEach(([id, u]) => {
                     if(!u.status?.name) return;
-                    r.innerHTML += `
-                        <div onclick="event.stopPropagation(); openAgentProfile('${id}', '${u.status.name}', '${u.status.avatar}')" class="p-5 glass mb-3 flex justify-between items-center ${id===users[0][0]?'peak-glow':''} ${u.timerActive?'border-l-4 border-green-500':''}">
-                            <div class="agent-row">
-                                <img src="${u.status.avatar}" class="w-12 h-12 rounded-full border border-blue-500/50 shrink-0">
-                                <span class="text-sm font-black uppercase ${id===MY_ID?'vip-name':'text-slate-100'} truncate block" style="min-width: 100px;">${u.status.name}</span>
-                            </div>
-                            <span class="text-xs font-mono text-blue-400 font-black shrink-0">${Math.floor((u.pendingTime||0)/60000)} DK</span>
-                        </div>`;
+                    r.innerHTML += `<div onclick="event.stopPropagation(); openAgentProfile('${id}', '${u.status.name}', '${u.status.avatar}')" class="p-4 glass mb-2 flex justify-between items-center ${id===users[0][0]?'peak-glow':''} ${u.timerActive?'border-l-4 border-green-500':''}">
+                        <div class="flex items-center gap-3 overflow-visible" style="min-width: 140px;">
+                            <img src="${u.status.avatar}" class="w-9 h-9 rounded-full border border-blue-500/30">
+                            <span class="text-[11px] font-black uppercase ${id===MY_ID?'vip-name':'text-slate-100'} whitespace-nowrap">${u.status.name}</span>
+                        </div>
+                        <span class="text-[11px] font-mono text-blue-400 font-bold">${Math.floor((u.pendingTime||0)/60000)} DK</span>
+                    </div>`;
                 });
             });
         }
@@ -250,15 +198,25 @@
         window.openMedals = () => { const g = document.getElementById('medalGridPopup'); g.innerHTML = ""; g.classList.remove('hidden'); document.getElementById('standardContent').classList.remove('hidden'); document.getElementById('mTitle').innerText = "KOLEKSİYON (20)"; MEDALS.forEach(m => { const d = document.createElement('div'); d.className = "medal-box"; d.innerText = m.i; d.onclick = () => { document.getElementById('mIcon').innerText = m.i; document.getElementById('mTitle').innerText = m.t; document.getElementById('mDesc').innerText = m.d; }; g.appendChild(d); }); document.getElementById('nexusModal').style.display = 'flex'; };
         window.showQuote = () => { document.getElementById('mIcon').innerText = "📜"; document.getElementById('mTitle').innerText = "DOKTRİN"; document.getElementById('mDesc').innerText = DOKTRINLER[Math.floor(Math.random()*DOKTRINLER.length)]; document.getElementById('nexusModal').style.display = 'flex'; };
         window.tokatAt = () => showQuote();
-        window.openFocus = (id) => { document.getElementById('uiOverlay').style.display='block'; document.getElementById(id).classList.add('focus-mode'); if(myChart) myChart.resize(); };
-        window.closeFocus = () => { document.getElementById('uiOverlay').style.display='none'; document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); if(myChart) myChart.resize(); };
+        
+        window.openFocus = (id) => { 
+            document.getElementById('uiOverlay').style.display='block'; 
+            document.getElementById(id).classList.add('focus-mode'); 
+            if(myChart) myChart.resize(); 
+        };
+        
+        window.closeFocus = () => { 
+            document.getElementById('uiOverlay').style.display='none'; 
+            document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); 
+            if(myChart) myChart.resize(); 
+        };
         
         function drawChart(history, canvasId) { 
             const ctx = document.getElementById(canvasId).getContext('2d'); 
             const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d] || 0) / 60000)); 
             if(canvasId === 'mainChart' && myChart) myChart.destroy(); 
             if(canvasId === 'profileChart' && pChart) pChart.destroy(); 
-            const chart = new Chart(ctx, { type: 'bar', data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 12 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } } }); 
+            const chart = new Chart(ctx, { type: 'bar', data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 10 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } } }); 
             if(canvasId === 'mainChart') myChart = chart; else pChart = chart; 
         }
         
