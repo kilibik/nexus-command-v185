@@ -3,179 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS V185 | SUPREME</title>
+    <title>NEXUS V185 | SUPREME COMMAND</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
-        body { background: radial-gradient(circle at top, #1e293b, #020617); color: white; font-family: 'Inter', sans-serif; height: 100vh; margin: 0; overflow: hidden; }
-        .glass { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; backdrop-filter: blur(12px); }
-        #display { font-family: 'JetBrains Mono'; font-size: clamp(3.5rem, 15vw, 6rem); color: #3b82f6; font-weight: 900; filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.6)); letter-spacing: -2px; }
-        .special-name { background: linear-gradient(to right, #fff, #3b82f6, #fb923c, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; font-weight: 900; }
-        .vip-badge { background: linear-gradient(90deg, #facc15, #fb923c); color: #000; font-size: 9px; font-weight: 900; padding: 2px 8px; border-radius: 6px; box-shadow: 0 0 15px rgba(250, 204, 21, 0.5); }
+        :root { --p-blue: #3b82f6; --bg: #020617; }
+        body, html { height: 100vh; margin: 0; overflow: hidden; background: radial-gradient(circle at top, #1e293b, var(--bg)); color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; backdrop-filter: blur(10px); }
+        .item-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        .item-card { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 1.2rem; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59,130,246,0.1); cursor: pointer; transition: 0.3s; }
+        .item-card:hover { transform: scale(1.1); background: rgba(59, 130, 246, 0.2); }
+        #display { font-family: 'JetBrains Mono', monospace; font-size: clamp(2.5rem, 12vw, 5.5rem); font-weight: 900; color: var(--p-blue); filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.5)); letter-spacing: -2px; }
+        .special-vip { background: linear-gradient(90deg, #facc15, #fb923c, #facc15); background-size: 200% auto; color: #000 !important; animation: shine 2s linear infinite; box-shadow: 0 0 15px rgba(250, 204, 21, 0.7); }
+        .special-name { background: linear-gradient(to right, #fff 20%, #3b82f6 40%, #fb923c 60%, #fff 80%); background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; font-weight: 900 !important; }
+        .active-pulse { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse-ring 1.5s infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.7); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
         @keyframes shine { to { background-position: 200% center; } }
-        .active-pulse { width: 10px; height: 10px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(0.9); opacity: 0; } }
-        .radar-list::-webkit-scrollbar { display: none; }
+        .radar-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
+        .mobile-focus { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 5000 !important; background: #020617 !important; padding: 25px !important; }
     </style>
 </head>
-<body class="p-4 flex flex-col gap-4">
+<body>
 
-    <div class="glass p-5 flex items-center justify-between shrink-0 border-b-2 border-blue-500/20">
+<div id="userReportModal" style="display:none;" class="fixed inset-0 z-[10001] bg-black/95 flex items-center justify-center p-4">
+    <div class="glass p-8 max-w-sm w-full border-2 border-blue-500 shadow-2xl">
+        <h2 id="reportUserName" class="text-blue-400 font-black text-sm mb-6 uppercase text-center tracking-widest">GÖREV RAPORU</h2>
+        <div class="h-56 w-full mb-8"><canvas id="userChart"></canvas></div>
+        <button onclick="document.getElementById('userReportModal').style.display='none'" class="w-full py-4 bg-slate-800 rounded-2xl font-black text-xs uppercase border border-slate-700">KAPAT</button>
+    </div>
+</div>
+
+<div id="nexusModal" style="display:none;" class="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center p-4">
+    <div class="glass p-8 max-w-sm w-full text-center border-2 border-blue-500 shadow-2xl">
+        <div id="modalIcon" class="text-7xl mb-6">🎖️</div>
+        <h2 id="modalTitle" class="text-blue-400 font-black tracking-tighter uppercase text-xs mb-3">SİSTEM MESAJI</h2>
+        <p id="modalText" class="text-white text-lg font-bold mb-8 italic">---</p>
+        <button onclick="document.getElementById('nexusModal').style.display='none'" class="w-full py-5 bg-blue-600 rounded-2xl font-black text-sm uppercase shadow-lg active:scale-95">ANLAŞILDI</button>
+    </div>
+</div>
+
+<div id="app-screen" class="flex flex-col h-screen p-3 gap-3">
+    <div class="glass p-4 flex items-center justify-between shrink-0 h-[12vh]">
         <div class="flex items-center gap-4">
-            <div class="text-4xl">🦁</div>
+            <div id="myAvatar" class="text-4xl p-2 bg-slate-900 rounded-2xl border border-blue-500/30">🦁</div>
             <div>
-                <div class="flex items-center gap-2">
-                    <h2 id="myNick" class="text-sm font-black uppercase tracking-tight">BAĞLANIYOR...</h2>
-                    <span id="vipBadge" class="hidden vip-badge">SUPREME</span>
+                <div class="flex items-center">
+                    <h2 id="myNick" class="text-xs font-black uppercase text-white truncate max-w-[150px]">YÜKLENİYOR...</h2>
+                    <span id="vipBadge" class="hidden">VIP</span>
                 </div>
-                <p class="text-[9px] text-emerald-400 font-bold uppercase tracking-[0.2em] mt-1">Nexus Command v185 Active</p>
+                <div class="flex items-center gap-3 mt-1.5">
+                    <span class="text-orange-500 text-[10px] font-black italic"><span id="streakCount">0</span> GÜN 🔥</span>
+                    <div class="w-24 h-2 bg-slate-950 rounded-full border border-slate-800 overflow-hidden">
+                        <div id="xpBar" class="bg-blue-500 h-full w-0 transition-all duration-1000"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <button onclick="location.reload()" class="bg-slate-800/50 hover:bg-slate-700 px-6 py-2 rounded-2xl text-[10px] font-black border border-slate-600 transition-all active:scale-90">SİSTEMİ YENİLE</button>
+        <button onclick="openCoach()" class="bg-gradient-to-r from-blue-700 to-indigo-900 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-blue-400/30 active:scale-90 transition-all">DİSİPLİN TOKADI</button>
     </div>
 
-    <div class="flex flex-col md:flex-row gap-4 flex-1 min-h-0">
-        <div class="glass flex-[2.5] flex flex-col p-8 items-center justify-center relative overflow-hidden">
-            <div id="display" class="mb-4">00:00:00</div>
-            <div class="w-full max-w-md z-10">
-                <button id="btnAction" onclick="toggleTimer()" class="w-full py-6 bg-blue-600 hover:bg-blue-500 rounded-3xl font-black text-3xl uppercase tracking-tighter shadow-[0_0_30px_rgba(59,130,246,0.4)] transition-all active:scale-95">BAŞLAT</button>
+    <div class="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
+        <div class="glass w-full md:w-[22%] p-4 flex flex-col gap-4 overflow-hidden">
+            <div class="flex-1 overflow-hidden flex flex-col">
+                <p class="text-[9px] font-black text-slate-500 uppercase mb-2 tracking-widest">ROZET KOLEKSİYONU</p>
+                <div id="badgeGrid" class="item-grid radar-scroll"></div>
             </div>
-            <div class="w-full h-40 mt-10 opacity-50">
-                <canvas id="mainChart"></canvas>
+            <div class="flex-1 overflow-hidden flex flex-col">
+                <p class="text-[9px] font-black text-yellow-500 uppercase mb-2 tracking-widest">MADALYALAR</p>
+                <div id="medalGrid" class="item-grid radar-scroll"></div>
             </div>
         </div>
 
-        <div class="glass flex-1 p-5 flex flex-col overflow-hidden border-l-2 border-blue-500/10">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-[11px] font-black text-blue-400 uppercase tracking-widest">CANLI OPERASYON RADARI</h3>
-                <div class="flex items-center gap-1">
-                    <span class="active-pulse"></span>
-                    <span class="text-[9px] font-bold text-emerald-400">ONLINE</span>
-                </div>
+        <div class="glass flex-1 flex flex-col items-center justify-center p-6 relative">
+            <div id="display" class="mb-8">00:00:00</div>
+            <div class="flex gap-4 w-full max-w-sm">
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-2xl font-black text-2xl uppercase shadow-lg shadow-blue-500/20 active:scale-95 transition-all">BAŞLAT</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-2xl font-black text-2xl animate-pulse uppercase shadow-lg shadow-red-500/20 active:scale-95 transition-all">DURDUR</button>
+                <button onclick="finishDay()" class="px-6 bg-slate-800 rounded-2xl font-black text-[10px] uppercase border border-slate-700 active:bg-slate-700 transition-all">GÜNÜ BİTİR</button>
             </div>
-            <div id="radar" class="radar-list overflow-y-auto space-y-3 pr-1">
-                </div>
+        </div>
+
+        <div id="radarPanel" onclick="this.classList.toggle('mobile-focus')" class="glass w-full md:w-[28%] p-4 flex flex-col overflow-hidden transition-all duration-300 cursor-pointer">
+            <div class="flex justify-between items-center mb-4">
+                <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">AKTİF OPERASYON RADARI</p>
+                <span class="active-pulse"></span>
+            </div>
+            <div id="radar" class="radar-scroll space-y-3"></div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <div id="reportPanel" onclick="this.classList.toggle('mobile-focus')" class="glass h-[18vh] p-4 flex flex-col overflow-hidden transition-all duration-500 cursor-pointer shrink-0">
+        <span class="text-[9px] font-black text-slate-500 mb-2 uppercase tracking-[0.3em] text-center">PERFORMANS ANALİZİ (BÜYÜTMEK İÇİN TIKLA)</span>
+        <div class="flex-1 relative"><canvas id="historyChart"></canvas></div>
+    </div>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCLTb6KDcNyufde_pxeCY1Q1oWoDotdXxU",
-            authDomain: "yks-odak.firebaseapp.com",
-            databaseURL: "https://yks-odak-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "yks-odak"
-        };
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const USER_ID = "vS5tG7R6u6NnE9X5";
-        const MASTER = "FERHAT ÇAVUŞOĞLU";
+    const firebaseConfig = { 
+        apiKey: "AIzaSyCLTb6KDcNyufde_pxeCY1Q1oWoDotdXxU", 
+        authDomain: "yks-odak.firebaseapp.com", 
+        projectId: "yks-odak", 
+        databaseURL: "https://yks-odak-default-rtdb.europe-west1.firebasedatabase.app" 
+    };
 
-        let timerActive = false, startTime = 0, pendingTime = 0;
+    const app = initializeApp(firebaseConfig); 
+    const db = getDatabase(app);
+    const MY_ID = "vS5tG7R6u6NnE9X5"; // Doğrudan senin ID'ni tanımladık
+    const MASTER_USER = "FERHAT ÇAVUŞOĞLU";
 
-        // GERÇEK ZAMANLI VERİ AKIŞI VE SIRALAMA
-        onValue(ref(db, 'users'), (snapshot) => {
-            const data = snapshot.val();
-            if(!data) return;
+    let timerInterval, myChart, userChart;
 
-            const radar = document.getElementById('radar');
-            radar.innerHTML = "";
-            
-            // SIRALAMA MANTIĞI: Önce operasyondakiler, sonra en çok çalışanlar
-            const userArray = Object.entries(data).sort((a, b) => {
-                if (b[1].timerActive !== a[1].timerActive) return b[1].timerActive ? 1 : -1;
-                return (b[1].pendingTime || 0) - (a[1].pendingTime || 0);
-            });
+    // KOÇLUK SİSTEMİ
+    window.openCoach = () => {
+        const msgs = ["Bırak o telefonu!","Rakibin net arttırıyor.","Yorulmadın, sadece sıkıldın.","Matematik seni bekliyor.","Kaçma, masaya dön!","Başarı bedel ister.","Tembellik bir seçimdir.","Aslan gibi çalış!","Sınav kapıda!","Bahaneleri bırak!"];
+        nexusAlert('💀', 'DİSİPLİN TOKADI', msgs[Math.floor(Math.random()*msgs.length)]);
+    };
 
-            userArray.forEach(([id, d]) => {
-                if(!d.status) return;
-                const isMe = id === USER_ID;
-                const isMaster = d.status.name?.toUpperCase() === MASTER;
-                
-                if(isMe) {
-                    timerActive = d.timerActive; pendingTime = d.pendingTime || 0; startTime = d.startTime || 0;
-                    document.getElementById('myNick').innerText = d.status.name;
-                    if(isMaster) {
-                        document.getElementById('myNick').className = "special-name text-lg";
-                        document.getElementById('vipBadge').classList.remove('hidden');
-                    }
-                    updateButtonUI();
-                }
+    function nexusAlert(icon, title, text) {
+        document.getElementById('modalIcon').innerText = icon;
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalText').innerText = text;
+        document.getElementById('nexusModal').style.display = 'flex';
+    }
 
-                radar.innerHTML += `
-                    <div class="glass p-4 flex justify-between items-center border-l-4 ${d.timerActive ? 'border-emerald-500 bg-emerald-500/10' : 'border-blue-600/20'} transition-all duration-500">
-                        <div class="flex items-center gap-4">
-                            <span class="text-3xl">${d.status.avatar || '👤'}</span>
-                            <div class="flex flex-col">
-                                <span class="text-xs font-black uppercase ${isMaster ? 'special-name' : 'text-slate-200'}">${d.status.name}</span>
-                                ${d.timerActive ? 
-                                    '<span class="text-[8px] text-emerald-400 font-black tracking-tighter uppercase flex items-center gap-1">Operasyonda <span class="active-pulse"></span></span>' : 
-                                    '<span class="text-[8px] text-slate-500 font-bold uppercase">Beklemede</span>'}
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xs font-mono font-black text-blue-400">${Math.floor((d.pendingTime || 0) / 60000)}</span>
-                            <span class="text-[8px] font-bold text-slate-500 ml-0.5">DK</span>
-                        </div>
-                    </div>`;
-            });
+    // ROZET & MADALYA VERİLERİ
+    const items = {
+        badges: [{i:'🌅', n:'Şafak Sökücü'}, {i:'📚', n:'Kitap Kurdu'}, {i:'🦾', n:'Demir Odak'}, {i:'⚡', n:'Fırtına'}, {i:'💎', n:'Elmas Zihin'}],
+        medals: [{i:'🥇', n:'Lider'}, {i:'🥈', n:'Azim'}, {i:'🥉', n:'Sarsılmaz'}, {i:'🛡️', n:'Yılmaz'}, {i:'🔥', n:'Alev'}]
+    };
+
+    ['badgeGrid', 'medalGrid'].forEach((id, idx) => {
+        const type = idx === 0 ? 'badges' : 'medals';
+        items[type].forEach(item => {
+            const el = document.createElement('div'); el.className="item-card"; el.innerText=item.i;
+            el.onclick = (e) => { e.stopPropagation(); nexusAlert(item.i, item.n, "Bu seviyeye ulaşmak için çalışmaya devam et!"); };
+            document.getElementById(id).appendChild(el);
         });
+    });
 
-        function updateButtonUI() {
-            const btn = document.getElementById('btnAction');
-            btn.innerText = timerActive ? "OPERASYONU DURDUR" : "OPERASYONU BAŞLAT";
-            btn.className = timerActive 
-                ? "w-full py-6 bg-red-600 hover:bg-red-500 rounded-3xl font-black text-3xl uppercase tracking-tighter animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.4)] transition-all" 
-                : "w-full py-6 bg-blue-600 hover:bg-blue-500 rounded-3xl font-black text-3xl uppercase tracking-tighter shadow-[0_0_30px_rgba(59,130,246,0.4)] transition-all";
+    // ANA SENKRONİZASYON
+    onValue(ref(db, `users/${MY_ID}`), snap => {
+        const data = snap.val() || {};
+        const nickElem = document.getElementById('myNick');
+        nickElem.innerText = data.status?.name || "KOMUTAN";
+        document.getElementById('myAvatar').innerText = data.status?.avatar || "🦁";
+        document.getElementById('streakCount').innerText = data.streak || 0;
+        document.getElementById('xpBar').style.width = (data.xp % 100) + "%";
+
+        if(data.status?.name?.toUpperCase() === MASTER_USER.toUpperCase()) {
+            nickElem.className = "special-name text-[12px]";
+            const vb = document.getElementById('vipBadge');
+            vb.className = "special-vip text-[9px] px-2 py-0.5 rounded-lg ml-2 font-black block";
+            vb.innerText = "SUPREME";
         }
 
-        window.toggleTimer = async () => {
-            const now = Date.now();
-            const updates = timerActive ? 
-                { timerActive: false, pendingTime: pendingTime + (now - startTime) } : 
-                { timerActive: true, startTime: now };
-            await update(ref(db, `users/${USER_ID}`), updates);
-        };
+        updateChart(data.history || {});
 
-        // CANLI SAYAÇ DÖNGÜSÜ
-        setInterval(() => {
-            if(timerActive) {
-                const total = pendingTime + (Date.now() - startTime);
-                const h = Math.floor(total/3600000).toString().padStart(2,'0');
-                const m = Math.floor((total%3600000)/60000).toString().padStart(2,'0');
-                const s = Math.floor((total%60000)/1000).toString().padStart(2,'0');
-                document.getElementById('display').innerText = `${h}:${m}:${s}`;
-            }
-        }, 1000);
+        if(timerInterval) clearInterval(timerInterval);
+        if(data.timerActive) {
+            document.getElementById('startBtn').classList.add('hidden'); document.getElementById('stopBtn').classList.remove('hidden');
+            timerInterval = setInterval(() => {
+                const elapsed = (data.pendingTime || 0) + (Date.now() - data.startTime);
+                updateDisplay(elapsed);
+            }, 1000);
+        } else {
+            document.getElementById('startBtn').classList.remove('hidden'); document.getElementById('stopBtn').classList.add('hidden');
+            updateDisplay(data.pendingTime || 0);
+        }
+    });
 
-        // GRAFİK SİSTEMİ
-        new Chart(document.getElementById('mainChart'), {
-            type: 'line',
-            data: { 
-                labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'], 
-                datasets: [{ 
-                    data: [45, 78, 52, 91, 74, 110, 95], 
-                    borderColor: '#3b82f6', 
-                    borderWidth: 4,
-                    pointRadius: 0,
-                    tension: 0.4, 
-                    fill: true, 
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)' 
-                }] 
-            },
-            options: { 
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } }, 
-                scales: { 
-                    y: { display: false }, 
-                    x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10, weight: 'bold' } } } 
-                } 
-            }
+    // RADAR SİSTEMİ
+    onValue(ref(db, 'users'), snap => {
+        const radar = document.getElementById('radar'); radar.innerHTML = "";
+        const users = Object.entries(snap.val() || {}).sort((a,b) => (b[1].timerActive - a[1].timerActive) || (b[1].pendingTime - a[1].pendingTime));
+        
+        users.forEach(([id, d]) => {
+            if(!d.status) return;
+            const total = Math.floor((d.pendingTime || 0) / 60000);
+            radar.innerHTML += `
+                <div class="glass p-3 flex justify-between items-center border-l-4 ${d.timerActive?'border-emerald-500 bg-emerald-500/5':'border-transparent'}">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${d.status.avatar || '👤'}</span>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black uppercase text-white">${d.status.name}</span>
+                            <span class="${d.timerActive?'text-emerald-400':'text-slate-500'} text-[8px] font-bold uppercase">${d.timerActive?'Operasyonda':'Beklemede'}</span>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-mono font-black text-blue-400">${total} dk</span>
+                </div>`;
         });
-    </script>
+    });
+
+    function updateDisplay(ms) {
+        const h = Math.floor(ms/3600000).toString().padStart(2,'0');
+        const m = Math.floor((ms%3600000)/60000).toString().padStart(2,'0');
+        const s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
+        document.getElementById('display').innerText = `${h}:${m}:${s}`;
+    }
+
+    function updateChart(history) {
+        const labels = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'];
+        const data = labels.map((_, i) => {
+            const d = new Date(); d.setDate(d.getDate() - (6-i));
+            return Math.floor((history[d.toISOString().split('T')[0]] || 0) / 60000);
+        });
+
+        if(!myChart) {
+            myChart = new Chart(document.getElementById('historyChart').getContext('2d'), {
+                type: 'bar',
+                data: { labels, datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 5 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9, weight: '900' } } } } }
+            });
+        } else {
+            myChart.data.datasets[0].data = data;
+            myChart.update();
+        }
+    }
+
+    document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() });
+    document.getElementById('stopBtn').onclick = () => get(ref(db, `users/${MY_ID}`)).then(s => {
+        const d = s.val();
+        update(ref(db, `users/${MY_ID}`), { timerActive: false, pendingTime: (d.pendingTime || 0) + (Date.now() - d.startTime) });
+    });
+
+    window.finishDay = async () => {
+        if(!confirm("Bugünkü veriler arşive aktarılsın mı?")) return;
+        const d = new Date().toISOString().split('T')[0];
+        const s = await get(ref(db, `users/${MY_ID}`));
+        const dat = s.val();
+        const h = dat.history || {};
+        h[d] = (h[d] || 0) + (dat.pendingTime || 0);
+        await update(ref(db, `users/${MY_ID}`), { pendingTime: 0, history: h, timerActive: false, xp: (dat.xp || 0) + 10 });
+        location.reload();
+    };
+</script>
 </body>
 </html>
