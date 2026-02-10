@@ -25,6 +25,29 @@
 
     <div id="uiOverlay" class="overlay" onclick="closeFocus()"></div>
 
+    <div id="saveBox" class="overlay" style="display:none; justify-content:center; align-items:center; z-index:25000;">
+        <div class="glass p-6 w-full max-w-xs border-blue-600 border-2 text-center" onclick="event.stopPropagation()">
+            <h3 class="text-blue-400 font-black mb-4 uppercase text-xs">MÜHÜR GÜNÜNÜ SEÇİN</h3>
+            <button onclick="pSave(true)" id="lDayBtn" class="w-full py-4 bg-slate-800 border border-blue-500 rounded-xl mb-2 font-bold text-[10px] uppercase text-white"></button>
+            <button onclick="pSave(false)" id="tDayBtn" class="w-full py-4 bg-slate-800 border border-blue-500 rounded-xl font-bold text-[10px] uppercase text-white"></button>
+            <button onclick="document.getElementById('saveBox').style.display='none'" class="mt-4 text-red-500 text-[10px] font-black uppercase">İPTAL</button>
+        </div>
+    </div>
+
+    <div id="admBox" class="overlay" style="display:none; justify-content:center; align-items:center; z-index:25000;">
+        <div class="glass p-6 w-full max-w-sm border-red-600 border-2 text-center" onclick="event.stopPropagation()">
+            <h3 class="text-red-500 font-black mb-4 uppercase">MASTER CONTROL</h3>
+            <select id="aUsr" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-2 uppercase font-bold text-xs"></select>
+            <select id="aDay" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-2 font-bold text-xs">
+                <option value="Pzt">PAZARTESİ</option><option value="Sal">SALI</option><option value="Çar">ÇARŞAMBA</option>
+                <option value="Per">PERŞEMBE</option><option value="Cum">CUMA</option><option value="Cmt">CUMARTESİ</option><option value="Paz">PAZAR</option>
+            </select>
+            <input type="number" id="aMin" placeholder="DAKİKA EKLE/SİL" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-4 text-center font-bold border border-slate-700">
+            <button onclick="mEdit()" class="w-full py-3 bg-red-600 rounded-lg font-black uppercase text-xs text-white">VERİYİ GÜNCELLE</button>
+            <button onclick="document.getElementById('admBox').style.display='none'" class="mt-4 text-white text-[10px] opacity-50 font-black">KAPAT</button>
+        </div>
+    </div>
+
     <div id="loginModal" class="fixed inset-0 bg-[#010409] z-[20000] flex items-center justify-center p-4">
         <div class="glass p-8 w-full max-w-sm border-blue-600 border-2 text-center">
             <h2 class="text-blue-500 font-black text-3xl mb-6 italic">NEXUS OMEGA</h2>
@@ -36,7 +59,6 @@
     <div id="nexusModal" class="fixed inset-0 bg-black/98 z-[15000] hidden items-center justify-center p-4">
         <div class="bg-[#0d1117] border-2 border-blue-600 p-6 rounded-[30px] w-full max-w-2xl text-center relative max-h-[95vh] flex flex-col overflow-hidden">
             <div id="medalGrid" class="grid grid-cols-4 sm:grid-cols-5 gap-3 hidden overflow-y-auto no-scrollbar mb-4 p-2"></div>
-            
             <div id="standardView" class="flex-1 flex flex-col overflow-hidden">
                 <div id="mIcon" class="text-6xl mb-2">📜</div>
                 <h2 id="mTitle" class="text-blue-400 font-black text-xl mb-1 uppercase tracking-tighter">DOKTRİN</h2>
@@ -48,7 +70,6 @@
                 </div>
                 <p id="quoteText" class="text-slate-200 text-base italic leading-relaxed font-medium px-4 overflow-y-auto no-scrollbar"></p>
             </div>
-            
             <button onclick="closeModal()" class="w-full py-4 bg-blue-600 rounded-2xl font-black text-[11px] uppercase mt-4 active:scale-95">KAPAT PROTOKOLÜ</button>
         </div>
     </div>
@@ -102,7 +123,6 @@
         localStorage.setItem('nexus_session', MY_SESSION);
         let timerInterval, myChart, profChart, MY_DATA = {};
 
-        // 75 TAM DOKTRİN LİSTESİ
         const DOKTRINLER = [
             "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların tek sadık dostudur.",
             "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki mutlak sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın eseridir.",
@@ -119,11 +139,9 @@
             "Senin sınırın, 'yoruldum' dediğin yer değil, 'bitti' dediğin yerdir.",
             "Başkalarının 'yeter' dediği yerde senin yeni seansın başlar.",
             "Zirve soğuktur ama manzarası harikadır. Oraya çıkmak için donmayı göze almalısın.",
-            // ... (75'e kadar her biri özgün metinlerle doldurulmuştur)
         ];
         for(let i=15; i<75; i++) DOKTRINLER.push(`[PROTOKOL-${i+1}] Başarı disipline aşıktır. Odaklandığın her dakika, seni rakiplerinden fersah fersah öne taşır. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder. Bugün döktüğün zihin teri, yarın rakiplerinin çaresiz gözyaşı olacaktır.`);
 
-        // 20 TAM MADALYA LİSTESİ
         const MEDALS = [
             {i:'👑', t:'NEXUS KRALI', d:'500+ saat toplam odaklanma süresine sahip efsane.'},
             {i:'⚔️', t:'GLADYATÖR', d:'Günde 10 saatten fazla çalışarak arenayı domine edenler.'},
@@ -253,14 +271,59 @@
             get(ref(db, `users/${MY_NAME}`)).then(s => { const v = s.val(); update(ref(db, `users/${MY_NAME}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) }); });
         };
 
+        // --- GÜNCEL SAVE GÜN SEÇİM MANTIĞI ---
         window.saveDay = () => {
+            const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'], n = new Date().getDay();
+            document.getElementById('lDayBtn').innerText = `DÜN (${d[(n+6)%7]})`; 
+            document.getElementById('tDayBtn').innerText = `BUGÜN (${d[n]})`;
+            document.getElementById('saveBox').style.display = 'flex';
+        };
+
+        window.pSave = (isYesterday) => {
+            const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'], n = new Date().getDay();
+            const targetDay = d[isYesterday ? (n+6)%7 : n];
+            
             get(ref(db, `users/${MY_NAME}`)).then(s => {
-                const v = s.val(), d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][new Date().getDay()], h = v.history || {};
-                h[d] = (h[d]||0)+(v.pendingTime||0);
-                update(ref(db, `users/${MY_NAME}`), { pendingTime: 0, timerActive: false, history: h });
-                alert("MÜHÜRLENDİ.");
+                const v = s.val() || {};
+                const h = v.history || {};
+                h[targetDay] = (h[targetDay] || 0) + (v.pendingTime || 0);
+                
+                update(ref(db, `users/${MY_NAME}`), { 
+                    pendingTime: 0, 
+                    timerActive: false, 
+                    history: h 
+                });
+                document.getElementById('saveBox').style.display = 'none';
+                alert(`PROTOKOL MÜHÜRLENDİ: ${targetDay} gününe işlendi.`);
             });
         };
-    </script>
+
+        // --- MASTER MÜDAHALE PANELİ (L TUŞU) ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'l') {
+                onValue(ref(db, 'users'), (snap) => {
+                    const users = snap.val() || {};
+                    document.getElementById('aUsr').innerHTML = Object.keys(users).map(u => `<option value="${u}">${u}</option>`).join('');
+                    document.getElementById('admBox').style.display = 'flex';
+                }, { onlyOnce: true });
+            }
+        });
+
+        window.mEdit = () => {
+            const user = document.getElementById('aUsr').value;
+            const day = document.getElementById('aDay').value;
+            const mins = parseInt(document.getElementById('aMin').value) || 0;
+            
+            get(ref(db, `users/${user}`)).then(s => {
+                const v = s.val() || {};
+                const h = v.history || {};
+                h[day] = (h[day] || 0) + (mins * 60000);
+                
+                update(ref(db, `users/${user}`), { history: h });
+                document.getElementById('admBox').style.display = 'none';
+                alert(`${user} operatörü için ${day} verisi güncellendi.`);
+            });
+        };
+    </script> 
 </body>
 </html>
