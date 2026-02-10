@@ -3,117 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>NEXUS TITAN OMEGA | Profesyonel Odak Sistemi</title>
-    <meta name="description" content="NEXUS TITAN: Canlı radar takibi ve askeri disiplin doktrinleri.">
-    
+    <title>NEXUS TITAN OMEGA | SUPREME PROTOCOL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
-        
-        body { 
-            background: #010409; 
-            color: white; 
-            font-family: 'Inter', sans-serif; 
-            height: 100vh; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            padding: 10px; 
-            gap: 10px; 
-        }
-
-        .glass { 
-            background: rgba(13, 17, 23, 0.96); 
-            border: 1px solid rgba(59, 130, 246, 0.2); 
-            border-radius: 24px; 
-            backdrop-filter: blur(25px); 
-            transition: 0.4s; 
-        }
-
-        .peak-glow { 
-            border: 2px solid #fbbf24 !important; 
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.5) !important; 
-            animation: leaderPulse 2s infinite; 
-        }
-
-        @keyframes leaderPulse { 
-            0% { transform: scale(1); } 
-            50% { transform: scale(1.015); } 
-            100% { transform: scale(1); } 
-        }
-
-        .vip-name { 
-            background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); 
-            background-size: 200% auto; 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            animation: shine 2s linear infinite; 
-            font-weight: 900; 
-        }
-
-        @keyframes shine { 
-            to { background-position: 200% center; } 
-        }
-
-        #display { 
-            font-family: 'JetBrains Mono'; 
-            font-size: clamp(2.5rem, 12vw, 5.5rem); 
-            color: #3b82f6; 
-            text-shadow: 0 0 40px rgba(59,130,246,0.3); 
-            font-weight: 900; 
-        }
-
-        .modal-zoom { 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.98); 
-            z-index: 10000; 
-            display:none; 
-            align-items: center; 
-            justify-content: center; 
-            backdrop-filter: blur(20px); 
-        }
-
-        .medal-box { 
-            background: rgba(30, 41, 59, 0.4); 
-            border: 1px solid rgba(59, 130, 246, 0.2); 
-            border-radius: 16px; 
-            aspect-ratio: 1; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 1.8rem; 
-            cursor: pointer; 
-            transition: 0.3s; 
-        }
-
-        .focus-mode { 
-            position: fixed !important; 
-            top: 50% !important; 
-            left: 50% !important; 
-            transform: translate(-50%, -50%) !important; 
-            width: 95% !important; 
-            height: 85% !important; 
-            z-index: 9999 !important; 
-            padding: 40px !important; 
-            box-shadow: 0 0 100px #000; 
-        }
-
-        .overlay { 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.9); 
-            z-index: 9998; 
-            display: none; 
-            backdrop-filter: blur(10px); 
-        }
-
-        .no-scrollbar::-webkit-scrollbar { 
-            display: none; 
-        }
+        body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
+        .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 24px; backdrop-filter: blur(25px); transition: 0.4s; }
+        .peak-glow { border: 2px solid #fbbf24 !important; box-shadow: 0 0 35px rgba(251, 191, 36, 0.4) !important; animation: leaderPulse 2s infinite; }
+        @keyframes leaderPulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        .vip-name { background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite; font-weight: 900; }
+        @keyframes shine { to { background-position: 200% center; } }
+        #display { font-family: 'JetBrains Mono'; font-size: clamp(2.5rem, 12vw, 6.5rem); color: #3b82f6; text-shadow: 0 0 50px rgba(59,130,246,0.4); font-weight: 900; letter-spacing: -2px; }
+        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 95% !important; height: 85% !important; z-index: 9999 !important; padding: 40px !important; box-shadow: 0 0 150px #000; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9998; display: none; backdrop-filter: blur(15px); }
+        .medal-box { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 18px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.3s; }
+        .medal-box:hover { background: rgba(59, 130, 246, 0.2); transform: translateY(-5px); border-color: #3b82f6; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
@@ -121,281 +27,237 @@
     <div id="uiOverlay" class="overlay" onclick="closeFocus()"></div>
 
     <div id="loginModal" class="fixed inset-0 bg-black z-[11000] flex items-center justify-center p-6">
-        <div class="glass p-10 max-w-md w-full text-center border-blue-500/50 border-2">
-            <h2 class="text-blue-500 font-black text-3xl mb-2 uppercase italic">NEXUS TITAN</h2>
-            <p class="text-[10px] text-slate-400 mb-8 tracking-widest uppercase">Tek Gmail - Tek Kimlik Protokolü</p>
-            <button id="googleLoginBtn" class="w-full py-4 bg-white text-black rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-slate-200 transition-all">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6">
-                GOOGLE İLE BAĞLAN
-            </button>
+        <div class="glass p-12 max-w-lg w-full text-center border-blue-600/50 border-2">
+            <h2 class="text-blue-500 font-black text-4xl mb-4 uppercase italic tracking-tighter">NEXUS TITAN OMEGA</h2>
+            <p class="text-[10px] text-slate-400 mb-10 tracking-[0.3em] uppercase italic">Supreme Authentication & Anti-Cloning Protocol</p>
+            <input type="text" id="opInput" placeholder="OPERATÖR KOD ADI" class="w-full bg-slate-900 border border-blue-500/30 p-5 rounded-2xl mb-5 text-white font-black text-center focus:outline-none focus:border-blue-500 uppercase tracking-widest">
+            <button id="entryBtn" class="w-full py-5 bg-blue-600 text-white rounded-[25px] font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/40 uppercase tracking-widest">SİSTEME ERİŞİM SAĞLA</button>
+            <p class="text-[9px] text-amber-500 mt-6 font-bold uppercase tracking-wider animate-pulse">Uyarı: Yeni giriş, aktif olan tüm eski cihaz oturumlarını kalıcı olarak infaz eder.</p>
         </div>
     </div>
 
-    <div id="nexusModal" class="modal-zoom">
-        <div class="bg-[#0d1117] border-2 border-blue-600 p-10 rounded-[45px] max-w-2xl w-[95%] text-center relative shadow-2xl">
-            <div id="profileContent" class="hidden">
-                <img id="pAvatar" src="" class="w-24 h-24 rounded-full border-4 border-blue-600 mx-auto mb-4 shadow-xl">
-                <h2 id="pName" class="text-white font-black text-2xl mb-6 uppercase">...</h2>
-                <div class="h-48 w-full mb-6">
-                    <canvas id="profileChart"></canvas>
-                </div>
+    <div id="nexusModal" class="fixed inset-0 bg-black/95 z-[10000] hidden items-center justify-center backdrop-blur-xl">
+        <div class="bg-[#0d1117] border-2 border-blue-600 p-12 rounded-[50px] max-w-3xl w-[95%] text-center relative shadow-2xl">
+            <div id="medalGrid" class="grid grid-cols-5 gap-4 hidden h-96 overflow-y-auto no-scrollbar p-4 mb-6"></div>
+            <div id="standardView">
+                <div id="mIcon" class="text-8xl mb-8 filter drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]">📜</div>
+                <h2 id="mTitle" class="text-blue-400 font-black text-3xl mb-4 uppercase italic">DOKTRİN</h2>
+                <p id="mDesc" class="text-slate-200 text-lg italic mb-12 leading-relaxed max-w-xl mx-auto font-medium">...</p>
             </div>
-            
-            <div id="standardContent">
-                <div id="mIcon" class="text-8xl mb-6 filter drop-shadow-lg">📜</div>
-                <h2 id="mTitle" class="text-blue-400 font-black text-2xl mb-2 uppercase italic">DOKTRİN</h2>
-                <p id="mDesc" class="text-slate-300 text-base italic mb-10 leading-relaxed max-w-md mx-auto">...</p>
-            </div>
-            
-            <div id="medalGridPopup" class="grid grid-cols-5 gap-3 hidden h-80 overflow-y-auto no-scrollbar p-2 mb-4"></div>
-            
-            <button onclick="closeModal()" class="px-16 py-4 bg-blue-600 rounded-full font-black text-[11px] uppercase tracking-widest hover:scale-105 transition-transform">SİSTEME DÖN</button>
+            <button onclick="closeModal()" class="px-20 py-5 bg-blue-600 rounded-full font-black text-[12px] uppercase tracking-[0.2em] hover:scale-110 transition-transform">MERKEZE DÖN</button>
         </div>
     </div>
 
-    <header class="glass p-6 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-5">
-            <img id="myAvatar" src="" class="w-16 h-16 rounded-full border-2 border-blue-500 cursor-pointer shadow-lg">
+    <header class="glass p-8 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-6">
+            <div id="pAvatar" class="w-20 h-20 rounded-full border-4 border-blue-600 flex items-center justify-center bg-slate-900 shadow-2xl text-3xl overflow-hidden">👤</div>
             <div>
-                <h1 id="userName" class="vip-name text-base uppercase tracking-widest">...</h1>
-                <div class="flex gap-5 mt-2">
-                    <span onclick="showQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer uppercase hover:text-white transition-colors">📜 DOKTRİNLER</span>
-                    <span onclick="openMedals()" class="text-[10px] text-amber-500 font-black cursor-pointer uppercase hover:text-white transition-colors">🎖️ KOLEKSİYON</span>
+                <h1 id="userName" class="vip-name text-xl uppercase tracking-[0.15em]">BEKLEMEDE...</h1>
+                <div class="flex gap-6 mt-2">
+                    <span onclick="openQuote()" class="text-[11px] text-blue-400 font-black cursor-pointer uppercase hover:text-white transition-all tracking-widest">📜 DOKTRİNLER</span>
+                    <span onclick="openMedals()" class="text-[11px] text-amber-500 font-black cursor-pointer uppercase hover:text-white transition-all tracking-widest">🎖️ KOLEKSİYON</span>
                 </div>
             </div>
         </div>
-        <div class="flex gap-3">
-            <button onclick="resetDay()" class="bg-amber-600/10 border border-amber-500/30 px-5 py-2.5 rounded-2xl text-[10px] font-black text-amber-500 hover:bg-amber-500/20">MÜHÜRLE</button>
-            <button onclick="tokatAt()" class="bg-red-600 px-5 py-2.5 rounded-2xl text-[10px] font-black shadow-lg shadow-red-900/20">DİSİPLİN</button>
+        <div class="flex gap-4">
+            <button onclick="saveDay()" class="bg-amber-600/10 border border-amber-500/40 px-8 py-3 rounded-2xl text-[11px] font-black text-amber-500 uppercase tracking-widest hover:bg-amber-500/20">MÜHÜRLE</button>
+            <button onclick="openQuote()" class="bg-red-600 px-8 py-3 rounded-2xl text-[11px] font-black shadow-xl uppercase tracking-widest hover:bg-red-500">DİSİPLİN</button>
         </div>
     </header>
 
-    <div class="flex flex-col md:flex-row gap-4 flex-1 min-h-0">
-        <aside id="radarPanel" onclick="openFocus('radarPanel')" class="glass w-full md:w-80 p-6 flex flex-col gap-5 overflow-hidden cursor-pointer">
-            <h2 class="text-[11px] font-black text-blue-400 tracking-widest uppercase italic border-b border-blue-500/20 pb-3">OPERASYON RADARI</h2>
-            <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1"></div>
+    <div class="flex flex-col md:flex-row gap-5 flex-1 min-h-0">
+        <aside id="radarPanel" onclick="focusPanel('radarPanel')" class="glass w-full md:w-96 p-8 flex flex-col gap-6 overflow-hidden cursor-pointer">
+            <h2 class="text-[12px] font-black text-blue-400 tracking-[0.3em] uppercase italic border-b border-blue-500/20 pb-4 text-center">OPERASYON RADARI</h2>
+            <div id="radar" class="flex flex-col gap-3 overflow-y-auto no-scrollbar flex-1"></div>
         </aside>
 
-        <section class="glass flex-1 flex flex-col items-center justify-center p-10">
+        <section class="glass flex-1 flex flex-col items-center justify-center p-12">
             <div id="display">00:00:00</div>
-            <div class="flex gap-5 w-full max-w-md mt-16">
-                <button id="startBtn" class="flex-1 py-7 bg-blue-600 rounded-[32px] font-black text-3xl shadow-2xl">ODAKLAN</button>
-                <button id="stopBtn" class="hidden flex-1 py-7 bg-red-600 rounded-[32px] font-black text-3xl animate-pulse">DURDUR</button>
+            <div class="flex gap-6 w-full max-w-lg mt-20">
+                <button id="startBtn" class="flex-1 py-9 bg-blue-600 rounded-[40px] font-black text-4xl shadow-2xl hover:bg-blue-500 transition-all">ODAKLAN</button>
+                <button id="stopBtn" class="hidden flex-1 py-9 bg-red-600 rounded-[40px] font-black text-4xl animate-pulse shadow-2xl shadow-red-900/40">DURDUR</button>
             </div>
         </section>
     </div>
 
-    <footer id="chartPanel" onclick="openFocus('chartPanel')" class="glass h-48 p-6 shrink-0 cursor-pointer">
+    <footer id="chartPanel" onclick="focusPanel('chartPanel')" class="glass h-56 p-8 shrink-0 cursor-pointer">
         <canvas id="mainChart"></canvas>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // NOT: Buradaki bilgileri kendi Firebase projenizle güncellediğinizden emin olun.
+        // NOT: Buradaki bilgileri kendi Firebase projenizle güncellediğinizden emin olun!
         const firebaseConfig = { 
-            apiKey: "AIzaSyCLTb6KDcNyufde_pxeCY1Q1oWoDotdXxU", 
-            authDomain: "yks-kronometre.firebaseapp.com", 
-            projectId: "yks-kronometre", 
-            databaseURL: "https://yks-kronometre-default-rtdb.firebaseio.com" 
+            apiKey: "AIzaSy...", 
+            authDomain: "yks-odak.firebaseapp.com", 
+            projectId: "yks-odak", 
+            databaseURL: "https://yks-odak-default-rtdb.firebaseio.com" 
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        
+        let MY_NAME = localStorage.getItem('nexus_user');
+        let MY_SESSION = localStorage.getItem('nexus_session') || Math.random().toString(36).substr(2, 12);
+        localStorage.setItem('nexus_session', MY_SESSION);
+        
+        let timerInterval, myChart;
 
-        let MY_ID, timerInt, myChart, pChart;
-        let myCurrentSession = localStorage.getItem('nexus_session_id') || Math.random().toString(36).substring(7);
-        localStorage.setItem('nexus_session_id', myCurrentSession);
-
+        // DOKTRİNLER (UZUN VE ETKİLEYİCİ)
         const DOKTRINLER = [
-            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların sadık dostudur. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder.",
-            "Albert Einstein der ki: 'Zeka, hayal gücüyle mühürlenmiş bir disiplindir.' Unutma operatör; disiplinsiz hayal, sadece uyanıkken gördüğün bir rüyadan ibarettir.",
-            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir.",
-            "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü bilmelisin ki; acı gittiğinde, onun boşalttığı tahta sonsuz bir başarı ve onur yerleşir.",
-            "Senin için imkansız diyenlerin tek umudu, senin pes etmendir. Onlara bu zevki tattırmak, kendine yapacağın en büyük ihanet olacaktır. Devam et.",
-            "Vazgeçmeyi düşündüğün o karanlık anlarda neden başladığını hatırla. Başladığın yer, şu an olduğun yerden çok daha karanlık ve çaresizdi.",
-            "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşı olacak.",
-            "Zaman, sadece onu korkusuzca yönetenlerin kölesidir. Sen bu masanın efendisi misin, yoksa akıp giden saniyelerin sessiz bir kurbanı mı? Kararını ver.",
-            "Rakiplerinin uyuduğu, eğlendiği ve zamanı bozuk para gibi harcadığı her saniye, senin zirveye giden basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun.",
-            "Gerçek güç, canın istemediğinde bile yapman gerekeni en mükemmel şekilde yapmaktır. Motivasyon seni başlatır ama seni hedefe sadece sarsılmaz disiplinin götürür."
+            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların sadık dostudur. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder. Unutma operatör; acı geçicidir ama başarı sonsuzdur. Bugün döktüğün zihin teri, yarın rakiplerinin gözyaşı olacaktır.",
+            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir. Sen de bugün o sessizliği yöneten bir dehasın. Dağılmak kolaydır, odaklanmak ise tanrısal bir yetenektir.",
+            "Rakiplerinin uyuduğu, eğlendiği ve zamanı bozuk para gibi harcadığı her saniye, senin zirveye giden basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun. Bu karanlıkta parlayan tek şey senin iradendir. Işıklar söndüğünde kimin ayakta kaldığına tarih karar verecek.",
+            "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü bilmelisin ki; acı gittiğinde, onun boşalttığı tahta sonsuz bir başarı ve onur yerleşir. Bugün çekilen sızı, yarın takılan madalyanın bedelidir. Şikayet etmeyi bırak ve mühürlemeye devam et.",
+            "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşı olacak. Vazgeçmek, kendi imzana ihanet etmektir. Bir adım daha atacak gücün her zaman vardır."
         ];
 
+        // 20 MADALYA
         const MEDALS = [
             {i:'👑', t:'NEXUS KRALI', d:'Sistemin mutlak zirvesi. Toplam 500+ saatlik derin odaklanma.'},
-            {i:'⚔️', t:'GLADYATÖR', d:'Günde 8 saatten fazla çalışan yenilmez savaşçı.'},
-            {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 120 dakika boyunca masadan kalkmayan odak ustası.'},
-            {i:'🛡️', t:'MUHAFIZ', d:'Gece saat 03:00\'e kadar nöbet tutan (çalışan) irade.'}
+            {i:'⚔️', t:'GLADYATÖR', d:'Günde 10 saatten fazla çalışan yenilmez savaşçı.'},
+            {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 180 dakika boyunca masadan kalkmayan odak ustası.'},
+            {i:'🛡️', t:'MUHAFIZ', d:'Gece saat 04:00\'e kadar nöbet tutan (çalışan) irade.'},
+            {i:'🔥', t:'ALEV ALAN', d:'7 gün üst üste mühürleme yapan istikrar abidesi.'},
+            {i:'🌪️', t:'FIRTINA', d:'Bir günde 12 saat çalışma barajını aşan operatör.'},
+            {i:'🌑', t:'GECE AVCISI', d:'Tüm çalışmalarını gece yarısından sonra gerçekleştiren gölge.'},
+            {i:'🦾', t:'CYBORG', d:'Duygulardan arınmış, sadece hedefe odaklı robotik disiplin.'},
+            {i:'🦅', t:'KARTAL GÖZÜ', d:'Hata yapmadan, bölünmeden 5 saat çalışan keskin zeka.'},
+            {i:'🏛️', t:'MİMAR', d:'Geleceğini bu masada sıfırdan inşa eden strateji uzmanı.'},
+            {i:'🌋', t:'MAGMA', d:'Motivasyonu asla sönmeyen, çevresine enerji yayan lider.'},
+            {i:'🌊', t:'OKYANUS', d:'Sessiz ama derinden, devasa projeleri bitiren sabır küpü.'},
+            {i:'⚡', t:'YILDIRIM', d:'Hızlı kararlar alıp, görevleri ışık hızında bitiren güç.'},
+            {i:'🌌', t:'KOZMOS', d:'Sınırların ötesinde düşünen ve evrensel başarıyı hedefleyen.'},
+            {i:'🧨', t:'BARUT', d:'En zor anlarda patlama yapıp rakiplerini geride bırakan.'},
+            {i:'🏹', t:'OKÇU', d:'Hedeften asla şaşmayan, odak noktasını her zaman vuran.'},
+            {i:'🧱', t:'DUVAR', d:'Dış etkenlere ve sosyal medyaya karşı örülmüş aşılmaz set.'},
+            {i:'🧪', t:'SİMYACI', d:'Zorlukları altına, dertleri başarıya dönüştüren bilge.'},
+            {i:'🦁', t:'ASLAN', d:'Zirvenin tek sahibi olduğunu her gün masada kanıtlayan.'},
+            {i:'🔱', t:'POSEIDON', d:'Bilgi denizine hükmeden, akademik başarının mutlak efendisi.'}
         ];
 
-        document.getElementById('googleLoginBtn').onclick = function() {
-            signInWithPopup(auth, provider).then((result) => {
-                MY_ID = result.user.uid;
-                // Giriş yapıldığında bu cihazın oturum kimliğini veritabanına yaz
-                update(ref(db, `users/${MY_ID}/status`), { 
-                    name: result.user.displayName.toUpperCase(), 
-                    avatar: result.user.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${MY_ID}`,
-                    lastSession: myCurrentSession 
-                });
-                document.getElementById('loginModal').style.display = 'none';
-            }).catch((error) => {
-                alert("Giriş Hatası: Firebase ayarlarınızı kontrol edin.");
+        // GİRİŞ BUTONU TAMİRİ VE AKTİVASYON
+        document.getElementById('entryBtn').addEventListener('click', async () => {
+            const name = document.getElementById('opInput').value.trim().toUpperCase();
+            if(name.length < 2) return alert("Kod adı çok kısa!");
+            
+            // Veritabanına oturumu yaz ve eski veriyi yeni cihaza çek
+            await update(ref(db, `users/${name}/status`), {
+                name: name,
+                lastSession: MY_SESSION,
+                avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`
             });
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) { 
-                MY_ID = user.uid; 
-                document.getElementById('loginModal').style.display = 'none'; 
-                
-                // OTURUM KONTROLÜ: Başka bir cihaz girerse algıla
-                onValue(ref(db, `users/${MY_ID}/status/lastSession`), (snapshot) => {
-                    const serverSession = snapshot.val();
-                    if(serverSession && serverSession !== myCurrentSession) {
-                        alert("DİKKAT: Hesabınıza başka bir cihazdan giriş yapıldı! Bu oturum sonlandırılıyor.");
-                        auth.signOut().then(() => { location.reload(); });
-                    }
-                });
-
-                initNexus(); 
-            } else { 
-                document.getElementById('loginModal').style.display = 'flex'; 
-            }
+            
+            localStorage.setItem('nexus_user', name);
+            MY_NAME = name;
+            document.getElementById('loginModal').style.display = 'none';
+            initNexus();
         });
 
+        if(MY_NAME) {
+            document.getElementById('loginModal').style.display = 'none';
+            initNexus();
+        }
+
         function initNexus() {
-            onValue(ref(db, `users/${MY_ID}`), (s) => {
-                const d = s.val() || {};
-                document.getElementById('userName').innerText = d.status?.name || "...";
-                document.getElementById('myAvatar').src = d.status?.avatar || "";
+            // CİHAZ KOVMA (ANTI-CLONE)
+            onValue(ref(db, `users/${MY_NAME}/status/lastSession`), (snap) => {
+                if(snap.val() && snap.val() !== MY_SESSION) {
+                    alert("KRİTİK HATA: BAŞKA BİR CİHAZDAN GİRİŞ YAPILDI. OTURUMUNUZ İMHA EDİLDİ.");
+                    localStorage.removeItem('nexus_user');
+                    location.reload();
+                }
+            });
+
+            onValue(ref(db, `users/${MY_NAME}`), (snap) => {
+                const data = snap.val() || {};
+                document.getElementById('userName').innerText = MY_NAME;
+                document.getElementById('pAvatar').innerHTML = `<img src="${data.status?.avatar}" class="w-full h-full object-cover">`;
                 
-                if(timerInt) clearInterval(timerInt);
-                
-                if(d.timerActive) {
+                if(timerInterval) clearInterval(timerInterval);
+                if(data.timerActive) {
                     document.getElementById('startBtn').classList.add('hidden');
                     document.getElementById('stopBtn').classList.remove('hidden');
-                    timerInt = setInterval(() => {
-                        updateDisplay((d.pendingTime||0)+(Date.now()-d.startTime));
+                    timerInterval = setInterval(() => {
+                        updateDisplay((data.pendingTime||0) + (Date.now() - data.startTime));
                     }, 1000);
                 } else {
                     document.getElementById('startBtn').classList.remove('hidden');
                     document.getElementById('stopBtn').classList.add('hidden');
-                    updateDisplay(d.pendingTime || 0);
+                    updateDisplay(data.pendingTime || 0);
                 }
-                drawChart(d.history || {}, 'mainChart');
+                drawChart(data.history || {});
             });
 
-            onValue(ref(db, 'users'), (s) => {
-                const r = document.getElementById('radar'); 
+            onValue(ref(db, 'users'), (snap) => {
+                const r = document.getElementById('radar');
                 r.innerHTML = "";
-                const users = Object.entries(s.val() || {});
-                if(users.length === 0) return;
-                
-                const leaderId = users.reduce((a, b) => ((a[1].pendingTime||0) > (b[1].pendingTime||0) ? a : b))[0];
-                
-                users.forEach(([id, u]) => {
-                    if(!u.status?.name) return;
+                const users = Object.entries(snap.val() || {});
+                users.forEach(([name, u]) => {
                     r.innerHTML += `
-                        <div onclick="event.stopPropagation(); openAgentProfile('${id}', '${u.status.name}', '${u.status.avatar}')" 
-                             class="p-4 glass mb-2 flex justify-between items-center ${id===leaderId?'peak-glow':''} ${u.timerActive?'border-l-4 border-green-500':''}">
+                        <div class="p-5 glass flex justify-between items-center mb-2 ${u.timerActive?'border-l-4 border-green-500 animate-pulse':''}">
                             <div class="flex items-center gap-3">
-                                <img src="${u.status.avatar}" class="w-8 h-8 rounded-full border border-blue-500/30">
-                                <span class="text-[10px] font-black uppercase ${id===MY_ID?'vip-name':''}">${u.status.name}</span>
+                                <img src="${u.status?.avatar}" class="w-8 h-8 rounded-full">
+                                <span class="text-[11px] font-black uppercase ${name===MY_NAME?'vip-name':''}">${name}</span>
                             </div>
-                            <span class="text-[10px] font-mono text-blue-400 font-bold">${Math.floor((u.pendingTime||0)/60000)} dk</span>
+                            <span class="text-[11px] font-mono text-blue-400">${Math.floor((u.pendingTime||0)/60000)} DK</span>
                         </div>`;
                 });
             });
         }
 
-        window.closeModal = function() {
-            document.getElementById('nexusModal').style.display = 'none';
-            document.getElementById('profileContent').classList.add('hidden');
-            document.getElementById('standardContent').classList.remove('hidden');
-            document.getElementById('medalGridPopup').classList.add('hidden');
-        };
-
-        window.openAgentProfile = function(id, name, avatar) {
-            get(ref(db, `users/${id}`)).then(s => {
-                const u = s.val() || {};
-                document.getElementById('profileContent').classList.remove('hidden');
-                document.getElementById('standardContent').classList.add('hidden');
-                document.getElementById('medalGridPopup').classList.add('hidden');
-                document.getElementById('pAvatar').src = avatar;
-                document.getElementById('pName').innerText = name;
-                document.getElementById('nexusModal').style.display = 'flex';
-                drawChart(u.history || {}, 'profileChart');
-            });
-        };
-
-        window.openMedals = function() {
-            const g = document.getElementById('medalGridPopup'); 
-            g.innerHTML = "";
-            g.classList.remove('hidden'); 
-            document.getElementById('standardContent').classList.remove('hidden');
-            document.getElementById('mTitle').innerText = "KOLEKSİYON";
-            
-            MEDALS.forEach(m => {
-                const d = document.createElement('div'); 
-                d.className = "medal-box"; 
-                d.innerText = m.i;
-                d.onclick = function() { 
-                    document.getElementById('mIcon').innerText = m.i; 
-                    document.getElementById('mTitle').innerText = m.t; 
-                    document.getElementById('mDesc').innerText = m.d; 
-                };
-                g.appendChild(d);
-            });
-            document.getElementById('nexusModal').style.display = 'flex';
-        };
-
-        window.showQuote = function() {
+        // DİĞER FONKSİYONLAR
+        window.openQuote = () => {
+            document.getElementById('medalGrid').classList.add('hidden');
+            document.getElementById('standardView').classList.remove('hidden');
             document.getElementById('mIcon').innerText = "📜";
             document.getElementById('mTitle').innerText = "DOKTRİN";
             document.getElementById('mDesc').innerText = DOKTRINLER[Math.floor(Math.random()*DOKTRINLER.length)];
-            document.getElementById('nexusModal').style.display = 'flex';
+            document.getElementById('nexusModal').classList.replace('hidden', 'flex');
         };
 
-        window.tokatAt = function() { 
-            showQuote(); 
-        };
-
-        window.openFocus = function(id) { 
-            document.getElementById('uiOverlay').style.display='block'; 
-            document.getElementById(id).classList.add('focus-mode'); 
-            if(myChart) myChart.resize(); 
-        };
-
-        window.closeFocus = function() { 
-            document.getElementById('uiOverlay').style.display='none'; 
-            document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); 
-            if(myChart) myChart.resize(); 
-        };
-
-        function drawChart(history, canvasId) {
-            const canvas = document.getElementById(canvasId);
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d] || 0) / 60000));
-            if(canvasId === 'mainChart' && myChart) myChart.destroy();
-            if(canvasId === 'profileChart' && pChart) pChart.destroy();
-            
-            const chart = new Chart(ctx, { 
-                type: 'bar', 
-                data: { 
-                    labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], 
-                    datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 10 }] 
-                }, 
-                options: { 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } } 
-                } 
+        window.openMedals = () => {
+            const grid = document.getElementById('medalGrid'); grid.innerHTML = "";
+            grid.classList.remove('hidden');
+            document.getElementById('standardView').classList.add('hidden');
+            MEDALS.forEach(m => {
+                const box = document.createElement('div'); box.className = "medal-box"; box.innerText = m.i;
+                box.onclick = () => {
+                    document.getElementById('standardView').classList.remove('hidden');
+                    document.getElementById('mIcon').innerText = m.i;
+                    document.getElementById('mTitle').innerText = m.t;
+                    document.getElementById('mDesc').innerText = m.d;
+                };
+                grid.appendChild(box);
             });
-            
-            if(canvasId === 'mainChart') myChart = chart; else pChart = chart;
+            document.getElementById('nexusModal').classList.replace('hidden', 'flex');
+        };
+
+        window.closeModal = () => document.getElementById('nexusModal').classList.replace('flex', 'hidden');
+
+        window.focusPanel = (id) => {
+            document.getElementById('uiOverlay').style.display = 'block';
+            document.getElementById(id).classList.add('focus-mode');
+            if(myChart) myChart.resize();
+        };
+
+        window.closeFocus = () => {
+            document.getElementById('uiOverlay').style.display = 'none';
+            document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode'));
+            if(myChart) myChart.resize();
+        };
+
+        function drawChart(history) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d]||0)/60000));
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 10 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
         }
 
         function updateDisplay(ms) {
@@ -405,31 +267,22 @@
             document.getElementById('display').innerText = `${h}:${m}:${s}`;
         }
 
-        document.getElementById('startBtn').onclick = function() {
-            update(ref(db, `users/${MY_ID}`), { timerActive: true, startTime: Date.now() });
-        };
-
-        document.getElementById('stopBtn').onclick = function() {
-            get(ref(db, `users/${MY_ID}`)).then(s => { 
-                const v = s.val(); 
-                update(ref(db, `users/${MY_ID}`), { 
-                    timerActive: false, 
-                    pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) 
-                }); 
+        document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_NAME}`), { timerActive: true, startTime: Date.now() });
+        document.getElementById('stopBtn').onclick = () => {
+            get(ref(db, `users/${MY_NAME}`)).then(s => {
+                const v = s.val();
+                update(ref(db, `users/${MY_NAME}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) });
             });
         };
-        
-        window.resetDay = function() {
-            get(ref(db, `users/${MY_ID}`)).then(s => {
+
+        window.saveDay = () => {
+            get(ref(db, `users/${MY_NAME}`)).then(s => {
                 const v = s.val();
                 const day = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][new Date().getDay()];
-                const newH = v.history || {}; 
+                const newH = v.history || {};
                 newH[day] = (newH[day] || 0) + (v.pendingTime || 0);
-                update(ref(db, `users/${MY_ID}`), { 
-                    pendingTime: 0, 
-                    timerActive: false, 
-                    history: newH 
-                });
+                update(ref(db, `users/${MY_NAME}`), { pendingTime: 0, timerActive: false, history: newH });
+                alert("OPERASYON VERİLERİ MÜHÜRLENDİ.");
             });
         };
     </script>
