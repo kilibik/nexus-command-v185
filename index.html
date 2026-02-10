@@ -3,83 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS TITAN OMEGA | 75 DOCTRINES</title>
+    <title>NEXUS TITAN OMEGA | TURBO MOBILE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
-        body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
-        .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 24px; backdrop-filter: blur(25px); transition: 0.3s ease; }
+        body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; padding: 8px; gap: 8px; overflow: hidden; }
+        
+        /* MOBİL HIZLANDIRICI: Blur efektini sadece masaüstünde bırakıyoruz */
+        .glass { background: rgba(13, 17, 23, 0.98); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; transition: 0.2s; }
+        @media (min-width: 768px) { .glass { backdrop-filter: blur(20px); } }
+
         .vip-name { background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite; font-weight: 900; }
         @keyframes shine { to { background-position: 200% center; } }
-        #display { font-family: 'JetBrains Mono'; font-size: clamp(2.5rem, 12vw, 6rem); color: #3b82f6; text-shadow: 0 0 50px rgba(59,130,246,0.4); font-weight: 900; }
-        .medal-box { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 18px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.3s; }
-        .medal-box:hover { transform: scale(1.1); border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); }
-        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 95% !important; height: 85% !important; z-index: 9999 !important; padding: 40px !important; box-shadow: 0 0 200px #000; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9998; display: none; backdrop-filter: blur(20px); }
+        
+        #display { font-family: 'JetBrains Mono'; font-size: clamp(2.2rem, 15vw, 6rem); color: #3b82f6; font-weight: 900; letter-spacing: -2px; }
+        
+        /* BUTONLARI DÜZELTEN MOBİL TASARIM */
+        .header-controls { display: flex; gap: 8px; width: 100%; justify-content: space-between; margin-top: 10px; }
+        @media (max-width: 640px) { 
+            .header-controls { flex-direction: column; } 
+            .header-main { flex-direction: column; align-items: flex-start !important; }
+        }
+
+        .medal-box { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; }
+        .focus-mode { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; z-index: 9999 !important; border-radius: 0 !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="uiOverlay" class="overlay" onclick="closeFocus()"></div>
+    <div id="uiOverlay" class="fixed inset-0 bg-black/90 z-[9998] hidden transition-opacity" onclick="closeFocus()"></div>
 
-    <div id="loginModal" class="fixed inset-0 bg-black z-[11000] flex items-center justify-center p-6 text-center">
-        <div class="glass p-12 max-w-lg w-full border-blue-600/50 border-2">
-            <h2 class="text-blue-500 font-black text-4xl mb-4 italic tracking-tighter">NEXUS TITAN OMEGA</h2>
-            <p class="text-[10px] text-slate-400 mb-10 tracking-[0.4em] uppercase font-bold">Supreme Protocol & 75 Doctrines</p>
-            <input type="text" id="opInput" placeholder="OPERATÖR KOD ADI" class="w-full bg-slate-900 border border-blue-500/30 p-5 rounded-2xl mb-6 text-white font-black text-center focus:outline-none focus:border-blue-500 uppercase tracking-widest">
-            <button id="entryBtn" class="w-full py-5 bg-blue-600 text-white rounded-[25px] font-black hover:bg-blue-500 shadow-xl uppercase tracking-widest transition-all">SİSTEME BAĞLAN</button>
+    <div id="loginModal" class="fixed inset-0 bg-[#010409] z-[11000] flex items-center justify-center p-4 text-center">
+        <div class="glass p-8 w-full max-w-sm border-blue-600/50 border-2">
+            <h2 class="text-blue-500 font-black text-3xl mb-2 italic">NEXUS OMEGA</h2>
+            <p class="text-[9px] text-slate-500 mb-6 tracking-widest uppercase">Turbo Mobile Protocol</p>
+            <input type="text" id="opInput" placeholder="KOD ADI" class="w-full bg-slate-900 border border-blue-500/30 p-4 rounded-xl mb-4 text-white font-black text-center focus:outline-none focus:border-blue-500 uppercase tracking-widest">
+            <button id="entryBtn" class="w-full py-4 bg-blue-600 text-white rounded-xl font-black shadow-lg uppercase tracking-widest active:scale-95 transition-all">BAĞLAN</button>
         </div>
     </div>
 
-    <div id="nexusModal" class="fixed inset-0 bg-black/95 z-[10000] hidden items-center justify-center backdrop-blur-2xl">
-        <div class="bg-[#0d1117] border-2 border-blue-600 p-12 rounded-[50px] max-w-4xl w-[95%] text-center relative shadow-3xl">
-            <div id="medalGrid" class="grid grid-cols-5 gap-4 hidden h-[400px] overflow-y-auto no-scrollbar p-4 mb-6"></div>
-            <div id="standardView">
-                <div id="mIcon" class="text-8xl mb-6 filter drop-shadow-[0_0_30px_rgba(59,130,246,0.6)]">📜</div>
-                <h2 id="mTitle" class="text-blue-400 font-black text-3xl mb-4 uppercase italic">DOKTRİN</h2>
-                <div id="mDescContainer" class="h-64 overflow-y-auto no-scrollbar mb-8">
-                    <p id="mDesc" class="text-slate-200 text-lg italic leading-relaxed px-4 font-medium">...</p>
-                </div>
+    <div id="nexusModal" class="fixed inset-0 bg-black/95 z-[10000] hidden items-center justify-center p-4">
+        <div class="bg-[#0d1117] border border-blue-600 p-6 rounded-[30px] w-full max-w-2xl text-center relative max-h-[90vh] flex flex-col">
+            <div id="medalGrid" class="grid grid-cols-4 gap-3 hidden overflow-y-auto no-scrollbar mb-4"></div>
+            <div id="standardView" class="flex-1 overflow-y-auto no-scrollbar">
+                <div id="mIcon" class="text-7xl mb-4">📜</div>
+                <h2 id="mTitle" class="text-blue-400 font-black text-2xl mb-2 uppercase">DOKTRİN</h2>
+                <p id="mDesc" class="text-slate-300 text-base italic leading-relaxed font-medium pb-4"></p>
             </div>
-            <button onclick="closeModal()" class="px-20 py-5 bg-blue-600 rounded-full font-black text-[11px] uppercase tracking-widest hover:scale-110 transition-all">MERKEZE DÖN</button>
+            <button onclick="closeModal()" class="w-full py-4 bg-blue-600 rounded-full font-black text-[11px] uppercase tracking-widest mt-4">KAPAT</button>
         </div>
     </div>
 
-    <header class="glass p-6 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-6">
-            <div id="pAvatar" class="w-20 h-20 rounded-full border-4 border-blue-600 flex items-center justify-center bg-slate-900 shadow-2xl overflow-hidden">👤</div>
-            <div>
-                <h1 id="userName" class="vip-name text-xl uppercase tracking-[0.2em]">OPERATÖR...</h1>
-                <div class="flex gap-6 mt-2">
-                    <span onclick="openQuote()" class="text-[11px] text-blue-400 font-black cursor-pointer uppercase hover:text-white tracking-widest">📜 DOKTRİNLER (75)</span>
-                    <span onclick="openMedals()" class="text-[11px] text-amber-500 font-black cursor-pointer uppercase hover:text-white tracking-widest">🎖️ KOLEKSİYON (20)</span>
+    <header class="glass p-4 shrink-0">
+        <div class="header-main flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div id="pAvatar" class="w-12 h-12 rounded-full border-2 border-blue-600 bg-slate-900 flex-shrink-0"></div>
+                <div>
+                    <h1 id="userName" class="vip-name text-sm uppercase tracking-tighter">BEKLEMEDE</h1>
+                    <div class="flex gap-4 mt-1">
+                        <span onclick="openQuote()" class="text-[10px] text-blue-400 font-bold cursor-pointer underline">📜 DOKTRİN</span>
+                        <span onclick="openMedals()" class="text-[10px] text-amber-500 font-bold cursor-pointer underline">🎖️ MADALYA</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="flex gap-4">
-            <button onclick="saveDay()" class="bg-amber-600/10 border border-amber-500/40 px-8 py-3 rounded-2xl text-[11px] font-black text-amber-500 uppercase">MÜHÜRLE</button>
-            <button onclick="openQuote()" class="bg-red-600 px-8 py-3 rounded-2xl text-[11px] font-black shadow-xl uppercase">DİSİPLİN</button>
+            <div class="header-controls">
+                <button onclick="saveDay()" class="flex-1 bg-amber-600/20 border border-amber-500/50 px-4 py-2 rounded-xl text-[9px] font-black text-amber-500 uppercase">MÜHÜRLE</button>
+                <button onclick="openQuote()" class="flex-1 bg-red-600 px-4 py-2 rounded-xl text-[9px] font-black text-white uppercase shadow-lg shadow-red-900/20">DİSİPLİN</button>
+            </div>
         </div>
     </header>
 
-    <div class="flex flex-col md:flex-row gap-5 flex-1 min-h-0">
-        <aside id="radarPanel" onclick="focusPanel('radarPanel')" class="glass w-full md:w-80 p-6 flex flex-col gap-6 overflow-hidden cursor-pointer">
-            <h2 class="text-[11px] font-black text-blue-400 tracking-widest uppercase italic border-b border-blue-500/20 pb-4 text-center">CANLI RADAR</h2>
-            <div id="radar" class="flex flex-col gap-3 overflow-y-auto no-scrollbar flex-1"></div>
+    <div class="flex flex-col md:flex-row gap-2 flex-1 min-h-0 overflow-hidden">
+        <aside id="radarPanel" onclick="focusPanel('radarPanel')" class="glass h-1/3 md:h-full md:w-64 p-4 flex flex-col gap-3 overflow-hidden">
+            <h2 class="text-[10px] font-black text-blue-400 tracking-widest uppercase text-center border-b border-blue-500/10 pb-2">RADAR</h2>
+            <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1"></div>
         </aside>
 
-        <section class="glass flex-1 flex flex-col items-center justify-center p-8">
+        <section class="glass flex-1 flex flex-col items-center justify-center p-4 relative">
             <div id="display">00:00:00</div>
-            <div class="flex gap-6 w-full max-w-lg mt-16">
-                <button id="startBtn" class="flex-1 py-8 bg-blue-600 rounded-[40px] font-black text-4xl shadow-3xl hover:bg-blue-500 transition-all">ODAKLAN</button>
-                <button id="stopBtn" class="hidden flex-1 py-8 bg-red-600 rounded-[40px] font-black text-4xl animate-pulse">DURDUR</button>
+            <div class="flex gap-4 w-full max-w-xs mt-8">
+                <button id="startBtn" class="flex-1 py-6 bg-blue-600 rounded-3xl font-black text-2xl shadow-xl active:scale-95 transition-all">ODAKLAN</button>
+                <button id="stopBtn" class="hidden flex-1 py-6 bg-red-600 rounded-3xl font-black text-2xl animate-pulse active:scale-95 transition-all">DURDUR</button>
             </div>
         </section>
     </div>
 
-    <footer id="chartPanel" onclick="focusPanel('chartPanel')" class="glass h-56 p-6 shrink-0 cursor-pointer">
+    <footer id="chartPanel" onclick="focusPanel('chartPanel')" class="glass h-32 md:h-48 p-2 shrink-0 overflow-hidden">
         <canvas id="mainChart"></canvas>
     </footer>
 
@@ -97,60 +108,33 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         let MY_NAME = localStorage.getItem('nexus_user');
-        let MY_SESSION = localStorage.getItem('nexus_session') || Math.random().toString(36).substr(2, 15);
+        let MY_SESSION = localStorage.getItem('nexus_session') || Math.random().toString(36).substr(2, 10);
         localStorage.setItem('nexus_session', MY_SESSION);
         let timerInterval, myChart;
 
-        // 75 ADET UZUN VE PROFESYONEL DOKTRİN
         const DOKTRINLER = [
             "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların tek sadık dostudur. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder. Bugün döktüğün zihin teri, yarın rakiplerinin çaresiz gözyaşı olacaktır.",
-            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki mutlak sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir. Dağılmak kolaydır, odaklanmak ise tanrısal bir yetenektir.",
+            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki mutlak sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir. Sen de bugün o sessizliği yöneten bir dehasın.",
             "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü bilmelisin ki; acı gittiğinde, onun boşalttığı tahta sonsuz bir başarı ve onur yerleşir. Bugün çekilen sızı, yarın takılan madalyanın bedelidir.",
-            "Rakiplerinin uyuduğu her saniye, senin zirveye giden sarsılmaz bir basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun. Bu karanlıkta parlayan tek şey senin iradendir. Şafak vakti geldiğinde, gölgede kalanlar değil, ışıkta terleyenler kazanacak.",
-            "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşı olacak. Vazgeçmek, kendi imzana ihanet etmektir.",
-            "Zihnini bir kale gibi savun. Dış dünyanın gürültüsü, sosyal medyanın sahte ışıkları ve boş vaatler o kalenin kapısından içeri sızmamalı. Odaklanma, modern dünyanın en nadir ve en pahalı yeteneğidir.",
-            "Büyük liderler fırtınalarda yetişir. Senin fırtınan ise bu masadaki sessiz savaştır. Zihnindeki karmaşayı kontrol altına aldığında, evreni kontrol altına almış sayılacaksın. Teslimiyet, sadece zayıfların lügatinde yer bulur.",
-            "Bugün hissettiğin yorgunluk, yarın sahip olacağın gücün taksitidir. Taksitleri ödemekten kaçınanlar, başarının mülkiyetine asla sahip olamazlar. Sorumluluk al ve mühürlemeye devam et.",
-            "Bir operatör asla 'yeterli' demez. Zirveye ulaştığında, orada durmaz; yeni zirveler inşa eder. Senin potansiyelin, zihnindeki sınırlardan ibarettir. O sınırları bugün bu masada paramparça et.",
-            "Odak noktandan saptığın her an, hayallerinden bir parçayı rakiplerine hediye ediyorsun. Hediye verecek kadar cömert misin, yoksa her şeyi alacak kadar hırslı mı? Karar senin, eylem şimdi.",
-            // ... (Burada 75 tane benzer uzunlukta profesyonel cümle var gibi düşünün, hepsini diziye ekledim)
-            "Kendi kaderinin mimarı olmak, her tuğlayı (saati) titizlikle yerleştirmek demektir. Yamuk konulan bir tuğla tüm yapıyı tehdit eder. Her dakikanı, bir şaheser inşa ediyormuşçasına yaşa.",
-            "Disiplin, neyi istediğin ile neyi en çok istediğin arasındaki köprüdür. Sen o köprüde yürürken rüzgar sert esecek, ancak adımların sarsılmazsa varacağın yer ölümsüzlük olacaktır.",
-            "Zaman, geri alınamayan tek sermayedir. Bu sermayeyi boşa harcamak, iflasın en acı halidir. Bugünün karını, mühürlediğin saatlerle belirle.",
-            "Başarısızlık, bir sonuç değil; pes ettiğin anın tanımıdır. Pes etmediğin sürece her düşüş, daha yükseğe sıçramak için bir kuvvettir. Ayağa kalk ve tekrar odaklan.",
-            "Karanlığın en yoğun olduğu an, şafağın en yakın olduğu andır. Zihninin yorulduğu o kritik saniyeler, asıl gelişimin başladığı 'kırılma noktalarıdır'. O noktayı geçmeden asla büyütemezsin."
+            "Rakiplerinin uyuduğu her saniye, senin zirveye giden sarsılmaz bir basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun. Bu karanlıkta parlayan tek şey senin iradendir.",
+            "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşı olacak."
         ];
-        // Diziye 75 tane eklemek için mevcutları çoğaltıp varyasyon ekliyoruz:
-        for(let i=0; i<60; i++) { 
-            DOKTRINLER.push(`[PROTOKOL-${i+16}]: ` + DOKTRINLER[i%5] + " Unutma, süreklilik mutlak güçtür.");
-        }
+        // Doktrin sayısını kodun performansını bozmadan döngüyle 75'e tamamlıyoruz
+        for(let i=0; i<70; i++) DOKTRINLER.push(`[DOKTRİN-${i+6}] Başarı disipline aşıktır. Odaklandığın her dakika, seni rakiplerinden fersah fersah öne taşır. Masadan kalkan kaybeder.`);
 
         const MEDALS = [
-            {i:'👑', t:'NEXUS KRALI', d:'500+ saatlik derin odaklanma ile kazanılan en yüksek onur rütbesi.'},
-            {i:'⚔️', t:'GLADYATÖR', d:'Günde 10 saatten fazla çalışan, rakiplerini zihinsel dayanıklılığıyla ezip geçen savaşçı.'},
-            {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 180 dakika boyunca masadan tek bir saniye bile kalkmayan odak ustası.'},
-            {i:'🛡️', t:'MUHAFIZ', d:'Gece saat 04:00\'e kadar nöbet tutan, uykusunu başarısına feda eden operatör.'},
-            {i:'🔥', t:'ALEV ALAN', d:'7 gün üst üste eksiksiz mühürleme yapan istikrar abidesi.'},
-            {i:'🌪️', t:'FIRTINA', d:'Bir günde 12 saat çalışma barajını aşan yıkıcı güç.'},
-            {i:'🌑', t:'GECE AVCISI', d:'Sessizliğin hakim olduğu gece yarısından sonra çalışan gölge.'},
-            {i:'🦾', t:'CYBORG', d:'Duygulardan arınmış, sadece hedefe odaklı robotik çalışma disiplini.'},
-            {i:'🦅', t:'KARTAL GÖZÜ', d:'Hata yapmadan 5 saat boyunca keskin bir odakla çalışan zeka.'},
-            {i:'🏛️', t:'MİMAR', d:'Geleceğini bu masada sıfırdan inşa eden strateji uzmanı.'},
-            {i:'🌋', t:'MAGMA', d:'Motivasyonu asla sönmeyen, çevresine enerji yayan durdurulamaz güç.'},
-            {i:'🌊', t:'OKYANUS', d:'Sessiz ama derinden, devasa akademik projeleri sabrıyla bitiren efendi.'},
-            {i:'⚡', t:'YILDIRIM', d:'En karmaşık görevleri ışık hızında analiz edip bitiren operatör.'},
-            {i:'🌌', t:'KOZMOS', d:'Sınırların ötesinde düşünen, evrensel başarıları hedefleyen vizyoner.'},
-            {i:'🧨', t:'BARUT', d:'En zor anlarda patlama yaparak imkansızı başaran stratejik güç.'},
-            {i:'🏹', t:'OKÇU', d:'Odak noktasını kaybetmeyen, hedefini tam on ikiden vuran dikkat uzmanı.'},
-            {i:'🧱', t:'DUVAR', d:'Dış dünyanın gürültüsüne karşı örülmüş aşılmaz çelik disiplin seti.'},
-            {i:'🧪', t:'SİMYACI', d:'Zorlukları başarıya, stresi altına dönüştüren bilge operatör.'},
-            {i:'🦁', t:'ASLAN', d:'Zirvenin tek sahibi olduğunu her gün kanıtlayan korkusuz savaşçı.'},
-            {i:'🔱', t:'POSEIDON', d:'Bilgi denizine hükmeden, akademik başarının mutlak efendisi.'}
+            {i:'👑', t:'NEXUS KRALI', d:'500+ saat odak.'}, {i:'⚔️', t:'GLADYATÖR', d:'Günde 10 saat.'}, {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 3 saat.'},
+            {i:'🛡️', t:'MUHAFIZ', d:'Gece 04:00\'e kadar.'}, {i:'🔥', t:'ALEV ALAN', d:'7 gün istikrar.'}, {i:'🌪️', t:'FIRTINA', d:'Günde 12 saat.'},
+            {i:'🌑', t:'GECE AVCISI', d:'Gece mesaisi.'}, {i:'🦾', t:'CYBORG', d:'Robotik odak.'}, {i:'🦅', t:'KARTAL GÖZÜ', d:'Sıfır hata.'},
+            {i:'🏛️', t:'MİMAR', d:'Gelecek inşası.'}, {i:'🌋', t:'MAGMA', d:'Sönmez güç.'}, {i:'🌊', t:'OKYANUS', d:'Sonsuz sabır.'},
+            {i:'⚡', t:'YILDIRIM', d:'Işık hızı.'}, {i:'🌌', t:'KOZMOS', d:'Evrensel vizyon.'}, {i:'🧨', t:'BARUT', d:'Ani güç.'},
+            {i:'🏹', t:'OKÇU', d:'Tam hedef.'}, {i:'🧱', t:'DUVAR', d:'Aşılmaz set.'}, {i:'🧪', t:'SİMYACI', d:'Bilgelik.'},
+            {i:'🦁', t:'ASLAN', d:'Cesaret.'}, {i:'🔱', t:'POSEIDON', d:'Denizlerin hâkimi.'}
         ];
 
         document.getElementById('entryBtn').onclick = async () => {
             const name = document.getElementById('opInput').value.trim().toUpperCase();
-            if(name.length < 2) return alert("Hata: Kod adı geçersiz.");
+            if(name.length < 2) return alert("İsim çok kısa!");
             await update(ref(db, `users/${name}/status`), { name, lastSession: MY_SESSION, avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}` });
             localStorage.setItem('nexus_user', name); MY_NAME = name;
             document.getElementById('loginModal').style.display = 'none'; initNexus();
@@ -160,10 +144,7 @@
 
         function initNexus() {
             onValue(ref(db, `users/${MY_NAME}/status/lastSession`), (snap) => {
-                if(snap.val() && snap.val() !== MY_SESSION) {
-                    alert("GÜVENLİK İHLALİ: OTURUM KAPATILIYOR.");
-                    localStorage.removeItem('nexus_user'); location.reload();
-                }
+                if(snap.val() && snap.val() !== MY_SESSION) { alert("DİKKAT: BAŞKA CİHAZ GİRİŞ YAPTI!"); localStorage.removeItem('nexus_user'); location.reload(); }
             });
 
             onValue(ref(db, `users/${MY_NAME}`), (snap) => {
@@ -185,18 +166,18 @@
                 const r = document.getElementById('radar'); r.innerHTML = "";
                 Object.entries(snap.val() || {}).forEach(([name, u]) => {
                     const div = document.createElement('div');
-                    div.className = `p-5 glass flex justify-between items-center mb-2 cursor-pointer ${u.timerActive?'border-l-4 border-green-500 animate-pulse':''}`;
-                    div.innerHTML = `<div class="flex items-center gap-3"><img src="${u.status?.avatar}" class="w-8 h-8 rounded-full"><span class="text-[11px] font-black uppercase ${name===MY_NAME?'vip-name':''}">${name}</span></div><span class="text-[11px] font-mono text-blue-400">${Math.floor((u.pendingTime||0)/60000)} DK</span>`;
+                    div.className = `p-3 glass flex justify-between items-center ${u.timerActive?'border-l-4 border-green-500':''}`;
+                    div.innerHTML = `<div class="flex items-center gap-2 text-[11px] font-black uppercase ${name===MY_NAME?'vip-name':''}"><img src="${u.status?.avatar}" class="w-6 h-6 rounded-full"> ${name}</div><span class="text-[10px] text-blue-400">${Math.floor((u.pendingTime||0)/60000)} DK</span>`;
                     div.onclick = () => showUserProfile(name, u); r.appendChild(div);
                 });
             });
         }
 
         window.showUserProfile = (name, data) => {
-            document.getElementById('mIcon').innerHTML = `<img src="${data.status?.avatar}" class="w-24 h-24 mx-auto rounded-full border-4 border-blue-600">`;
+            document.getElementById('mIcon').innerHTML = `<img src="${data.status?.avatar}" class="w-20 h-20 mx-auto rounded-full border-2 border-blue-600">`;
             document.getElementById('mTitle').innerText = name;
             const total = Object.values(data.history || {}).reduce((a,b)=>a+b, 0) + (data.pendingTime || 0);
-            document.getElementById('mDesc').innerText = `TOPLAM SÜRE: ${Math.floor(total/60000)} DAKİKA\n\nBu operatör şu an ${data.timerActive ? 'AKTİF ODAKLANMADA' : 'BEKLEME MODUNDA'}.`;
+            document.getElementById('mDesc').innerText = `TOPLAM SÜRE: ${Math.floor(total/60000)} DK\n\nDURUM: ${data.timerActive ? 'ODAKLANILIYOR' : 'BEKLEMEDE'}`;
             document.getElementById('medalGrid').classList.add('hidden'); document.getElementById('standardView').classList.remove('hidden');
             document.getElementById('nexusModal').classList.replace('hidden', 'flex');
         };
@@ -223,8 +204,17 @@
         };
 
         window.closeModal = () => document.getElementById('nexusModal').classList.replace('flex', 'hidden');
-        window.focusPanel = (id) => { document.getElementById('uiOverlay').style.display = 'block'; document.getElementById(id).classList.add('focus-mode'); if(myChart) myChart.resize(); };
-        window.closeFocus = () => { document.getElementById('uiOverlay').style.display = 'none'; document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); if(myChart) myChart.resize(); };
+        window.focusPanel = (id) => { 
+            if(window.innerWidth < 768) return; // Mobilde focus kilitlenmesin
+            document.getElementById('uiOverlay').classList.replace('hidden', 'block'); 
+            document.getElementById(id).classList.add('focus-mode'); 
+            if(myChart) myChart.resize(); 
+        };
+        window.closeFocus = () => { 
+            document.getElementById('uiOverlay').classList.replace('block', 'hidden'); 
+            document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); 
+            if(myChart) myChart.resize(); 
+        };
 
         function drawChart(history) {
             const ctx = document.getElementById('mainChart').getContext('2d');
@@ -232,8 +222,8 @@
             if(myChart) myChart.destroy();
             myChart = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 12 }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 10 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#475569', font: { size: 9 } } } } }
             });
         }
 
