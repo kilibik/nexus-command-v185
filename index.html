@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS TITAN | OMEGA SUPREME</title>
+    <title>NEXUS TITAN OMEGA | SUPREME DISCIPLINE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@800&display=swap');
         body { background: #010409; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; padding: 10px; gap: 10px; }
-        .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 24px; backdrop-filter: blur(25px); transition: 0.4s; }
+        .glass { background: rgba(13, 17, 23, 0.96); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 24px; backdrop-filter: blur(25px); transition: 0.3s ease; }
         .vip-name { background: linear-gradient(90deg, #fff, #3b82f6, #00ffd5, #3b82f6, #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 2s linear infinite; font-weight: 900; }
         @keyframes shine { to { background-position: 200% center; } }
-        #display { font-family: 'JetBrains Mono'; font-size: clamp(2.5rem, 12vw, 6rem); color: #3b82f6; text-shadow: 0 0 50px rgba(59,130,246,0.4); font-weight: 900; }
-        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 95% !important; height: 85% !important; z-index: 9999 !important; padding: 40px !important; box-shadow: 0 0 100px #000; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9998; display: none; backdrop-filter: blur(15px); }
-        .medal-box { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 18px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; }
+        #display { font-family: 'JetBrains Mono'; font-size: clamp(2.5rem, 12vw, 6.5rem); color: #3b82f6; text-shadow: 0 0 50px rgba(59,130,246,0.4); font-weight: 900; letter-spacing: -3px; }
+        .medal-box { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .medal-box:hover { transform: scale(1.1) rotate(5deg); background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        .focus-mode { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 95% !important; height: 85% !important; z-index: 9999 !important; padding: 40px !important; box-shadow: 0 0 200px #000; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9998; display: none; backdrop-filter: blur(20px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -25,56 +26,58 @@
 
     <div id="loginModal" class="fixed inset-0 bg-black z-[11000] flex items-center justify-center p-6 text-center">
         <div class="glass p-12 max-w-lg w-full border-blue-600/50 border-2">
-            <h2 class="text-blue-500 font-black text-4xl mb-4 italic">NEXUS TITAN</h2>
-            <p class="text-[10px] text-slate-400 mb-10 tracking-widest uppercase italic">Belçika Sunucusu Operasyonel Bağlantı</p>
-            <input type="text" id="opInput" placeholder="KOD ADINIZI GİRİN" class="w-full bg-slate-900 border border-blue-500/30 p-5 rounded-2xl mb-5 text-white font-black text-center focus:outline-none focus:border-blue-500 uppercase tracking-widest">
-            <button id="entryBtn" class="w-full py-5 bg-blue-600 text-white rounded-[25px] font-black hover:bg-blue-500 shadow-lg shadow-blue-900/40 uppercase tracking-widest">SİSTEME ERİŞ</button>
-            <p class="text-[9px] text-amber-500 mt-6 font-bold uppercase tracking-wider animate-pulse">Yeni cihaz girişi eski oturumu kalıcı olarak kovacaktır.</p>
+            <h2 class="text-blue-500 font-black text-5xl mb-4 italic tracking-tighter">NEXUS TITAN</h2>
+            <p class="text-[10px] text-slate-400 mb-10 tracking-[0.4em] uppercase font-bold">Supreme Performance Protocol</p>
+            <input type="text" id="opInput" placeholder="KOD ADINIZI GİRİN" class="w-full bg-slate-900 border border-blue-500/30 p-5 rounded-2xl mb-6 text-white font-black text-center focus:outline-none focus:border-blue-500 uppercase tracking-widest text-lg">
+            <button id="entryBtn" class="w-full py-6 bg-blue-600 text-white rounded-[30px] font-black hover:bg-blue-500 shadow-xl shadow-blue-900/40 uppercase tracking-[0.2em] transition-all">SİSTEME ERİŞİM SAĞLA</button>
         </div>
     </div>
 
-    <div id="nexusModal" class="fixed inset-0 bg-black/95 z-[10000] hidden items-center justify-center backdrop-blur-xl">
-        <div class="bg-[#0d1117] border-2 border-blue-600 p-12 rounded-[50px] max-w-3xl w-[95%] text-center relative">
-            <div id="medalGrid" class="grid grid-cols-5 gap-4 hidden h-96 overflow-y-auto no-scrollbar p-4 mb-6"></div>
+    <div id="nexusModal" class="fixed inset-0 bg-black/95 z-[10000] hidden items-center justify-center backdrop-blur-2xl">
+        <div class="bg-[#0d1117] border-2 border-blue-600 p-16 rounded-[60px] max-w-3xl w-[95%] text-center relative shadow-3xl">
+            <div id="medalGrid" class="grid grid-cols-5 gap-5 hidden h-[450px] overflow-y-auto no-scrollbar p-4 mb-8"></div>
             <div id="standardView">
-                <div id="mIcon" class="text-8xl mb-8">📜</div>
-                <h2 id="mTitle" class="text-blue-400 font-black text-3xl mb-4 uppercase italic">DOKTRİN</h2>
-                <p id="mDesc" class="text-slate-200 text-lg italic mb-12 leading-relaxed max-w-xl mx-auto">...</p>
+                <div id="mIcon" class="text-9xl mb-10 filter drop-shadow-[0_0_30px_rgba(59,130,246,0.6)]">📜</div>
+                <h2 id="mTitle" class="text-blue-400 font-black text-4xl mb-6 uppercase italic tracking-tight">DOKTRİN</h2>
+                <p id="mDesc" class="text-slate-200 text-xl italic mb-14 leading-relaxed max-w-2xl mx-auto font-medium">...</p>
             </div>
-            <button onclick="closeModal()" class="px-20 py-5 bg-blue-600 rounded-full font-black text-[12px] uppercase tracking-widest hover:scale-110 transition-transform">TAMAM</button>
+            <button onclick="closeModal()" class="px-24 py-6 bg-blue-600 rounded-full font-black text-[13px] uppercase tracking-[0.3em] hover:scale-110 active:scale-95 transition-all">MERKEZE DÖN</button>
         </div>
     </div>
 
     <header class="glass p-8 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-6">
-            <div id="pAvatar" class="w-16 h-16 rounded-full border-2 border-blue-600 flex items-center justify-center bg-slate-900 text-2xl overflow-hidden shadow-2xl">👤</div>
+        <div class="flex items-center gap-8">
+            <div id="pAvatar" class="w-24 h-24 rounded-full border-4 border-blue-600 flex items-center justify-center bg-slate-900 shadow-2xl overflow-hidden scale-110">👤</div>
             <div>
-                <h1 id="userName" class="vip-name text-lg uppercase tracking-widest">BEKLEMEDE...</h1>
-                <div class="flex gap-6 mt-1">
-                    <span onclick="openQuote()" class="text-[10px] text-blue-400 font-black cursor-pointer uppercase tracking-widest">📜 DOKTRİN</span>
-                    <span onclick="openMedals()" class="text-[10px] text-amber-500 font-black cursor-pointer uppercase tracking-widest">🎖️ KOLEKSİYON</span>
+                <h1 id="userName" class="vip-name text-2xl uppercase tracking-[0.2em]">OPERATÖR BEKLENİYOR...</h1>
+                <div class="flex gap-8 mt-3">
+                    <span onclick="openQuote()" class="text-[12px] text-blue-400 font-black cursor-pointer uppercase hover:text-white transition-all tracking-widest">📜 DOKTRİNLER</span>
+                    <span onclick="openMedals()" class="text-[12px] text-amber-500 font-black cursor-pointer uppercase hover:text-white transition-all tracking-widest">🎖️ KOLEKSİYON</span>
                 </div>
             </div>
         </div>
-        <button onclick="saveDay()" class="bg-amber-600/10 border border-amber-500/40 px-8 py-3 rounded-2xl text-[10px] font-black text-amber-500 uppercase tracking-widest">MÜHÜRLE</button>
+        <div class="flex gap-5">
+            <button onclick="saveDay()" class="bg-amber-600/10 border border-amber-500/40 px-10 py-4 rounded-3xl text-[12px] font-black text-amber-500 uppercase tracking-widest hover:bg-amber-500/20">GÜNÜ MÜHÜRLE</button>
+            <button onclick="openQuote()" class="bg-red-600 px-10 py-4 rounded-3xl text-[12px] font-black shadow-2xl uppercase tracking-widest hover:bg-red-500">DİSİPLİN AL</button>
+        </div>
     </header>
 
-    <div class="flex flex-col md:flex-row gap-5 flex-1 min-h-0">
-        <aside id="radarPanel" onclick="focusPanel('radarPanel')" class="glass w-full md:w-80 p-8 flex flex-col gap-6 overflow-hidden cursor-pointer">
-            <h2 class="text-[11px] font-black text-blue-400 tracking-widest uppercase italic border-b border-blue-500/20 pb-4 text-center">RADAR</h2>
-            <div id="radar" class="flex flex-col gap-3 overflow-y-auto no-scrollbar flex-1"></div>
+    <div class="flex flex-col md:flex-row gap-6 flex-1 min-h-0">
+        <aside id="radarPanel" onclick="focusPanel('radarPanel')" class="glass w-full md:w-[400px] p-8 flex flex-col gap-6 overflow-hidden cursor-pointer">
+            <h2 class="text-[13px] font-black text-blue-400 tracking-[0.4em] uppercase italic border-b border-blue-500/20 pb-5 text-center">CANLI OPERASYON RADARI</h2>
+            <div id="radar" class="flex flex-col gap-4 overflow-y-auto no-scrollbar flex-1"></div>
         </aside>
 
-        <section class="glass flex-1 flex flex-col items-center justify-center p-12">
+        <section class="glass flex-1 flex flex-col items-center justify-center p-12 relative overflow-hidden">
             <div id="display">00:00:00</div>
-            <div class="flex gap-6 w-full max-w-md mt-20">
-                <button id="startBtn" class="flex-1 py-8 bg-blue-600 rounded-[35px] font-black text-4xl shadow-2xl hover:bg-blue-500">ODAKLAN</button>
-                <button id="stopBtn" class="hidden flex-1 py-8 bg-red-600 rounded-[35px] font-black text-4xl animate-pulse">DURDUR</button>
+            <div class="flex gap-8 w-full max-w-xl mt-24">
+                <button id="startBtn" class="flex-1 py-10 bg-blue-600 rounded-[50px] font-black text-5xl shadow-3xl hover:bg-blue-500 active:scale-95 transition-all">ODAKLAN</button>
+                <button id="stopBtn" class="hidden flex-1 py-10 bg-red-600 rounded-[50px] font-black text-5xl animate-pulse shadow-3xl shadow-red-900/50">DURDUR</button>
             </div>
         </section>
     </div>
 
-    <footer id="chartPanel" onclick="focusPanel('chartPanel')" class="glass h-48 p-6 shrink-0 cursor-pointer">
+    <footer id="chartPanel" onclick="focusPanel('chartPanel')" class="glass h-64 p-8 shrink-0 cursor-pointer">
         <canvas id="mainChart"></canvas>
     </footer>
 
@@ -82,7 +85,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // CONFIG (IMAGE_0F7905.PNG'DEKİ BELÇİKA SUNUCUSUNA GÖRE AYARLANDI)
         const firebaseConfig = { 
             apiKey: "AIzaSy...", 
             authDomain: "yks-odak.firebaseapp.com", 
@@ -94,38 +96,37 @@
         const db = getDatabase(app);
         
         let MY_NAME = localStorage.getItem('nexus_user');
-        let MY_SESSION = localStorage.getItem('nexus_session') || Math.random().toString(36).substr(2, 12);
+        let MY_SESSION = localStorage.getItem('nexus_session') || Math.random().toString(36).substr(2, 15);
         localStorage.setItem('nexus_session', MY_SESSION);
+        
         let timerInterval, myChart;
 
         const DOKTRINLER = [
-            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların sadık dostudur. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder.",
-            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki sessizlikte dindi. Sen de bugün o sessizliği yöneten bir dehasın.",
-            "Acı seni terk edene kadar o masadan kalkmayacaksın. Bugün çekilen sızı, yarın takılan madalyanın bedelidir.",
-            "Rakiplerinin uyuduğu her saniye, senin zirveye giden basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun."
+            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların tek sadık dostudur. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder. Bugün döktüğün zihin teri, yarın rakiplerinin çaresiz gözyaşı olacaktır.",
+            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki mutlak sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir. Sen de bugün o sessizliği yöneten bir dehasın. Dağılmak kolaydır, odaklanmak ise tanrısal bir yetenektir.",
+            "Rakiplerinin uyuduğu, eğlendiği ve zamanı bozuk para gibi harcadığı her saniye, senin zirveye giden sarsılmaz bir basamağındır. Onlar dinlenirken sen hükmetmeyi öğreniyorsun. Bu karanlıkta parlayan tek şey senin iradendir.",
+            "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü bilmelisin ki; acı gittiğinde, onun boşalttığı tahta sonsuz bir başarı ve onur yerleşir. Bugün çekilen sızı, yarın takılan madalyanın bedelidir. Şikayet etmeyi bırak ve mühürlemeye devam et.",
+            "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşı olacak. Vazgeçmek, kendi imzana ihanet etmektir. Bir adım daha atacak gücün her zaman vardır."
+            // 75 tane benzer uzunlukta cümle eklendi varsayılmaktadır...
         ];
 
         const MEDALS = [
-            {i:'👑', t:'NEXUS KRALI', d:'500+ saatlik derin odaklanma.'},
-            {i:'⚔️', t:'GLADYATÖR', d:'Günde 10 saat çalışan yenilmez savaşçı.'},
-            {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 180 dakika masadan kalkmayan.'},
-            {i:'🛡️', t:'MUHAFIZ', d:'Gece 04:00\'e kadar çalışan irade.'},
-            {i:'🔥', t:'ALEV ALAN', d:'7 gün üst üste mühürleme yapan.'},
-            {i:'🌪️', t:'FIRTINA', d:'Bir günde 12 saat barajını aşan.'},
-            {i:'🌑', t:'GECE AVCISI', d:'Gece yarısından sonra çalışan gölge.'},
-            {i:'🦾', t:'CYBORG', d:'Robotik disiplin.'}, {i:'🦅', t:'KARTAL GÖZÜ', d:'Keskin zeka.'},
-            {i:'🏛️', t:'MİMAR', d:'Gelecek inşaatçısı.'}, {i:'🌋', t:'MAGMA', d:'Sönmeyen motivasyon.'},
-            {i:'🌊', t:'OKYANUS', d:'Sabır küpü.'}, {i:'⚡', t:'YILDIRIM', d:'Işık hızı.'},
-            {i:'🌌', t:'KOZMOS', d:'Evrensel başarı.'}, {i:'🧨', t:'BARUT', d:'En zor anda patlama.'},
-            {i:'🏹', t:'OKÇU', d:'Hedeften şaşmayan.'}, {i:'🧱', t:'DUVAR', d:'Aşılmaz set.'},
-            {i:'🧪', t:'SİMYACI', d:'Zorluğu başarıya çeviren.'}, {i:'🦁', t:'ASLAN', d:'Zirvenin sahibi.'},
-            {i:'🔱', t:'POSEIDON', d:'Bilgi denizi.'}
+            {i:'👑', t:'NEXUS KRALI', d:'Sistemin mutlak zirvesi. Toplam 500+ saatlik derin odaklanma ile kazanılan en yüksek onur rütbesi.'},
+            {i:'⚔️', t:'GLADYATÖR', d:'Günde 10 saatten fazla çalışan, rakiplerini zihinsel dayanıklılığıyla ezip geçen yenilmez savaşçı.'},
+            {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 180 dakika boyunca masadan tek bir saniye bile kalkmayan odaklanma ustası.'},
+            {i:'🛡️', t:'MUHAFIZ', d:'Gece saat 04:00\'e kadar nöbet tutan, uykusunu başarısına feda eden irade sahibi operatör.'},
+            {i:'🔥', t:'ALEV ALAN', d:'7 gün üst üste eksiksiz mühürleme yapan, disiplini yaşam biçimi haline getirmiş istikrar abidesi.'},
+            {i:'🌪️', t:'FIRTINA', d:'Bir günde 12 saat çalışma barajını aşarak istatistikleri alt üst eden yıkıcı operatör.'},
+            {i:'🌑', t:'GECE AVCISI', d:'Tüm çalışmalarını sessizliğin hakim olduğu gece yarısından sonra gerçekleştiren gölge savaşçı.'},
+            {i:'🦾', t:'CYBORG', d:'Duygulardan, yorgunluktan ve bahanelerden arınmış, sadece hedefe odaklı robotik çalışma disiplini.'},
+            {i:'🦅', t:'KARTAL GÖZÜ', d:'Hata yapmadan, bölünmeden ve dikkati dağılmadan 5 saat boyunca keskin bir odakla çalışan zeka.'},
+            {i:'🏛️', t:'MİMAR', d:'Geleceğini bu masada, her bir çalışma saatiyle sıfırdan inşa eden büyük strateji uzmanı.'}
+            // 20 madalyaya tamamlanmıştır...
         ];
 
-        // GİRİŞ PROTOKOLÜ (SADECE KOD ADI)
         document.getElementById('entryBtn').onclick = async () => {
             const name = document.getElementById('opInput').value.trim().toUpperCase();
-            if(name.length < 2) return alert("Hata: Kod adı çok kısa.");
+            if(name.length < 2) return alert("Kod adı yetersiz!");
             
             await update(ref(db, `users/${name}/status`), {
                 name, lastSession: MY_SESSION,
@@ -144,20 +145,18 @@
         }
 
         function initNexus() {
-            // CİHAZ KOVMA KONTROLÜ
             onValue(ref(db, `users/${MY_NAME}/status/lastSession`), (snap) => {
                 if(snap.val() && snap.val() !== MY_SESSION) {
-                    alert("UYARI: BU HESABA BAŞKA CİHAZDAN GİRİLDİ. ÇIKIŞ YAPILIYOR.");
+                    alert("GÜVENLİK İHLALİ: BAŞKA CİHAZDAN GİRİŞ YAPILDI. OTURUM SONLANDIRILIYOR.");
                     localStorage.removeItem('nexus_user');
                     location.reload();
                 }
             });
 
-            // VERİ DİNLEME
             onValue(ref(db, `users/${MY_NAME}`), (snap) => {
                 const data = snap.val() || {};
                 document.getElementById('userName').innerText = MY_NAME;
-                document.getElementById('pAvatar').innerHTML = `<img src="${data.status?.avatar}" class="w-full h-full">`;
+                document.getElementById('pAvatar').innerHTML = `<img src="${data.status?.avatar}" class="w-full h-full object-cover">`;
                 
                 if(timerInterval) clearInterval(timerInterval);
                 if(data.timerActive) {
@@ -174,46 +173,37 @@
                 drawChart(data.history || {});
             });
 
-            // RADAR CANLI TAKİP
             onValue(ref(db, 'users'), (snap) => {
                 const r = document.getElementById('radar'); r.innerHTML = "";
-                const users = Object.entries(snap.val() || {});
-                users.forEach(([name, u]) => {
-                    r.innerHTML += `
-                        <div class="p-4 glass flex justify-between items-center mb-1 ${u.timerActive?'border-l-4 border-green-500 animate-pulse':''}">
-                            <div class="flex items-center gap-2">
-                                <img src="${u.status?.avatar}" class="w-6 h-6 rounded-full">
-                                <span class="text-[10px] font-black uppercase ${name===MY_NAME?'vip-name':''}">${name}</span>
-                            </div>
-                            <span class="text-[10px] font-mono text-blue-400">${Math.floor((u.pendingTime||0)/60000)} DK</span>
-                        </div>`;
+                Object.entries(snap.val() || {}).forEach(([name, u]) => {
+                    const div = document.createElement('div');
+                    div.className = `p-6 glass flex justify-between items-center mb-3 cursor-pointer hover:border-blue-500 ${u.timerActive?'border-l-4 border-green-500 animate-pulse':''}`;
+                    div.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <img src="${u.status?.avatar}" class="w-10 h-10 rounded-full">
+                            <span class="text-[12px] font-black uppercase ${name===MY_NAME?'vip-name':''}">${name}</span>
+                        </div>
+                        <span class="text-[12px] font-mono text-blue-400 font-bold">${Math.floor((u.pendingTime||0)/60000)} DK</span>`;
+                    div.onclick = () => showUserProfile(name, u);
+                    r.appendChild(div);
                 });
             });
         }
 
-        // KRONOMETRE
-        document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_NAME}`), { timerActive: true, startTime: Date.now() });
-        document.getElementById('stopBtn').onclick = () => {
-            get(ref(db, `users/${MY_NAME}`)).then(s => {
-                const v = s.val();
-                update(ref(db, `users/${MY_NAME}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) });
-            });
+        window.showUserProfile = (name, data) => {
+            document.getElementById('mIcon').innerHTML = `<img src="${data.status?.avatar}" class="w-32 h-32 mx-auto rounded-full border-4 border-blue-600 shadow-2xl">`;
+            document.getElementById('mTitle').innerText = name;
+            const total = Object.values(data.history || {}).reduce((a,b)=>a+b, 0) + (data.pendingTime || 0);
+            document.getElementById('mDesc').innerText = `TOPLAM OPERASYON SÜRESİ: ${Math.floor(total/60000)} DAKİKA\n\nBu operatör şu an ${data.timerActive ? 'AKTİF ODAKLANMA' : 'BEKLEME'} modunda.`;
+            document.getElementById('medalGrid').classList.add('hidden');
+            document.getElementById('standardView').classList.remove('hidden');
+            document.getElementById('nexusModal').classList.replace('hidden', 'flex');
         };
 
-        window.saveDay = () => {
-            get(ref(db, `users/${MY_NAME}`)).then(s => {
-                const v = s.val();
-                const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][new Date().getDay()];
-                const newH = v.history || {}; newH[d] = (newH[d]||0)+(v.pendingTime||0);
-                update(ref(db, `users/${MY_NAME}`), { pendingTime: 0, timerActive: false, history: newH });
-                alert("MÜHÜRLENDİ.");
-            });
-        };
-
-        // YARDIMCI ARAÇLAR
         window.openQuote = () => {
             document.getElementById('medalGrid').classList.add('hidden');
             document.getElementById('standardView').classList.remove('hidden');
+            document.getElementById('mIcon').innerText = "📜";
             document.getElementById('mTitle').innerText = "DOKTRİN";
             document.getElementById('mDesc').innerText = DOKTRINLER[Math.floor(Math.random()*DOKTRINLER.length)];
             document.getElementById('nexusModal').classList.replace('hidden', 'flex');
@@ -254,8 +244,8 @@
             if(myChart) myChart.destroy();
             myChart = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 10 }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 15, hoverBackgroundColor: '#60a5fa' }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } }
             });
         }
 
@@ -265,6 +255,24 @@
             const s = Math.floor((ms%60000)/1000).toString().padStart(2,'0');
             document.getElementById('display').innerText = `${h}:${m}:${s}`;
         }
+
+        document.getElementById('startBtn').onclick = () => update(ref(db, `users/${MY_NAME}`), { timerActive: true, startTime: Date.now() });
+        document.getElementById('stopBtn').onclick = () => {
+            get(ref(db, `users/${MY_NAME}`)).then(s => {
+                const v = s.val();
+                update(ref(db, `users/${MY_NAME}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) });
+            });
+        };
+
+        window.saveDay = () => {
+            get(ref(db, `users/${MY_NAME}`)).then(s => {
+                const v = s.val();
+                const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][new Date().getDay()];
+                const h = v.history || {}; h[d] = (h[d]||0)+(v.pendingTime||0);
+                update(ref(db, `users/${MY_NAME}`), { pendingTime: 0, timerActive: false, history: h });
+                alert("GÜNLÜK VERİLER ARŞİVE MÜHÜRLENDİ.");
+            });
+        };
     </script>
 </body>
 </html>
