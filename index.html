@@ -147,13 +147,67 @@
         const DOKTRINLER = [
             "Zafer; terini kandan ayıramayanların tek dostudur.",
             "Acı seni terk edene kadar o masadan kalkmayacaksın.",
-            "Masa senin savaş alanındır. Kazanamadan o mevziden ayrılma."
+            "Masa senin savaş alanındır. Kazanamadan o mevziden ayrılma.",
+            "Zayıflık, disiplinsizliğin maskelenmiş halidir.",
+            "Bugün kaçarsan, yarın diz çökersin.",
+            "Limitlerin, senin koyduğun korku çizgileridir.",
+            "Sessizce çalış, gürültüyü başarıların çıkarsın.",
+            "Yorgunluk geçicidir, ama pişmanlık sonsuz.",
+            "En büyük rakibin, dün aynada gördüğün kişidir.",
+            "Disiplin, isteklerinle hedeflerin arasındaki köprüdür.",
+            "Dünya sen durduğunda dönmeye devam eder.",
+            "Zirve, uyuyanlar için değil, uykuyu terk edenler içindir.",
+            "Odaklandığın her saniye, geleceğinden bir borç siliyorsun.",
+            "Mazeretlerin, seni hapsettiğin duvarlardır.",
+            "Ter dökmezsen, gözyaşı dökersin.",
+            "Bugünün çilesi, yarının görkemidir.",
+            "Zihin her zaman bedenden önce pes eder; zihnini eğit.",
+            "Şampiyonlar, kimse izlemiyorken ter dökenlerdir.",
+            "Zaman, en pahalı mermindir; boşa sıkma.",
+            "Rakiplerin şu an çalışıyor.",
+            "Konfor alanın, hayallerinin mezarıdır.",
+            "Başarı, her gün yapılan küçük tekrarların toplamıdır.",
+            "Zorluklar seni yıldırmak için değil, şekillendirmek içindir.",
+            "Bir aslan gibi yaşamak istiyorsan, aslan gibi çalışmalısın.",
+            "Vazgeçmek, sadece kaybedenlerin seçeneğidir.",
+            "Acı seni öldürmez, sadece iradeni çelikleştirir.",
+            "Oturduğun masa senin tahtın, kalemin kılıcındır.",
+            "Her gün bir adım, bir mil eder.",
+            "Kendi kaderini kendi alın terinle yaz.",
+            "Düşmek sorun değil, kalkmamak ihanettir.",
+            "Bahaneler seni asla hedefine ulaştırmaz.",
+            "Başarısızlık bir durak olabilir ama asla son durak değildir.",
+            "Irade, her 'hayır' dediğinde daha da güçlenir.",
+            "Zor olanı seç, kolay olan seni geliştirmez.",
+            "Güneşi üzerine doğurma, sen güneşi selamla.",
+            "Sabır, çalışırken gösterilen sessiz güçtür.",
+            "Hayallerin için bedel ödemezsen, hayallerin bedelin olur.",
+            "Durma, devam et; yolun sonu aydınlık.",
+            "Kendine inanmazsan, kimse sana inanmaz.",
+            "Bugün ektiklerini, yarın biçeceksin."
         ];
 
         const MEDALS = [
+            {i:'🥇', t:'ALTIN OPERATÖR', d:'Sıralamada 1. sırada yer alan efsane.'},
+            {i:'🥈', t:'GÜMÜŞ MUHAFIZ', d:'Sıralamada 2. sırada yer alan seçkin.'},
+            {i:'🥉', t:'BRONZ SAVAŞÇI', d:'Sıralamada 3. sırada yer alan azimli.'},
             {i:'👑', t:'NEXUS KRALI', d:'500+ saat toplam odaklanma.'},
             {i:'⚔️', t:'GLADYATÖR', d:'Günde 10 saatten fazla çalışma.'},
-            {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 3 saat odaklanma.'}
+            {i:'💎', t:'ELMAS İRADE', d:'Kesintisiz 3 saat odaklanma.'},
+            {i:'🔥', t:'ALEV ALANLAR', d:'Arka arkaya 7 gün çalışma.'},
+            {i:'🛡️', t:'SİPER USTASI', d:'Masanın başından 5 saat kalkmama.'},
+            {i:'⚡', t:'YILDIRIM', d:'Güne en erken başlayan operatör.'},
+            {i:'📜', t:'DOKTRİN ÜSTADI', d:'Tüm disiplin kurallarını ezberleyen.'},
+            {i:'🌌', t:'GECE AVCISI', d:'Gece saatlerinde 4+ saat çalışma.'},
+            {i:'🩸', t:'ALIN TERİ', d:'Toplam 100 saat çalışma.'},
+            {i:'🌪️', t:'FIRTINA', d:'Haftalık 50+ saat çalışma.'},
+            {i:'🦾', t:'CYBORG', d:'Hatalardan arınmış kusursuz odak.'},
+            {i:'🏹', t:'KESKİN NİŞANCI', d:'Hedeflenen saatleri tam tutturan.'},
+            {i:'🌋', t:'MAGMA', d:'En uzun süreli aktif çalışma rekoru.'},
+            {i:'🦁', t:'PENÇE', d:'Liderlik koltuğunda 3 gün geçirme.'},
+            {i:'🏔️', t:'ZİRVE', d:'Tüm görevleri tamamlayan operatör.'},
+            {i:'🌟', t:'YILDIZ', d:'Toplulukta en yüksek skora ulaşan.'},
+            {i:'🗝️', t:'ANAHTAR', d:'Nexus Omega gizemlerini çözen.'}
         ];
 
         async function initAI() {
@@ -182,9 +236,6 @@
 
                     if(poses.length > 0) {
                         const kp = poses[0].keypoints;
-                        
-                        // SENSITIVE POINTS: Baş ucu (0), Omuzlar (5,6), Kulaklar (3,4), Dirsekler (7,8)
-                        // Bu noktalardan HERHANGİ BİRİ %10 güvenle bile görünse "burada" sayılır.
                         const crucialPoints = [0, 3, 4, 5, 6, 7, 8]; 
                         isPresent = crucialPoints.some(index => kp[index] && kp[index].score > 0.10);
                     }
@@ -192,7 +243,7 @@
                     if (!isPresent) {
                         missCount++;
                         document.body.style.border = "10px solid rgba(239, 68, 68, 0.4)";
-                        if (missCount >= 8) { // 8 saniye tolerans (Sistemin kararlılığı için artırıldı)
+                        if (missCount >= 8) {
                             document.getElementById('stopBtn').click();
                             alert("SİSTEM: TAKİP KAYBOLDU. ODAK DURDURULDU.");
                         }
@@ -293,7 +344,7 @@
             document.getElementById('mTitle').innerText = "MADALYALAR";
             MEDALS.forEach(m => {
                 const box = document.createElement('div'); box.className = "medal-box"; box.innerText = m.i;
-                box.onclick = () => alert(m.t);
+                box.onclick = () => alert(m.t + ": " + m.d);
                 grid.appendChild(box);
             });
             document.getElementById('nexusModal').classList.replace('hidden', 'flex');
