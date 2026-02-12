@@ -19,6 +19,10 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .medal-box { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: 0.3s; }
         .medal-box:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); }
+        .leader-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(59, 130, 246, 0.1); font-size: 11px; }
+        .rank-1 { color: #ffd700; text-shadow: 0 0 10px #ffd70055; font-weight: 900; }
+        .rank-2 { color: #c0c0c0; font-weight: 800; }
+        .rank-3 { color: #cd7f32; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -37,14 +41,23 @@
     <div id="admBox" class="overlay" style="display:none; justify-content:center; align-items:center; z-index:25000;">
         <div class="glass p-6 w-full max-w-sm border-red-600 border-2 text-center" onclick="event.stopPropagation()">
             <h3 class="text-red-500 font-black mb-4 uppercase">MASTER CONTROL</h3>
-            <select id="aUsr" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-2 uppercase font-bold text-xs"></select>
-            <select id="aDay" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-2 font-bold text-xs">
-                <option value="Pzt">PAZARTESİ</option><option value="Sal">SALI</option><option value="Çar">ÇARŞAMBA</option>
-                <option value="Per">PERŞEMBE</option><option value="Cum">CUMA</option><option value="Cmt">CUMARTESİ</option><option value="Paz">PAZAR</option>
-            </select>
-            <input type="number" id="aMin" placeholder="DAKİKA EKLE/SİL" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-4 text-center font-bold border border-slate-700">
-            <button onclick="mEdit()" class="w-full py-3 bg-red-600 rounded-lg font-black uppercase text-xs text-white">VERİYİ GÜNCELLE</button>
-            <button onclick="document.getElementById('admBox').style.display='none'" class="mt-4 text-white text-[10px] opacity-50 font-black">KAPAT</button>
+            <div id="admAuth">
+                <input type="password" id="admPass" placeholder="OPERATÖR ŞİFRESİ" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-4 text-center font-bold border border-red-900">
+                <button onclick="checkAdm()" class="w-full py-3 bg-red-900 rounded-lg font-black uppercase text-xs text-white">GİRİŞ YAP</button>
+            </div>
+            <div id="admContent" style="display:none;">
+                <select id="aUsr" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-2 uppercase font-bold text-xs"></select>
+                <select id="aDay" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-2 font-bold text-xs">
+                    <option value="Pzt">PAZARTESİ</option><option value="Sal">SALI</option><option value="Çar">ÇARŞAMBA</option>
+                    <option value="Per">PERŞEMBE</option><option value="Cum">CUMA</option><option value="Cmt">CUMARTESİ</option><option value="Paz">PAZAR</option>
+                </select>
+                <input type="number" id="aMin" placeholder="DAKİKA EKLE/SİL" class="w-full p-3 bg-slate-900 text-white rounded-lg mb-4 text-center font-bold border border-slate-700">
+                <div class="flex gap-2 mb-4">
+                    <button onclick="mEdit()" class="flex-1 py-3 bg-green-600 rounded-lg font-black uppercase text-[10px] text-white">GÜNCELLE</button>
+                    <button onclick="mKick()" class="flex-1 py-3 bg-red-600 rounded-lg font-black uppercase text-[10px] text-white">OPERATÖRÜ AT</button>
+                </div>
+            </div>
+            <button onclick="document.getElementById('admBox').style.display='none'; document.getElementById('admAuth').style.display='block'; document.getElementById('admContent').style.display='none';" class="mt-4 text-white text-[10px] opacity-50 font-black">KAPAT</button>
         </div>
     </div>
 
@@ -91,9 +104,13 @@
     </header>
 
     <div class="flex flex-col md:flex-row gap-2 flex-1 min-h-0 overflow-hidden">
-        <aside id="radarPanel" onclick="focusPanel('radarPanel')" class="glass h-1/3 md:h-full md:w-64 p-4 flex flex-col gap-3 overflow-hidden cursor-pointer relative">
-            <h2 class="text-[10px] font-black text-blue-400 tracking-[0.3em] uppercase text-center border-b border-blue-500/10 pb-2">RADAR</h2>
+        <aside id="radarPanel" onclick="focusPanel('radarPanel')" class="glass h-1/2 md:h-full md:w-64 p-4 flex flex-col gap-3 overflow-hidden cursor-pointer relative">
+            <div class="flex justify-around border-b border-blue-500/10 pb-2">
+                <button onclick="switchAside('radar')" class="text-[10px] font-black text-blue-400 tracking-widest uppercase">RADAR</button>
+                <button onclick="switchAside('leader')" class="text-[10px] font-black text-amber-500 tracking-widest uppercase">LİDERLER</button>
+            </div>
             <div id="radar" class="flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1"></div>
+            <div id="leaderboard" class="hidden flex flex-col gap-1 overflow-y-auto no-scrollbar flex-1"></div>
         </aside>
 
         <section class="glass flex-1 flex flex-col items-center justify-center p-4 relative">
@@ -114,7 +131,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, update, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSy...", authDomain: "yks-odak.firebaseapp.com", projectId: "yks-odak", databaseURL: "https://yks-odak-default-rtdb.europe-west1.firebasedatabase.app" };
         const app = initializeApp(firebaseConfig);
@@ -124,23 +141,82 @@
         let timerInterval, myChart, profChart, MY_DATA = {};
 
         const DOKTRINLER = [
-            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların tek sadık dostudur.",
-            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki mutlak sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın eseridir.",
-            "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü acı gittiğinde, onun boşalttığı tahta sonsuz bir başarı yerleşir.",
-            "Rakiplerinin uyuduğu her saniye, senin zirveye giden sarsılmaz bir basamağındır.",
-            "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşı olacak.",
-            "Odaklanma, modern dünyanın en pahalı yeteneğidir. Sen şu an paha biçilemez bir servet inşa ediyorsun.",
-            "Zayıflık, masadan kalktığın an başlar. Güç ise 'bir dakika daha' dediğin o kritik eşiktedir.",
-            "Bir aslan, avına odaklandığında çevresindeki hiçbir şeyi görmez. Senin avın, o hayalindeki gelecektir.",
-            "Bugün kaçtığın her zorluk, yarın karşına aşılmaz bir duvar olarak çıkacak. O duvarı bugün burada yık.",
-            "Zihin, eğitilmesi gereken vahşi bir hayvandır. Onu masaya bağla ve ona kimin patron olduğunu göster.",
-            "Büyük işler, sanki hiç bitmeyecekmiş gibi sabırla ve sanki yarın ölecekmişsin gibi aceleyle yapılır.",
-            "Şampiyonlar, antrenman yapmayı sevdikleri için değil, sonunda kazandıkları o hisse aşık oldukları için devam ederler.",
-            "Senin sınırın, 'yoruldum' dediğin yer değil, 'bitti' dediğin yerdir.",
-            "Başkalarının 'yeter' dediği yerde senin yeni seansın başlar.",
-            "Zirve soğuktur ama manzarası harikadır. Oraya çıkmak için donmayı göze almalısın.",
+            "Zafer; terini kandan, uykusunu hayallerinden ayıramayanların tek sadık dostudur. Bugün döktüğün her damla zihin teri, yarın rakiplerinin çaresizliği olacaktır.",
+            "Nikola Tesla'nın zihnindeki fırtınalar, o masadaki mutlak sessizlikte dindi. Dünyayı değiştiren makinelerin gürültüsü, yalnızlığın ve derin odaklanmanın eseridir.",
+            "Acı seni terk edene kadar o masadan kalkmayacaksın. Çünkü acı gittiğinde, onun boşalttığı tahta sonsuz bir başarı ve sarsılmaz bir irade yerleşir.",
+            "Rakiplerinin uyuduğu, ertelediği ve pes ettiği her saniye, senin zirveye giden sarsılmaz yolunda yükselen devasa bir basamağındır.",
+            "Mükemmellik bir anlık eylem değil, her gün tekrarlanan sarsılmaz bir alışkanlıktır. Bugün attığın o küçük adım, yarın yıkılmaz bir kalenin temel taşıdır.",
+            "Odaklanma, modern dünyanın en pahalı ve nadir bulunan yeteneğidir. Sen şu an paha biçilemez bir servet ve gelecek inşa ediyorsun.",
+            "Zayıflık, masadan kalktığın an başlar. Güç ise zihninin 'dur' dediği noktada 'bir sayfa daha' diyebildiğin o kritik eşiktedir.",
+            "Bir aslan, avına odaklandığında çevresindeki hiçbir gürültüyü duymaz. Senin tek avın, hayalindeki o muazzam gelecektir.",
+            "Bugün kaçtığın her zorluk, yarın karşına aşılması imkansız bir duvar olarak çıkacak. O duvarı henüz güçlüyken bugün burada parçala.",
+            "Zihin, eğitilmesi gereken vahşi bir hayvandır. Onu masaya bağla, arzularını dizginle ve ona gerçek patronun kim olduğunu göster.",
+            "Büyük işler, sanki hiç bitmeyecekmiş gibi devasa bir sabırla ve sanki yarın ölecekmişsin gibi büyük bir aceleyle yapılır.",
+            "Şampiyonlar, antrenman yapmayı sevdikleri için değil, sonunda kazandıkları o görkemli hisse aşık oldukları için acıya tahammül ederler.",
+            "Senin sınırın, 'yoruldum' dediğin yer değil, zihninin kapandığı ve 'bitti' dediğin yerdir. Sınırlarını her gün milim milim genişlet.",
+            "Başkalarının 'bu kadar yeter' dediği noktada senin gerçek antrenmanın ve yeni seansın başlar; farkı yaratan o ekstra dakikalardır.",
+            "Zirve her zaman soğuk ve ıssızdır ama manzarası harikadır. Oraya çıkmak için yalnızlığı ve yanmayı göze almalısın.",
+            "Disiplin, ne yapman gerektiğini bildiğin halde canın istemediğinde bile onu yapma sanatıdır. Bu sanat seni bir krala dönüştürür.",
+            "Gece herkes uyuduğunda masada yanan o lamba, gelecekteki parlak hayatının ilk kıvılcımlarıdır. Sönmesine asla izin verme.",
+            "Başarısızlık bir seçenek değildir, sadece rotada yapılan bir düzeltmedir. Masadan kalkmadığın sürece yenilmiş sayılmazsın.",
+            "Dünya senin ne kadar zeki olduğunla değil, ne kadar süre boyunca odaklanabildiğinle ilgilenir. Dayanıklılık zekayı her zaman yener.",
+            "Düşüncelerini bir lazer ışını gibi tek bir noktaya odakla. Dağılmış ışık sadece aydınlatır, odaklanmış ışık ise delip geçer.",
+            "Masadaki sessizlik senin en güçlü silahındır. Başarın öyle bir gürültü koparmalı ki, seni bugün küçümseyenler sağır olmalı.",
+            "Konfor alanı, muhteşem fikirlerin öldüğü bir mezarlıktır. Masada kal, rahatsız ol, acı çek ve bu acıdan yeniden doğ.",
+            "Zaman, geri alınamayan tek sermayendir. Onu sosyal medyanın çöplüğünde değil, zihninin derinliklerinde altına dönüştür.",
+            "Senin rakiplerin şu an bir bahane uyduruyor. Sen ise o bahaneyi parçalamak için kalemini kılıç gibi kullanıyorsun.",
+            "Başarı, her gün aynı masaya oturup aynı savaşı tekrar tekrar kazanan ismisiz kahramanların mirasıdır.",
+            "Zihnini bir kale gibi savun. Oraya şüphe, korku veya tembellik girmesine izin verme. Kalenin anahtarı senin disiplinindir.",
+            "Yetenek seni başlatır, ancak seni bitiş çizgisine götürecek olan tek şey sarsılmaz bir öz disiplindir.",
+            "Bugün hissettiğin yorgunluk, yarın yaşayacağın pişmanlıktan çok daha hafiftir. Yorgunluğu seç, pişmanlığı değil.",
+            "Gelecekteki 'sen', bugünkü 'sana' teşekkür etmeli. Ona gurur duyacağı bir geçmiş bırakmak için çalışmaya devam et.",
+            "Masa senin savaş alanındır. Kitaplar silahların, kalemlerin ise cephanendir. Bu savaşı kazanmadan o mevziden ayrılma.",
+            "Bir gün her şey bittiğinde, 'iyi ki yaptım' demek için bugün 'neden yapıyorum' sorusunu sessizce cevapla ve çalış.",
+            "İrade, kas gibidir; kullandıkça güçlenir. Bugün zorlandığın o problem, yarın senin için çocuk oyuncağı olacak.",
+            "Hatalarından utanma, onları analiz et. Her yanlış cevap, doğruya giden yolda atılmış mecburi ve öğretici bir adımdır.",
+            "Sabır, sadece beklemek değil, beklerken gösterdiğin disiplinli çabanın adıdır. Tohumu bugün ek, meyveyi yarın topla.",
+            "Dikkatini dağıtan her bildirim, geleceğinden çalınan bir parçadır. Telefonu kapat, dünyayı sustur ve sadece hedefine odaklan.",
+            "En büyük rakibin aynadaki kişidir. Dünden daha iyi olmak istiyorsan, bugünkü tembelliğini masanın altına göm.",
+            "Zihin yorulur ama karakter asla yorulmaz. Karakterinle zihnini sürükle ve o son soruyu da çözmeden bırakma.",
+            "Motivasyon seni yola çıkarır ama disiplin varış noktasına ulaştırır. Motivasyonun bittiği yerde disiplinin başlasın.",
+            "Sadece kazananlar sonuna kadar gider. Kaybedenler ise yolun güzelliğine kapılıp hedefini unutanlardır.",
+            "Çalışmak için ilham gelmesini bekleme. Sen çalışmaya başladığında ilham zaten senin peşinden gelecektir.",
+            "Küçük ilerlemeler, hiç ilerlememekten iyidir. Her gün %1 daha iyi olursan, bir yılın sonunda tanınmaz bir dev olursun.",
+            "Hayallerin için ödemediğin bedeli, ileride hayal kırıklıkların için kat kat ödersin. Bedelini şimdi peşin öde.",
+            "Gerçek güç, kimse izlemiyorken bile sanki milyonlarca kişi seni takip ediyormuş gibi dürüstçe çalışmaktır.",
+            "Zorluklar seni durdurmak için değil, ne kadar kararlı olduğunu test etmek için vardır. Bu sınavı geç ve devam et.",
+            "Masada oturmak fiziksel bir eylem değil, zihinsel bir duruştur. O duruşu bozma, omurganı dik tut, zihnini berraklaştır.",
+            "Başarı merdivenlerini ellerin cebinde tırmanamazsın. Tırnaklarınla kazıyarak, kan ter içinde kalarak yükseleceksin.",
+            "Güneş senin başarın için doğacaksa, gece karanlığına dost olman gerekir. Karanlıkta çalışanlar ışığa hükmeder.",
+            "Şikayet etmeyi bırak. Şikayet ettiğin her an, çözüm için kullanabileceğin enerjiyi boşa harcıyorsun.",
+            "Zihnini boş işlerle doldurursan, büyük hedeflere yer kalmaz. Gereksiz olan her şeyi hayatından ayıkla ve sadeleş.",
+            "Kendine verdiğin sözleri tutmak, başkasına verdiğin sözlerden daha önemlidir. Kendine olan saygın disiplininden gelir.",
+            "Başarı tesadüf değildir; o, sistematik bir çalışmanın, uykusuz gecelerin ve vazgeçilmeyen hayallerin toplamıdır.",
+            "Zor olanı seç. Kolay olan seni sıradanlaştırır, zor olan ise seni efsanevi bir operatöre dönüştürür.",
+            "Odaklandığın an zaman durur. O akışın içine gir ve dış dünyayla olan tüm bağlarını protokol gereği kopar.",
+            "Kaleminin kağıt üzerindeki sesi, bir senfoninin en can alıcı notası gibidir. O melodiyi kesintisiz devam ettir.",
+            "Düşmekten korkma, kalkamamaktan kork. Her düştüğünde masaya daha hırslı dönen biri asla yenilemez.",
+            "Gelecek, hazırlıklı olanlara aşıktır. Sevgilini bekler gibi geleceğini bekle ve ona en iyi halini sunmak için hazırlan.",
+            "Zihnindeki gürültüyü susturmanın tek yolu, masadaki göreve tamamen teslim olmaktır. Görevine sadık kal.",
+            "Bir dahi ile sıradan bir insan arasındaki fark, sadece pes edilmeyen on dakikadır. O on dakikayı bugün kullan.",
+            "Başarı bir varış noktası değil, o yolda yürüme biçimidir. Her adımı büyük bir ciddiyetle ve disiplinle at.",
+            "Senin potansiyelin dipsiz bir kuyu gibidir. Çalıştıkça daha derindeki cevherleri keşfedeceksin. Kazmaya devam et.",
+            "Kimseden onay bekleme. Kendi onayını aldığın gün, dünyanın geri kalanının ne düşündüğü önemsizleşecek.",
+            "Bugün yaptığın fedakarlıklar, yarın sahip olacağın özgürlüğün sigortasıdır. Özgürlüğünü bugün inşa et.",
+            "Zihinsel dayanıklılık, fiziksel güçten üstündür. Masada geçirilen her saat, zihnini bir çelik gibi sertleştirir.",
+            "Korku sadece bir illüzyondur. Çalışmaya başladığın an, o korku sisi dağılır ve yolun aydınlanır.",
+            "Mazeretlerin arkasına saklanma. Başarılı insanların da mazeretleri vardı ama onlar hedeflerinin arkasına saklandılar.",
+            "Bir kartal gibi yüksekten uçmak istiyorsan, hindilerle vakit geçirmeyi bırakmalısın. Odaklan ve yüksel.",
+            "Zamanı yönetemezsin, sadece kendini zamanın içinde yönetebilirsin. Kendi zamanının efendisi ol.",
+            "Her gün masaya oturduğunda yeni bir sen doğar. Eski seni geride bırak ve her gün yeniden daha güçlü başla.",
+            "Bir heykeltıraşın taşı yontması gibi, sen de çalışarak ruhunu ve zihnini yontuyorsun. İçindeki sanatçıyı çıkar.",
+            "Başarıya giden kestirme bir yol yoktur. Sadece uzun, engebeli ve disiplin gerektiren o onurlu yol vardır.",
+            "Zihnini tek bir amaca kilitlediğinde, evrendeki tüm engeller senin önünde eğilmek zorunda kalacaktır.",
+            "Gözyaşlarınla kazanamayacağın savaşları, zihin terinle ve disiplininle kolayca kazanabilirsin.",
+            "Asla 'yeterince iyi' deme. Mükemmelin peşinden koş ki, en azından mükemmele en yakın olanı yakala.",
+            "Bu masa senin tahtın, bu oda senin krallığın. Krallığını korumak için disiplininden asla taviz verme.",
+            "Ve unutma; Nexus Omega protokolünde mola yoktur, sadece stratejik yeniden yüklemeler vardır. Devam et!"
         ];
-        for(let i=15; i<75; i++) DOKTRINLER.push(`[PROTOKOL-${i+1}] Başarı disipline aşıktır. Odaklandığın her dakika, seni rakiplerinden fersah fersah öne taşır. Masadan kalkan sadece savaşı değil, kendi elleriyle kuracağı geleceğini de kaybeder. Bugün döktüğün zihin teri, yarın rakiplerinin çaresiz gözyaşı olacaktır.`);
 
         const MEDALS = [
             {i:'👑', t:'NEXUS KRALI', d:'500+ saat toplam odaklanma süresine sahip efsane.'},
@@ -173,11 +249,17 @@
             document.getElementById('loginModal').style.display = 'none'; initNexus();
         };
 
-        if(MY_NAME) { document.getElementById('loginModal').style.display = 'none'; initNexus(); }
+        if(MY_NAME) { 
+            get(ref(db, `users/${MY_NAME}`)).then(s => {
+                if(!s.exists()) { localStorage.clear(); location.reload(); }
+                else { document.getElementById('loginModal').style.display = 'none'; initNexus(); }
+            });
+        }
 
         function initNexus() {
             onValue(ref(db, `users/${MY_NAME}`), (snap) => {
                 MY_DATA = snap.val() || {};
+                if(!MY_DATA.status) return; 
                 document.getElementById('userName').innerText = MY_NAME;
                 document.getElementById('pAvatar').innerHTML = `<img src="${MY_DATA.status?.avatar}" class="w-full h-full">`;
                 if(timerInterval) clearInterval(timerInterval);
@@ -191,17 +273,41 @@
                 drawChart('mainChart', MY_DATA.history || {}, true);
             });
 
+            // GÜNCELLENEN KISIM: Verilerin senkronize akışı sağlandı
             onValue(ref(db, 'users'), (snap) => {
+                const users = snap.val() || {};
                 const r = document.getElementById('radar'); r.innerHTML = "";
-                Object.entries(snap.val() || {}).forEach(([name, u]) => {
+                const l = document.getElementById('leaderboard'); l.innerHTML = "";
+                
+                const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'], today = d[new Date().getDay()];
+                const userList = Object.entries(users).map(([name, u]) => {
+                    const currentWork = (u.pendingTime || 0) + (u.timerActive ? (Date.now() - u.startTime) : 0);
+                    const totalToday = (u.history?.[today] || 0) + currentWork;
+                    return { name, totalToday, avatar: u.status?.avatar, active: u.timerActive, raw: u };
+                }).sort((a, b) => b.totalToday - a.totalToday);
+
+                userList.forEach((u, i) => {
+                    // Radar Paneli
                     const div = document.createElement('div');
-                    div.className = `p-3 glass flex justify-between items-center cursor-pointer ${u.timerActive?'border-l-4 border-green-500':''}`;
-                    div.innerHTML = `<div class="flex items-center gap-2 text-[11px] font-black"><img src="${u.status?.avatar}" class="w-6 h-6 rounded-full"> ${name}</div><span class="text-[10px] text-blue-400 font-mono">${Math.floor((u.pendingTime||0)/60000)} DK</span>`;
-                    div.onclick = (e) => { e.stopPropagation(); showUserProfile(name, u); };
+                    div.className = `p-3 glass flex justify-between items-center cursor-pointer mb-1 ${u.active?'border-l-4 border-green-500':''}`;
+                    div.innerHTML = `<div class="flex items-center gap-2 text-[11px] font-black"><img src="${u.avatar}" class="w-6 h-6 rounded-full"> ${u.name}</div><span class="text-[10px] text-blue-400 font-mono">${Math.floor(u.totalToday/60000)} DK</span>`;
+                    div.onclick = (e) => { e.stopPropagation(); showUserProfile(u.name, u.raw); };
                     r.appendChild(div);
+
+                    // Lider Tablosu
+                    const lRow = document.createElement('div');
+                    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+                    lRow.className = `leader-row ${i<3?'rank-'+(i+1):''}`;
+                    lRow.innerHTML = `<span>${medal} ${i+1}. ${u.name}</span><span class="font-mono">${Math.floor(u.totalToday/60000)}dk</span>`;
+                    l.appendChild(lRow);
                 });
             });
         }
+
+        window.switchAside = (type) => {
+            document.getElementById('radar').classList.toggle('hidden', type !== 'radar');
+            document.getElementById('leaderboard').classList.toggle('hidden', type !== 'leader');
+        };
 
         window.showUserProfile = (name, data) => {
             document.getElementById('mIcon').innerHTML = `<img src="${data.status?.avatar}" class="w-16 h-16 mx-auto rounded-full border-2 border-blue-600 shadow-xl">`;
@@ -236,20 +342,13 @@
         };
 
         window.closeModal = () => document.getElementById('nexusModal').classList.replace('flex', 'hidden');
-
-        window.focusPanel = (id) => { 
-            document.getElementById('uiOverlay').style.display = 'block'; 
-            document.getElementById(id).classList.add('focus-mode'); 
-            if(myChart) setTimeout(() => myChart.resize(), 200);
-        };
-        
-        window.closeFocus = () => { 
-            document.getElementById('uiOverlay').style.display = 'none'; 
-            document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); 
-        };
+        window.focusPanel = (id) => { document.getElementById('uiOverlay').style.display = 'block'; document.getElementById(id).classList.add('focus-mode'); if(myChart) setTimeout(() => myChart.resize(), 200); };
+        window.closeFocus = () => { document.getElementById('uiOverlay').style.display = 'none'; document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); };
 
         function drawChart(canvasId, history, isMain) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
             const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d]||0)/60000));
             const chartObj = isMain ? myChart : profChart;
             if(chartObj && typeof chartObj.destroy === 'function') chartObj.destroy();
@@ -271,7 +370,6 @@
             get(ref(db, `users/${MY_NAME}`)).then(s => { const v = s.val(); update(ref(db, `users/${MY_NAME}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) }); });
         };
 
-        // --- GÜNCEL SAVE GÜN SEÇİM MANTIĞI ---
         window.saveDay = () => {
             const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'], n = new Date().getDay();
             document.getElementById('lDayBtn').innerText = `DÜN (${d[(n+6)%7]})`; 
@@ -282,47 +380,51 @@
         window.pSave = (isYesterday) => {
             const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'], n = new Date().getDay();
             const targetDay = d[isYesterday ? (n+6)%7 : n];
-            
             get(ref(db, `users/${MY_NAME}`)).then(s => {
                 const v = s.val() || {};
                 const h = v.history || {};
                 h[targetDay] = (h[targetDay] || 0) + (v.pendingTime || 0);
-                
-                update(ref(db, `users/${MY_NAME}`), { 
-                    pendingTime: 0, 
-                    timerActive: false, 
-                    history: h 
-                });
+                update(ref(db, `users/${MY_NAME}`), { pendingTime: 0, timerActive: false, history: h });
                 document.getElementById('saveBox').style.display = 'none';
                 alert(`PROTOKOL MÜHÜRLENDİ: ${targetDay} gününe işlendi.`);
             });
         };
 
-        // --- MASTER MÜDAHALE PANELİ (L TUŞU) ---
         window.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === 'l') {
+                document.getElementById('admBox').style.display = 'flex';
+                document.getElementById('admPass').value = "";
+            }
+        });
+
+        window.checkAdm = () => {
+            if(document.getElementById('admPass').value === "1905") {
+                document.getElementById('admAuth').style.display = 'none';
+                document.getElementById('admContent').style.display = 'block';
                 onValue(ref(db, 'users'), (snap) => {
                     const users = snap.val() || {};
                     document.getElementById('aUsr').innerHTML = Object.keys(users).map(u => `<option value="${u}">${u}</option>`).join('');
-                    document.getElementById('admBox').style.display = 'flex';
                 }, { onlyOnce: true });
-            }
-        });
+            } else { alert("YETKİSİZ ERİŞİM!"); }
+        };
 
         window.mEdit = () => {
             const user = document.getElementById('aUsr').value;
             const day = document.getElementById('aDay').value;
             const mins = parseInt(document.getElementById('aMin').value) || 0;
-            
             get(ref(db, `users/${user}`)).then(s => {
                 const v = s.val() || {};
                 const h = v.history || {};
                 h[day] = (h[day] || 0) + (mins * 60000);
-                
-                update(ref(db, `users/${user}`), { history: h });
-                document.getElementById('admBox').style.display = 'none';
-                alert(`${user} operatörü için ${day} verisi güncellendi.`);
+                update(ref(db, `users/${user}`), { history: h }).then(() => alert(`${user} güncellendi.`));
             });
+        };
+
+        window.mKick = () => {
+            const user = document.getElementById('aUsr').value;
+            if(confirm(`${user} OPERATÖRÜNÜ SİSTEMDEN ATMAK İSTEDİĞİNİZE EMİN MİSİNİZ?`)) {
+                remove(ref(db, `users/${user}`)).then(() => alert(`${user} sistemden temizlendi.`));
+            }
         };
     </script> 
 </body>
