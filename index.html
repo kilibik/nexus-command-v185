@@ -20,9 +20,20 @@
         .focus-mode { position: fixed !important; top: 5% !important; left: 5% !important; width: 90% !important; height: 90% !important; z-index: 10001 !important; background: #0d1117 !important; padding: 20px !important; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .medal-box { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: 0.3s; }
-        .medal-box:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); }
-        .leader-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(59, 130, 246, 0.1); font-size: 11px; }
+        
+        /* Madalyalar Ortalı Görünüm */
+        #medalGrid { display: grid; justify-content: center; align-content: center; margin: auto; max-width: 100%; }
+        .medal-box { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; aspect-ratio: 1; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: 0.3s; }
+        .medal-box:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.4); transform: scale(1.1); }
+        
+        /* Liderlik Tablosu Özel Efektler */
+        .leader-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid rgba(59, 130, 246, 0.1); font-size: 11px; font-weight: 800; border-radius: 10px; margin-bottom: 4px; }
+        .rank-1 { background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.3)); border: 1px solid #ffd700; color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); animation: pulse-gold 2s infinite; }
+        .rank-2 { background: linear-gradient(45deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.3)); border: 1px solid #c0c0c0; color: #e5e5e5; box-shadow: 0 0 10px rgba(192, 192, 192, 0.3); }
+        .rank-3 { background: linear-gradient(45deg, rgba(205, 127, 50, 0.1), rgba(205, 127, 50, 0.3)); border: 1px solid #cd7f32; color: #ffa07a; }
+        
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.7); } 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); } }
+        
         #aiStatusTag { position: fixed; top: 10px; right: 10px; font-size: 9px; font-weight: 900; background: rgba(59, 130, 246, 0.2); padding: 4px 8px; border-radius: 5px; color: #3b82f6; display: none; z-index: 50; border: 1px solid rgba(59, 130, 246, 0.5); }
     </style>
 </head>
@@ -71,7 +82,7 @@
 
     <div id="nexusModal" class="fixed inset-0 bg-black/98 z-[15000] hidden items-center justify-center p-4">
         <div class="bg-[#0d1117] border-2 border-blue-600 p-6 rounded-[30px] w-full max-w-2xl text-center relative max-h-[95vh] flex flex-col overflow-hidden">
-            <div id="medalGrid" class="grid grid-cols-4 sm:grid-cols-5 gap-3 hidden overflow-y-auto no-scrollbar mb-4 p-2"></div>
+            <div id="medalGrid" class="grid grid-cols-4 gap-3 hidden overflow-y-auto no-scrollbar mb-4 p-4 items-center"></div>
             <div id="standardView" class="flex-1 flex flex-col overflow-hidden">
                 <div id="mIcon" class="text-6xl mb-2">📜</div>
                 <h2 id="mTitle" class="text-blue-400 font-black text-xl mb-1 uppercase tracking-tighter">BILGI</h2>
@@ -141,50 +152,22 @@
         localStorage.setItem('nexus_session', MY_SESSION);
         let timerInterval, myChart, profChart, MY_DATA = {};
 
-        // AI ENGINE: SENSITIVITY OPTIMIZED
         let detector, aiInterval, missCount = 0;
 
         const DOKTRINLER = [
-            "Zafer; terini kandan ayıramayanların tek dostudur.",
-            "Acı seni terk edene kadar o masadan kalkmayacaksın.",
-            "Masa senin savaş alanındır. Kazanamadan o mevziden ayrılma.",
-            "Zayıflık, disiplinsizliğin maskelenmiş halidir.",
-            "Bugün kaçarsan, yarın diz çökersin.",
-            "Limitlerin, senin koyduğun korku çizgileridir.",
-            "Sessizce çalış, gürültüyü başarıların çıkarsın.",
-            "Yorgunluk geçicidir, ama pişmanlık sonsuz.",
-            "En büyük rakibin, dün aynada gördüğün kişidir.",
-            "Disiplin, isteklerinle hedeflerin arasındaki köprüdür.",
-            "Dünya sen durduğunda dönmeye devam eder.",
-            "Zirve, uyuyanlar için değil, uykuyu terk edenler içindir.",
-            "Odaklandığın her saniye, geleceğinden bir borç siliyorsun.",
-            "Mazeretlerin, seni hapsettiğin duvarlardır.",
-            "Ter dökmezsen, gözyaşı dökersin.",
-            "Bugünün çilesi, yarının görkemidir.",
-            "Zihin her zaman bedenden önce pes eder; zihnini eğit.",
-            "Şampiyonlar, kimse izlemiyorken ter dökenlerdir.",
-            "Zaman, en pahalı mermindir; boşa sıkma.",
-            "Rakiplerin şu an çalışıyor.",
-            "Konfor alanın, hayallerinin mezarıdır.",
-            "Başarı, her gün yapılan küçük tekrarların toplamıdır.",
-            "Zorluklar seni yıldırmak için değil, şekillendirmek içindir.",
-            "Bir aslan gibi yaşamak istiyorsan, aslan gibi çalışmalısın.",
-            "Vazgeçmek, sadece kaybedenlerin seçeneğidir.",
-            "Acı seni öldürmez, sadece iradeni çelikleştirir.",
-            "Oturduğun masa senin tahtın, kalemin kılıcındır.",
-            "Her gün bir adım, bir mil eder.",
-            "Kendi kaderini kendi alın terinle yaz.",
-            "Düşmek sorun değil, kalkmamak ihanettir.",
-            "Bahaneler seni asla hedefine ulaştırmaz.",
-            "Başarısızlık bir durak olabilir ama asla son durak değildir.",
-            "Irade, her 'hayır' dediğinde daha da güçlenir.",
-            "Zor olanı seç, kolay olan seni geliştirmez.",
-            "Güneşi üzerine doğurma, sen güneşi selamla.",
-            "Sabır, çalışırken gösterilen sessiz güçtür.",
-            "Hayallerin için bedel ödemezsen, hayallerin bedelin olur.",
-            "Durma, devam et; yolun sonu aydınlık.",
-            "Kendine inanmazsan, kimse sana inanmaz.",
-            "Bugün ektiklerini, yarın biçeceksin."
+            "Zafer; terini kandan ayıramayanların tek dostudur.", "Acı seni terk edene kadar o masadan kalkmayacaksın.", "Masa senin savaş alanındır. Kazanamadan o mevziden ayrılma.",
+            "Zayıflık, disiplinsizliğin maskelenmiş halidir.", "Bugün kaçarsan, yarın diz çökersin.", "Limitlerin, senin koyduğun korku çizgileridir.",
+            "Sessizce çalış, gürültüyü başarıların çıkarsın.", "Yorgunluk geçicidir, ama pişmanlık sonsuz.", "En büyük rakibin, dün aynada gördüğün kişidir.",
+            "Disiplin, isteklerinle hedeflerin arasındaki köprüdür.", "Dünya sen durduğunda dönmeye devam eder.", "Zirve, uyuyanlar için değil, uykuyu terk edenler içindir.",
+            "Odaklandığın her saniye, geleceğinden bir borç siliyorsun.", "Mazeretlerin, seni hapsettiğin duvarlardır.", "Ter dökmezsen, gözyaşı dökersin.",
+            "Bugünün çilesi, yarının görkemidir.", "Zihin her zaman bedenden önce pes eder; zihnini eğit.", "Şampiyonlar, kimse izlemiyorken ter dökenlerdir.",
+            "Zaman, en pahalı mermindir; boşa sıkma.", "Rakiplerin şu an çalışıyor.", "Konfor alanın, hayallerinin mezarıdır.",
+            "Başarı, her gün yapılan küçük tekrarların toplamıdır.", "Zorluklar seni yıldırmak için değil, şekillendirmek içindir.", "Bir aslan gibi yaşamak istiyorsan, aslan gibi çalışmalısın.",
+            "Vazgeçmek, sadece kaybedenlerin seçeneğidir.", "Acı seni öldürmez, sadece iradeni çelikleştirir.", "Oturduğun masa senin tahtın, kalemin kılıcındır.",
+            "Her gün bir adım, bir mil eder.", "Kendi kaderini kendi alın terinle yaz.", "Düşmek sorun değil, kalkmamak ihanettir.",
+            "Bahaneler seni asla hedefine ulaştırmaz.", "Başarısızlık bir durak olabilir ama asla son durak değildir.", "Irade, her 'hayır' dediğinde daha da güçlenir.",
+            "Zor olanı seç, kolay olan seni geliştirmez.", "Güneşi üzerine doğurma, sen güneşi selamla.", "Sabır, çalışırken gösterilen sessiz güçtür.",
+            "Hayallerin için bedel ödemezsen, hayallerin bedelin olur.", "Durma, devam et; yolun sonu aydınlık.", "Kendine inanmazsan, kimse sana inanmaz.", "Bugün ektiklerini, yarın biçeceksin."
         ];
 
         const MEDALS = [
@@ -212,79 +195,46 @@
 
         async function initAI() {
             const model = poseDetection.SupportedModels.MoveNet;
-            detector = await poseDetection.createDetector(model, { 
-                modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER 
-            });
+            detector = await poseDetection.createDetector(model, { modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER });
         }
 
         async function startAiTracking() {
-            const video = document.createElement('video');
-            video.id = "aiVideo";
-            video.style.display = "none";
-            document.body.appendChild(video);
-
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-            video.srcObject = stream;
-            await video.play();
-
+            const video = document.createElement('video'); video.id = "aiVideo"; video.style.display = "none"; document.body.appendChild(video);
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }); video.srcObject = stream; await video.play();
             document.getElementById('aiStatusTag').style.display = 'block';
-
             aiInterval = setInterval(async () => {
                 if (detector && video) {
-                    const poses = await detector.estimatePoses(video);
-                    let isPresent = false;
-
-                    if(poses.length > 0) {
-                        const kp = poses[0].keypoints;
-                        const crucialPoints = [0, 3, 4, 5, 6, 7, 8]; 
-                        isPresent = crucialPoints.some(index => kp[index] && kp[index].score > 0.10);
-                    }
-
+                    const poses = await detector.estimatePoses(video); let isPresent = false;
+                    if(poses.length > 0) { const kp = poses[0].keypoints; const crucialPoints = [0, 3, 4, 5, 6, 7, 8]; isPresent = crucialPoints.some(index => kp[index] && kp[index].score > 0.10); }
                     if (!isPresent) {
-                        missCount++;
-                        document.body.style.border = "10px solid rgba(239, 68, 68, 0.4)";
-                        if (missCount >= 8) {
-                            document.getElementById('stopBtn').click();
-                            alert("SİSTEM: TAKİP KAYBOLDU. ODAK DURDURULDU.");
-                        }
-                    } else {
-                        missCount = 0;
-                        document.body.style.border = "0px solid transparent";
-                    }
+                        missCount++; document.body.style.border = "10px solid rgba(239, 68, 68, 0.4)";
+                        if (missCount >= 8) { document.getElementById('stopBtn').click(); alert("SİSTEM: TAKİP KAYBOLDU. ODAK DURDURULDU."); }
+                    } else { missCount = 0; document.body.style.border = "0px solid transparent"; }
                 }
             }, 1000);
         }
 
         document.getElementById('entryBtn').onclick = async () => {
-            const name = document.getElementById('opInput').value.trim().toUpperCase();
-            if(name.length < 2) return alert("HATA");
+            const name = document.getElementById('opInput').value.trim().toUpperCase(); if(name.length < 2) return alert("HATA");
             await update(ref(db, `users/${name}/status`), { name, lastSession: MY_SESSION, avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${name}` });
-            localStorage.setItem('nexus_user', name); MY_NAME = name;
-            document.getElementById('loginModal').style.display = 'none'; initNexus();
+            localStorage.setItem('nexus_user', name); MY_NAME = name; document.getElementById('loginModal').style.display = 'none'; initNexus();
         };
 
         if(MY_NAME) { 
-            get(ref(db, `users/${MY_NAME}`)).then(s => {
-                if(!s.exists()) { localStorage.clear(); location.reload(); }
-                else { document.getElementById('loginModal').style.display = 'none'; initNexus(); }
-            });
+            get(ref(db, `users/${MY_NAME}`)).then(s => { if(!s.exists()) { localStorage.clear(); location.reload(); } else { document.getElementById('loginModal').style.display = 'none'; initNexus(); } });
         }
 
         function initNexus() {
             initAI();
             onValue(ref(db, `users/${MY_NAME}`), (snap) => {
-                MY_DATA = snap.val() || {};
-                if(!MY_DATA.status) return; 
+                MY_DATA = snap.val() || {}; if(!MY_DATA.status) return; 
                 document.getElementById('userName').innerText = MY_NAME;
                 document.getElementById('pAvatar').innerHTML = `<img src="${MY_DATA.status?.avatar}" class="w-full h-full">`;
                 if(timerInterval) clearInterval(timerInterval);
                 if(MY_DATA.timerActive) {
                     document.getElementById('startBtn').classList.add('hidden'); document.getElementById('stopBtn').classList.remove('hidden');
                     timerInterval = setInterval(() => updateDisplay((MY_DATA.pendingTime||0) + (Date.now() - MY_DATA.startTime)), 1000);
-                } else {
-                    document.getElementById('startBtn').classList.remove('hidden'); document.getElementById('stopBtn').classList.add('hidden');
-                    updateDisplay(MY_DATA.pendingTime || 0);
-                }
+                } else { document.getElementById('startBtn').classList.remove('hidden'); document.getElementById('stopBtn').classList.add('hidden'); updateDisplay(MY_DATA.pendingTime || 0); }
                 drawChart('mainChart', MY_DATA.history || {}, true);
             });
 
@@ -303,38 +253,28 @@
                     const div = document.createElement('div');
                     div.className = `p-3 glass flex justify-between items-center mb-1 ${u.active?'border-l-4 border-green-500':''}`;
                     div.innerHTML = `<div class="flex items-center gap-2 text-[11px] font-black"><img src="${u.avatar}" class="w-6 rounded-full"> ${u.name}</div><span class="text-[10px] text-blue-400">${Math.floor(u.totalToday/60000)} DK</span>`;
-                    div.onclick = () => showUserProfile(u.name, u.raw);
-                    r.appendChild(div);
+                    div.onclick = () => showUserProfile(u.name, u.raw); r.appendChild(div);
+                    
                     const lRow = document.createElement('div');
-                    lRow.className = `leader-row ${i<3?'rank-'+(i+1):''}`;
+                    let rankClass = (i === 0) ? 'rank-1' : (i === 1) ? 'rank-2' : (i === 2) ? 'rank-3' : '';
+                    lRow.className = `leader-row ${rankClass}`;
                     lRow.innerHTML = `<span>${i+1}. ${u.name}</span><span>${Math.floor(u.totalToday/60000)}dk</span>`;
                     l.appendChild(lRow);
                 });
             });
         }
 
-        window.switchAside = (type) => {
-            document.getElementById('radar').classList.toggle('hidden', type !== 'radar');
-            document.getElementById('leaderboard').classList.toggle('hidden', type !== 'leader');
-        };
-
+        window.switchAside = (type) => { document.getElementById('radar').classList.toggle('hidden', type !== 'radar'); document.getElementById('leaderboard').classList.toggle('hidden', type !== 'leader'); };
         window.showUserProfile = (name, data) => {
             document.getElementById('mIcon').innerHTML = `<img src="${data.status?.avatar}" class="w-16 h-16 mx-auto rounded-full border-2 border-blue-600">`;
-            document.getElementById('mTitle').innerText = name;
-            document.getElementById('mDesc').innerText = `TOPLAM: ${Math.floor((Object.values(data.history||{}).reduce((a,b)=>a+b,0) + (data.pendingTime||0))/60000)} DK`;
-            document.getElementById('profileIntel').classList.remove('hidden');
-            document.getElementById('quoteText').classList.add('hidden');
-            document.getElementById('medalGrid').classList.add('hidden');
-            document.getElementById('nexusModal').classList.replace('hidden', 'flex');
-            setTimeout(() => drawChart('profileChart', data.history || {}, false), 100);
+            document.getElementById('mTitle').innerText = name; document.getElementById('mDesc').innerText = `TOPLAM: ${Math.floor((Object.values(data.history||{}).reduce((a,b)=>a+b,0) + (data.pendingTime||0))/60000)} DK`;
+            document.getElementById('profileIntel').classList.remove('hidden'); document.getElementById('quoteText').classList.add('hidden'); document.getElementById('medalGrid').classList.add('hidden');
+            document.getElementById('nexusModal').classList.replace('hidden', 'flex'); setTimeout(() => drawChart('profileChart', data.history || {}, false), 100);
         };
 
         window.openQuote = () => {
-            document.getElementById('profileIntel').classList.add('hidden');
-            document.getElementById('quoteText').classList.remove('hidden');
-            document.getElementById('medalGrid').classList.add('hidden');
-            document.getElementById('mTitle').innerText = "DOKTRIN";
-            document.getElementById('quoteText').innerText = DOKTRINLER[Math.floor(Math.random()*DOKTRINLER.length)];
+            document.getElementById('profileIntel').classList.add('hidden'); document.getElementById('quoteText').classList.remove('hidden'); document.getElementById('medalGrid').classList.add('hidden');
+            document.getElementById('mTitle').innerText = "DOKTRIN"; document.getElementById('quoteText').innerText = DOKTRINLER[Math.floor(Math.random()*DOKTRINLER.length)];
             document.getElementById('nexusModal').classList.replace('hidden', 'flex');
         };
 
@@ -344,8 +284,7 @@
             document.getElementById('mTitle').innerText = "MADALYALAR";
             MEDALS.forEach(m => {
                 const box = document.createElement('div'); box.className = "medal-box"; box.innerText = m.i;
-                box.onclick = () => alert(m.t + ": " + m.d);
-                grid.appendChild(box);
+                box.onclick = () => alert(m.t + ": " + m.d); grid.appendChild(box);
             });
             document.getElementById('nexusModal').classList.replace('hidden', 'flex');
         };
@@ -355,17 +294,10 @@
         window.closeFocus = () => { document.getElementById('uiOverlay').style.display = 'none'; document.querySelectorAll('.focus-mode').forEach(e => e.classList.remove('focus-mode')); };
 
         function drawChart(canvasId, history, isMain) {
-            const canvas = document.getElementById(canvasId);
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d]||0)/60000));
-            const chartObj = isMain ? myChart : profChart;
-            if(chartObj && typeof chartObj.destroy === 'function') chartObj.destroy();
-            const newChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6' }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
+            const canvas = document.getElementById(canvasId); if(!canvas) return;
+            const ctx = canvas.getContext('2d'); const data = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(d => Math.floor((history[d]||0)/60000));
+            const chartObj = isMain ? myChart : profChart; if(chartObj && typeof chartObj.destroy === 'function') chartObj.destroy();
+            const newChart = new Chart(ctx, { type: 'bar', data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6' }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } });
             if(isMain) myChart = newChart; else profChart = newChart;
         }
 
@@ -374,29 +306,16 @@
             document.getElementById('display').innerText = `${h}:${m}:${s}`;
         }
 
-        document.getElementById('startBtn').onclick = async () => {
-            try {
-                await startAiTracking();
-                update(ref(db, `users/${MY_NAME}`), { timerActive: true, startTime: Date.now() });
-            } catch (e) { alert("KAMERA HATASI"); }
-        };
-
+        document.getElementById('startBtn').onclick = async () => { try { await startAiTracking(); update(ref(db, `users/${MY_NAME}`), { timerActive: true, startTime: Date.now() }); } catch (e) { alert("KAMERA HATASI"); } };
         document.getElementById('stopBtn').onclick = () => {
-            clearInterval(aiInterval);
-            const v = document.getElementById('aiVideo');
-            if(v) { v.srcObject.getTracks().forEach(t => t.stop()); v.remove(); }
-            document.getElementById('aiStatusTag').style.display = 'none';
-            document.body.style.border = "0px solid transparent";
-            get(ref(db, `users/${MY_NAME}`)).then(s => { 
-                const v = s.val(); 
-                update(ref(db, `users/${MY_NAME}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) }); 
-            });
+            clearInterval(aiInterval); const v = document.getElementById('aiVideo'); if(v) { v.srcObject.getTracks().forEach(t => t.stop()); v.remove(); }
+            document.getElementById('aiStatusTag').style.display = 'none'; document.body.style.border = "0px solid transparent";
+            get(ref(db, `users/${MY_NAME}`)).then(s => { const v = s.val(); update(ref(db, `users/${MY_NAME}`), { timerActive: false, pendingTime: (v.pendingTime||0)+(Date.now()-v.startTime) }); });
         };
 
         window.saveDay = () => {
             const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'], n = new Date().getDay();
-            document.getElementById('lDayBtn').innerText = `DUN (${d[(n+6)%7]})`; 
-            document.getElementById('tDayBtn').innerText = `BUGUN (${d[n]})`;
+            document.getElementById('lDayBtn').innerText = `DUN (${d[(n+6)%7]})`; document.getElementById('tDayBtn').innerText = `BUGUN (${d[n]})`;
             document.getElementById('saveBox').style.display = 'flex';
         };
 
@@ -404,39 +323,25 @@
             const d = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'], n = new Date().getDay();
             const targetDay = d[isYesterday ? (n+6)%7 : n];
             get(ref(db, `users/${MY_NAME}`)).then(s => {
-                const v = s.val() || {}, h = v.history || {};
-                h[targetDay] = (h[targetDay] || 0) + (v.pendingTime || 0);
-                update(ref(db, `users/${MY_NAME}`), { pendingTime: 0, timerActive: false, history: h });
-                document.getElementById('saveBox').style.display = 'none';
+                const v = s.val() || {}, h = v.history || {}; h[targetDay] = (h[targetDay] || 0) + (v.pendingTime || 0);
+                update(ref(db, `users/${MY_NAME}`), { pendingTime: 0, timerActive: false, history: h }); document.getElementById('saveBox').style.display = 'none';
             });
         };
 
         window.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'l') document.getElementById('admBox').style.display = 'flex'; });
-
         window.checkAdm = () => {
             if(document.getElementById('admPass').value === "1905") {
-                document.getElementById('admAuth').style.display = 'none';
-                document.getElementById('admContent').style.display = 'block';
-                onValue(ref(db, 'users'), (snap) => {
-                    const users = snap.val() || {};
-                    document.getElementById('aUsr').innerHTML = Object.keys(users).map(u => `<option value="${u}">${u}</option>`).join('');
-                }, { onlyOnce: true });
+                document.getElementById('admAuth').style.display = 'none'; document.getElementById('admContent').style.display = 'block';
+                onValue(ref(db, 'users'), (snap) => { const users = snap.val() || {}; document.getElementById('aUsr').innerHTML = Object.keys(users).map(u => `<option value="${u}">${u}</option>`).join(''); }, { onlyOnce: true });
             }
         };
 
         window.mEdit = () => {
             const user = document.getElementById('aUsr').value, day = document.getElementById('aDay').value, mins = parseInt(document.getElementById('aMin').value) || 0;
-            get(ref(db, `users/${user}`)).then(s => {
-                const v = s.val() || {}, h = v.history || {};
-                h[day] = (h[day] || 0) + (mins * 60000);
-                update(ref(db, `users/${user}`), { history: h }).then(() => alert("OK"));
-            });
+            get(ref(db, `users/${user}`)).then(s => { const v = s.val() || {}, h = v.history || {}; h[day] = (h[day] || 0) + (mins * 60000); update(ref(db, `users/${user}`), { history: h }).then(() => alert("OK")); });
         };
 
-        window.mKick = () => {
-            const user = document.getElementById('aUsr').value;
-            if(confirm("SIL?")) remove(ref(db, `users/${user}`));
-        };
+        window.mKick = () => { const user = document.getElementById('aUsr').value; if(confirm("SIL?")) remove(ref(db, `users/${user}`)); };
     </script> 
 </body>
 </html>
