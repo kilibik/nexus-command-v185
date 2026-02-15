@@ -46,6 +46,23 @@
         </div>
     </div>
 
+    <div id="modLoginModal" class="fixed inset-0 bg-black/90 z-[30000] hidden items-center justify-center p-4">
+        <div class="glass p-8 w-full max-w-sm border-amber-600 border-2 text-center">
+            <h2 class="text-amber-500 font-black text-2xl mb-6 uppercase tracking-widest">GÜVENLİK SORGUSU</h2>
+            <input type="password" id="modPassInput" placeholder="MODERATÖR ŞİFRESİ" class="w-full bg-slate-900 border border-amber-500/30 p-4 rounded-xl mb-4 text-white font-black text-center focus:outline-none">
+            <button id="modEntryBtn" class="w-full py-4 bg-amber-600 text-white rounded-xl font-black uppercase tracking-widest active:scale-95">DOĞRULA</button>
+            <button onclick="document.getElementById('modLoginModal').classList.replace('flex','hidden')" class="mt-4 text-slate-500 text-[10px] font-black uppercase">VAZGEÇ</button>
+        </div>
+    </div>
+
+    <div id="modControlPanel" class="fixed inset-0 bg-[#010409] z-[30000] hidden flex-col p-6 overflow-hidden">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-amber-500 font-black text-3xl italic">NEXUS COMMAND CENTER</h2>
+            <button onclick="document.getElementById('modControlPanel').classList.replace('flex','hidden')" class="px-6 py-2 bg-red-600 rounded-xl font-black text-xs uppercase">SİSTEMDEN ÇIK</button>
+        </div>
+        <div id="modUserList" class="flex-1 overflow-y-auto no-scrollbar grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
     <div id="nexusModal" class="fixed inset-0 bg-black/98 z-[15000] hidden items-center justify-center p-4">
         <div class="bg-[#0d1117] border-2 border-blue-600 p-6 rounded-[30px] w-full max-w-2xl text-center relative max-h-[95vh] flex flex-col overflow-hidden">
             <div id="medalGrid" class="grid grid-cols-4 gap-3 hidden overflow-y-auto no-scrollbar mb-4 p-4 justify-items-center"></div>
@@ -114,7 +131,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, update, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSy...", authDomain: "yks-odak.firebaseapp.com", databaseURL: "https://yks-odak-default-rtdb.europe-west1.firebasedatabase.app" };
         const app = initializeApp(firebaseConfig);
@@ -236,6 +253,51 @@
             const c = new Chart(ctx, { type: 'bar', data: { labels: ['PT','SA','ÇA','PE','CU','CT','PZ'], datasets: [{ data, backgroundColor: '#3b82f6', borderRadius: 5 }] }, options: { maintainAspectRatio: false, plugins: { legend: { display: false } } } });
             if(main) myChart = c; else profChart = c;
         }
+
+        // --- MODERATÖR FONKSİYONLARI ---
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'l') {
+                document.getElementById('modLoginModal').classList.replace('hidden', 'flex');
+                document.getElementById('modPassInput').focus();
+            }
+        });
+
+        document.getElementById('modEntryBtn').onclick = () => {
+            if (document.getElementById('modPassInput').value === "1905") {
+                document.getElementById('modLoginModal').classList.replace('hidden', 'flex');
+                document.getElementById('modControlPanel').classList.replace('hidden', 'flex');
+                loadModPanel();
+            } else { alert("ŞİFRE HATALI"); }
+        };
+
+        function loadModPanel() {
+            onValue(ref(db, 'users'), (snap) => {
+                const users = snap.val() || {};
+                const container = document.getElementById('modUserList');
+                container.innerHTML = "";
+                Object.entries(users).forEach(([name, data]) => {
+                    const card = document.createElement('div');
+                    card.className = "glass p-4 border-amber-500/20 flex flex-col gap-3";
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2"><img src="${data.status?.avatar}" class="w-8 h-8 rounded-full"><span class="font-black text-blue-400 text-sm">${name}</span></div>
+                            <button onclick="deleteUser('${name}')" class="text-red-500 text-[10px] font-bold border border-red-500/30 px-2 py-1 rounded">AT</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="input-${name}" value="${Math.floor((data.pendingTime||0)/60000)}" class="flex-1 bg-black border border-blue-500/30 rounded p-2 text-xs text-white">
+                            <button onclick="updateUserTime('${name}')" class="bg-blue-600 px-3 py-1 rounded text-[10px] font-black">GÜNCELLE</button>
+                        </div>`;
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        window.deleteUser = (name) => { if(confirm(`${name} silinsin mi?`)) remove(ref(db, `users/${name}`)); };
+        window.updateUserTime = (name) => {
+            const ms = parseInt(document.getElementById(`input-${name}`).value) * 60000;
+            update(ref(db, `users/${name}`), { pendingTime: ms }).then(() => alert("Güncellendi"));
+        };
     </script>
 </body>
 </html>
