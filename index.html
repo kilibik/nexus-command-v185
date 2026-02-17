@@ -131,7 +131,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, update, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, update, onValue, get, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSy...", authDomain: "yks-odak.firebaseapp.com", databaseURL: "https://yks-odak-default-rtdb.europe-west1.firebasedatabase.app" };
         const app = initializeApp(firebaseConfig);
@@ -141,8 +141,34 @@
         let timerInterval, myChart, profChart, MY_DATA = {};
 
         const DOKTRINLER = ["Zafer; terini kandan ayıramayanların tek dostudur.", "Acı seni terk edene kadar o masadan kalkmayacaksın.", "Masa senin savaş alanındır.", "Zayıflık, disiplinsizliğin maskelenmiş halidir.", "Bugün kaçarsan, yarın diz çökersin.", "Limitlerin, senin koyduğun korku çizgileridir.", "Sessizce çalış, gürültüyü başarıların çıkarsın.", "Yorgunluk geçicidir, ama pişmanlık sonsuz.", "En büyük rakibin, dün aynada gördüğün kişidir.", "Disiplin, isteklerinle hedeflerin arasındaki köprüdür.", "Dünya sen durduğunda dönmeye devam eder.", "Zirve, uyuyanlar için değil, uykuyu terk edenler içindir.", "Odaklandığın her saniye, geleceğinden bir borç siliyorsun.", "Mazeretlerin, seni hapsettiğin duvarlardır.", "Ter dökmezsen, gözyaşı dökersin.", "Bugünün çilesi, yarının görkemidir.", "Zihin her zaman bedenden önce pes eder.", "Şampiyonlar, kimse izlemiyorken ter dökenlerdir.", "Zaman, en pahalı mermindir.", "Rakiplerin şu an çalışıyor.", "Konfor alanın, hayallerinin mezarıdır.", "Başarı, her gün yapılan küçük tekrarların toplamıdır.", "Zorluklar seni yıldırmak için değil, şekillendirmek içindir.", "Bir aslan gibi yaşamak istiyorsan, aslan gibi çalışmalısın.", "Vazgeçmek, sadece kaybedenlerin seçeneğidir.", "Acı seni öldürmez, sadece iradeni çelikleştirir.", "Oturduğun masa senin tahtın.", "Her gün bir adım, bir mil eder.", "Kendi kaderini kendi alın terinle yaz.", "Düşmek sorun değil, kalkmamak ihanettir.", "Bahaneler seni asla hedefine ulaştırmaz.", "Başarısızlık bir durak olabilir.", "Irade, her 'hayır' dediğinde daha da güçlenir.", "Zor olanı seç.", "Güneşi üzerine doğurma.", "Sabır, çalışırken gösterilen sessiz güçtür.", "Hayallerin için bedel ödemezsen, hayallerin bedelin olur.", "Durma, devam et.", "Kendine inanmazsan, kimse inanmaz.", "Bugün ektiklerini, yarın biçeceksin."];
-
         const MEDALS = [{i:'🥇', t:'ALTIN OPERATÖR', d:'1. Sıra'},{i:'🥈', t:'GÜMÜŞ MUHAFIZ', d:'2. Sıra'},{i:'🥉', t:'BRONZ SAVAŞÇI', d:'3. Sıra'},{i:'👑', t:'NEXUS KRALI', d:'500+ Saat'},{i:'⚔️', t:'GLADYATÖR', d:'10+ Saat/Gün'},{i:'💎', t:'ELMAS İRADE', d:'3 Saat Kesintisiz'},{i:'🔥', t:'ALEV ALANLAR', d:'7 Gün Seri'},{i:'🛡️', t:'SİPER USTASI', d:'5 Saat Kalkmadan'},{i:'⚡', t:'YILDIRIM', d:'Erken Başlayan'},{i:'📜', t:'DOKTRİN ÜSTADI', d:'Tüm Kurallar'},{i:'🌌', t:'GECE AVCISI', d:'4+ Saat Gece'},{i:'🩸', t:'ALIN TERİ', d:'100 Saat Toplam'},{i:'🌪️', t:'FIRTINA', d:'50+ Saat/Hafta'},{i:'🦾', t:'CYBORG', d:'Sıfır Hata'},{i:'🏹', t:'KESKİN NİŞANCI', d:'Tam Hedef'},{i:'🌋', t:'MAGMA', d:'Rekor Süre'},{i:'🦁', t:'PENÇE', d:'3 Gün Lider'},{i:'🏔️', t:'ZİRVE', d:'Tüm Görevler'},{i:'🌟', t:'YILDIZ', d:'Yüksek Skor'},{i:'🗝️', t:'ANAHTAR', d:'Gizem Çözücü'}];
+
+        // --- HAFTALIK SIFIRLAMA KONTROLÜ ---
+        function checkWeeklyReset() {
+            const now = new Date();
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            const weekNumber = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
+            
+            get(ref(db, 'system/lastResetWeek')).then((snapshot) => {
+                const lastWeek = snapshot.val();
+                if (lastWeek !== null && lastWeek !== weekNumber) {
+                    // Hafta değişmiş, tüm kullanıcıların verilerini sıfırla
+                    get(ref(db, 'users')).then((uSnap) => {
+                        const allUsers = uSnap.val() || {};
+                        const updates = {};
+                        Object.keys(allUsers).forEach(uName => {
+                            updates[`users/${uName}/history`] = { "Pzt":0, "Sal":0, "Çar":0, "Per":0, "Cum":0, "Cmt":0, "Paz":0 };
+                            updates[`users/${uName}/pendingTime`] = 0;
+                            updates[`users/${uName}/timerActive`] = false;
+                        });
+                        updates['system/lastResetWeek'] = weekNumber;
+                        update(ref(db), updates);
+                    });
+                } else if (lastWeek === null) {
+                    set(ref(db, 'system/lastResetWeek'), weekNumber);
+                }
+            });
+        }
 
         document.getElementById('entryBtn').onclick = async () => {
             const name = document.getElementById('opInput').value.trim().toUpperCase(); if(name.length < 2) return;
@@ -153,7 +179,15 @@
         if(MY_NAME) { document.getElementById('loginModal').style.display = 'none'; initNexus(); }
 
         function initNexus() {
+            checkWeeklyReset();
+            // Kullanıcı silinmiş mi kontrolü (Moderatör tarafından atılma durumu)
             onValue(ref(db, `users/${MY_NAME}`), (snap) => {
+                if (!snap.exists()) {
+                    localStorage.removeItem('nexus_user');
+                    location.reload(); // Oturumu kapat ve başa dön
+                    return;
+                }
+                
                 MY_DATA = snap.val() || {}; if(!MY_DATA.status) return;
                 document.getElementById('userName').innerText = MY_NAME;
                 document.getElementById('pAvatar').innerHTML = `<img src="${MY_DATA.status?.avatar}">`;
@@ -255,7 +289,6 @@
         }
 
         // --- MODERATÖR FONKSİYONLARI ---
-
         window.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === 'l') {
                 document.getElementById('modLoginModal').classList.replace('hidden', 'flex');
@@ -293,10 +326,17 @@
             });
         }
 
-        window.deleteUser = (name) => { if(confirm(`${name} silinsin mi?`)) remove(ref(db, `users/${name}`)); };
+        window.deleteUser = (name) => { 
+            if(confirm(`${name} sistemden tamamen atılacak. Onaylıyor musun?`)) {
+                remove(ref(db, `users/${name}`)).then(() => {
+                    alert(`${name} sistemden uzaklaştırıldı.`);
+                });
+            } 
+        };
+
         window.updateUserTime = (name) => {
             const ms = parseInt(document.getElementById(`input-${name}`).value) * 60000;
-            update(ref(db, `users/${name}`), { pendingTime: ms }).then(() => alert("Güncellendi"));
+            update(ref(db, `users/${name}`), { pendingTime: ms }).then(() => alert("Kullanıcı süresi güncellendi."));
         };
     </script>
 </body>
